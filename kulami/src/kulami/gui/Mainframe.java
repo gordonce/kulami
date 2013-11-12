@@ -43,7 +43,9 @@ public class Mainframe extends JFrame {
 		
 		
 		playerMenu = new JMenu("Spieler");
-		playerMenu.add(new JMenuItem("Neuer Spieler"));
+		JMenuItem addPlayer = new JMenuItem("Neuer Spieler");
+		addPlayer.addActionListener(new PlayerDialog(this));
+		playerMenu.add(addPlayer);
 		
 		gameMenu = new JMenu("Server");
 		gameMenu.add(new JMenuItem("Spiel starten"));
