@@ -16,11 +16,14 @@ import javax.swing.JMenuItem;
  * @author gordon
  *
  */
-public class Mainframe {
+public class Mainframe extends JFrame {
 
-	private static void showGUI() {
-		JFrame frame = new JFrame("Kulami");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	public Mainframe() {
+		initGUI();
+	}
+	private void initGUI() {
+		setTitle("Kulami");
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JMenu playerMenu = new JMenu("Spieler");
 		playerMenu.add(new JMenuItem("Neuer Spieler"));
@@ -38,16 +41,14 @@ public class Mainframe {
 		mainMenu.add(playerMenu);
 		mainMenu.add(gameMenu);
 		mainMenu.add(boardMenu);
-//		mainMenu.setPreferredSize(new Dimension(700, 50));
 		
 		JLabel label = new JLabel();
 		label.setPreferredSize(new Dimension(700, 600));
 		
-		frame.setJMenuBar(mainMenu);
-		frame.add(label, BorderLayout.CENTER);
+		setJMenuBar(mainMenu);
+		add(label, BorderLayout.CENTER);
 		
-		frame.pack();
-		frame.setVisible(true);
+		pack();
 	}
 	
 	/**
@@ -57,7 +58,8 @@ public class Mainframe {
 
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				showGUI();
+				Mainframe mainframe = new Mainframe();
+				mainframe.setVisible(true);
 			}
 		});
 	}
