@@ -6,6 +6,8 @@ package kulami.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -16,6 +18,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import kulami.control.ConnectionData;
+import kulami.control.ServerMessages;
 
 /**
  * @author gordon
@@ -32,12 +37,29 @@ public class Mainframe extends JFrame {
 	private JCheckBox boardPossessionCheckBox;
 	private JLabel heroStats;
 	private JLabel villainStats;
-	private JTextArea messageDisplay;
+	private JTextArea messageTextArea;
 	private JTextField chatTextField;
+	
+	private ServerMessages serverMessages;
+	private MessageDisplay messageDisplay;
 
 	public Mainframe() {
 		initGUI();
+		
+		startServerListener();
 	}
+	
+	
+	private void startServerListener() {
+		ConnectionData serverConnectionData = new ConnectionData();
+		serverMessages = new ServerMessages(serverConnectionData);
+		serverMessages.connectAndListen();
+		
+		messageDisplay = new MessageDisplay(serverMessages, messageTextArea);
+		
+	}
+
+
 	private void initGUI() {
 		setLayout(new BorderLayout(5,10));
 		
@@ -50,6 +72,16 @@ public class Mainframe extends JFrame {
 		gameMenu = new JMenu("Server");
 		gameMenu.add(new JMenuItem("Spiel starten"));
 		gameMenu.add(new JMenuItem("Spiel abbrechen"));
+		JMenuItem sendTestMessage = new JMenuItem("Testnachricht senden");
+		sendTestMessage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				serverMessages.sendTestMessage();
+			}
+		});
+		gameMenu.add(sendTestMessage);
+		
 		
 		boardMenu = new JMenu("Spielfeld");
 		boardMenu.add(new JMenuItem("Spielfeld erstellen"));
@@ -81,11 +113,11 @@ public class Mainframe extends JFrame {
 		JPanel messagePanel = new JPanel();
 		messagePanel.setLayout(new BorderLayout(5, 5));
 		
-		messageDisplay = new JTextArea();
-		messageDisplay.setEditable(false);
+		messageTextArea = new JTextArea();
+		messageTextArea.setEditable(false);
 		chatTextField = new JTextField();
 		
-		messagePanel.add(messageDisplay, BorderLayout.CENTER);
+		messagePanel.add(messageTextArea, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
 		
 		leftPanel.add(heroStats);

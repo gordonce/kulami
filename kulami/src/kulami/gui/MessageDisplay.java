@@ -26,6 +26,7 @@ public class MessageDisplay implements MessageObserver {
 			JTextComponent textPager) {
 		this.serverMessages = serverMessages;
 		this.textPager = textPager;
+		serverMessages.addObserver(this);
 	}
 
 

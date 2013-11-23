@@ -28,6 +28,9 @@ public class ServerMessages {
 		// TODO start thread with infinite loop for listening on socket
 	}
 	
+	public void sendTestMessage() {
+		informObservers("hello observers :-)");
+	}
 	/**
 	 * @param observer
 	 */
