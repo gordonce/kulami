@@ -16,6 +16,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
@@ -37,12 +38,11 @@ public class Mainframe extends JFrame {
 	private JCheckBox boardPossessionCheckBox;
 	private JLabel heroStats;
 	private JLabel villainStats;
+	private JScrollPane messageScrollPane;
 	private JTextArea messageTextArea;
 	private JTextField chatTextField;
 	
 	private ServerMessages serverMessages;
-	private MessageDisplay messageDisplay;
-
 	public Mainframe() {
 		initGUI();
 		
@@ -55,7 +55,7 @@ public class Mainframe extends JFrame {
 		serverMessages = new ServerMessages(serverConnectionData);
 		serverMessages.connectAndListen();
 		
-		messageDisplay = new MessageDisplay(serverMessages, messageTextArea);
+		new MessageDisplay(serverMessages, messageTextArea);
 		
 	}
 
@@ -115,9 +115,12 @@ public class Mainframe extends JFrame {
 		
 		messageTextArea = new JTextArea();
 		messageTextArea.setEditable(false);
+		messageScrollPane = new JScrollPane(messageTextArea,
+				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		chatTextField = new JTextField();
 		
-		messagePanel.add(messageTextArea, BorderLayout.CENTER);
+		messagePanel.add(messageScrollPane, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
 		
 		leftPanel.add(heroStats);

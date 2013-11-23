@@ -14,7 +14,6 @@ import kulami.control.ServerMessages;
  */
 public class MessageDisplay implements MessageObserver {
 
-	private ServerMessages serverMessages;
 	private JTextComponent textPager;
 
 	
@@ -24,7 +23,6 @@ public class MessageDisplay implements MessageObserver {
 	 */
 	public MessageDisplay(ServerMessages serverMessages,
 			JTextComponent textPager) {
-		this.serverMessages = serverMessages;
 		this.textPager = textPager;
 		serverMessages.addObserver(this);
 	}
