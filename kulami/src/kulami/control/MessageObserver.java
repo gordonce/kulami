@@ -9,4 +9,9 @@ package kulami.control;
  */
 public interface MessageObserver {
 
+	/**
+	 * @param message
+	 */
+	void inform(String message);
+
 }
