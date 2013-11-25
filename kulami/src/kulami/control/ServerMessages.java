@@ -3,6 +3,11 @@
  */
 package kulami.control;
 
+import java.io.BufferedReader;
+import java.io.IOError;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,10 +68,23 @@ public class ServerMessages {
 	}
 
 	private void listen() {
-		while (listening) {
-			// TODO infinite loop that listens to server messages
-			// TODO inform observers
-			// TODO reconnect or throw if connection fails
+		try {
+			Socket kulamiSocket = new Socket(
+					serverConnectionData.getHostName(),
+					serverConnectionData.getPort());
+			BufferedReader socketReader = new BufferedReader(
+					new InputStreamReader(kulamiSocket.getInputStream()));
+			String message;
+			while (listening) {
+				message = socketReader.readLine();
+				if (message != null)
+					informObservers(message);
+				message = null;
+			}
+			kulamiSocket.close();
+		} catch (IOException e) {
+			System.err.println("Couldn't get I/O for the connection");
+			System.exit(1);
 		}
 	}
 

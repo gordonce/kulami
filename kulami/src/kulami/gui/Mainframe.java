@@ -51,7 +51,7 @@ public class Mainframe extends JFrame {
 	
 	
 	private void startServerListener() {
-		ConnectionData serverConnectionData = new ConnectionData();
+		ConnectionData serverConnectionData = new ConnectionData("localhost", 1234);
 		serverMessages = new ServerMessages(serverConnectionData);
 		serverMessages.connectAndListen();
 		
