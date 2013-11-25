@@ -46,10 +46,12 @@ public class Mainframe extends JFrame {
 	public Mainframe() {
 		initGUI();
 		
+		//testing
 		startServerListener();
 	}
 	
 	
+	// test method
 	private void startServerListener() {
 		ConnectionData serverConnectionData = new ConnectionData("localhost", 1234);
 		serverMessages = new ServerMessages(serverConnectionData);

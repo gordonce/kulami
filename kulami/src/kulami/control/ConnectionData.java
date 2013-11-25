@@ -4,6 +4,8 @@
 package kulami.control;
 
 /**
+ * ConnectionData represents the data for a socket connection to a Kulami server
+ * 
  * @author gordon
  * 
  */
@@ -12,6 +14,8 @@ public class ConnectionData {
 	private int port;
 
 	/**
+	 * Host name and port number of a Kulami server
+	 * 
 	 * @param hostName
 	 * @param port
 	 */
@@ -21,6 +25,8 @@ public class ConnectionData {
 	}
 
 	/**
+	 * Get the host name
+	 * 
 	 * @return the hostName
 	 */
 	public String getHostName() {
@@ -28,6 +34,8 @@ public class ConnectionData {
 	}
 
 	/**
+	 * Get the port number
+	 * 
 	 * @return the port
 	 */
 	public int getPort() {
