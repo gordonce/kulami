@@ -55,6 +55,12 @@ public class Mainframe extends JFrame {
 	private void startServerListener() {
 		ConnectionData serverConnectionData = new ConnectionData("localhost", 1234);
 		serverAdapter = new ServerAdapter(serverConnectionData);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		serverAdapter.connectAndListen();
 		
 		new MessageDisplay(serverAdapter, messageTextArea);
@@ -83,7 +89,15 @@ public class Mainframe extends JFrame {
 			}
 		});
 		gameMenu.add(sendTestMessage);
-		
+		JMenuItem sendServerMessage = new JMenuItem("Nachricht an Server senden");
+		sendServerMessage.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				serverAdapter.sendMessage("neuerClient(gordon).");
+			}
+		});
+		gameMenu.add(sendServerMessage);
 		
 		boardMenu = new JMenu("Spielfeld");
 		boardMenu.add(new JMenuItem("Spielfeld erstellen"));

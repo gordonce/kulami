@@ -4,11 +4,15 @@
 package kulami.control;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * ServerAdapter establishes a connection to a Kulami server and receives server
@@ -24,6 +28,8 @@ public class ServerAdapter {
 	private ConnectionData serverConnectionData;
 	private List<MessageObserver> observers;
 	private boolean listening;
+	private Queue<String> sendBuffer;
+	private Socket kulamiSocket;
 
 	/**
 	 * Create a ServerAdapter object that can be used to connect to a Kulami
@@ -35,6 +41,7 @@ public class ServerAdapter {
 	public ServerAdapter(ConnectionData serverConnectionData) {
 		this.serverConnectionData = serverConnectionData;
 		observers = new ArrayList<>();
+		sendBuffer = new LinkedList<>();
 		listening = false;
 	}
 
@@ -47,16 +54,39 @@ public class ServerAdapter {
 	// TODO needs to throw if connection fails
 	public void connectAndListen() {
 		// TODO establish connection to server
+		try {
+			kulamiSocket = new Socket(serverConnectionData.getHostName(),
+					serverConnectionData.getPort());
 
-		Thread clientThread = new Thread(new Runnable() {
+			Thread listenThread = new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				listening = true;
-				listen();
-			}
-		});
-		clientThread.start();
+				@Override
+				public void run() {
+					listen();
+				}
+			});
+			Thread sendThread = new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					send();
+				}
+			});
+			listening = true;
+			listenThread.start();
+			sendThread.start();
+		} catch (IOException e) {
+			System.err.println("Couldn't connect to socket");
+		}
+	}
+
+	/**
+	 * Adds a message to the queue of messages to be sent to the Kulami server
+	 * 
+	 * @param message
+	 */
+	public void sendMessage(String message) {
+		sendBuffer.add(message);
 	}
 
 	/**
@@ -68,21 +98,38 @@ public class ServerAdapter {
 
 	private void listen() {
 		try {
-			Socket kulamiSocket = new Socket(
-					serverConnectionData.getHostName(),
-					serverConnectionData.getPort());
 			BufferedReader socketReader = new BufferedReader(
 					new InputStreamReader(kulamiSocket.getInputStream()));
-			String message;
+			String inMessage;
 			while (listening) {
-				message = socketReader.readLine();
-				if (message != null)
-					informObservers(message);
-				message = null;
+				inMessage = socketReader.readLine();
+				if (inMessage != null)
+					informObservers(inMessage);
+				inMessage = null;
+			}
+		} catch (IOException e) {
+			System.err.println("Couldn't read from server");
+		}
+	}
+	
+	private void send() {
+		try {
+
+			BufferedWriter socketWriter = new BufferedWriter(
+					new OutputStreamWriter(kulamiSocket.getOutputStream()));
+			String outMessage;
+			while (listening) {
+				outMessage = sendBuffer.poll();
+				if (outMessage != null) {
+					socketWriter.write(outMessage + '\n');
+					socketWriter.flush();
+					outMessage = null;
+				}
+				Thread.sleep(1000);
 			}
 			kulamiSocket.close();
-		} catch (IOException e) {
-			System.err.println("Couldn't get I/O for the connection");
+		} catch (IOException | InterruptedException e) {
+			System.err.println("Couldn't write to server");
 		}
 	}
 
