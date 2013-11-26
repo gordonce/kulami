@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ServerAdapter establishes a connection to a Kulami server and distributes
- * server messages. It follows the Observable-Observer pattern. Observers must
- * implement the MessageObserver interface and register with the
- * addObserver(MessageObserver) method.
+ * ServerAdapter establishes a connection to a Kulami server and receives server
+ * messages and sends messages to the server. It follows the Observable-Observer
+ * pattern. Observers must implement the MessageObserver interface and register
+ * with the addObserver(MessageObserver) method.
  * 
  * @author gordon
  * 
