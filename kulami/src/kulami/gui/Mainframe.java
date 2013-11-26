@@ -21,7 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kulami.control.ConnectionData;
-import kulami.control.ServerMessages;
+import kulami.control.ServerAdapter;
 
 /**
  * @author gordon
@@ -42,7 +42,7 @@ public class Mainframe extends JFrame {
 	private JTextArea messageTextArea;
 	private JTextField chatTextField;
 	
-	private ServerMessages serverMessages;
+	private ServerAdapter serverAdapter;
 	public Mainframe() {
 		initGUI();
 		
@@ -54,10 +54,10 @@ public class Mainframe extends JFrame {
 	// test method
 	private void startServerListener() {
 		ConnectionData serverConnectionData = new ConnectionData("localhost", 1234);
-		serverMessages = new ServerMessages(serverConnectionData);
-		serverMessages.connectAndListen();
+		serverAdapter = new ServerAdapter(serverConnectionData);
+		serverAdapter.connectAndListen();
 		
-		new MessageDisplay(serverMessages, messageTextArea);
+		new MessageDisplay(serverAdapter, messageTextArea);
 		
 	}
 
@@ -79,7 +79,7 @@ public class Mainframe extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				serverMessages.sendTestMessage();
+				serverAdapter.sendTestMessage();
 			}
 		});
 		gameMenu.add(sendTestMessage);

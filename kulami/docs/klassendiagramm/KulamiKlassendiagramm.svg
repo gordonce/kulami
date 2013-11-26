@@ -784,7 +784,7 @@
      inkscape:pageshadow="2"
      inkscape:zoom="1"
      inkscape:cx="337.23393"
-     inkscape:cy="551.41815"
+     inkscape:cy="645.41815"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:snap-grids="true"
@@ -869,7 +869,7 @@
            id="tspan8993"
            sodipodi:role="line"
            x="260.2153"
-           y="158.57921">ServerMessages</tspan></text>
+           y="158.57921">ServerAdapter</tspan></text>
       <rect
          style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:1"
          id="rect8995"
@@ -900,29 +900,6 @@
          width="125.1579"
          id="rect9003"
          style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:1" />
-    </g>
-    <g
-       transform="translate(-93.81802,411.12488)"
-       id="g9005">
-      <text
-         xml:space="preserve"
-         style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-         x="260.2153"
-         y="158.57921"
-         id="text9007"
-         sodipodi:linespacing="125%"><tspan
-           style="font-style:normal;-inkscape-font-specification:Sans"
-           sodipodi:role="line"
-           x="260.2153"
-           y="158.57921"
-           id="tspan9013">MessageSender</tspan></text>
-      <rect
-         style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-opacity:1"
-         id="rect9011"
-         width="125.1579"
-         height="31.112698"
-         x="197.9899"
-         y="139.48734" />
     </g>
     <g
        id="g9017"
@@ -1342,16 +1319,6 @@
        inkscape:connection-start="#g9073"
        inkscape:connection-start-point="d4" />
     <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart)"
-       d="m 166.75083,507.72491 0,42.88731"
-       id="path9155"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#g8997"
-       inkscape:connection-start-point="d4"
-       inkscape:connection-end="#g9005"
-       inkscape:connection-end-point="d4" />
-    <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart);marker-end:none"
        d="m 166.75083,476.61222 0,-43.88731"
        id="path9157"
@@ -1516,7 +1483,7 @@
        inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="M 645.10634,326.38961 454.6616,719.32794"
+       d="M 649.18594,326.38961 592.60903,626.97122 468.09481,719.32794"
        id="path3250"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -1612,16 +1579,6 @@
          id="rect4089"
          style="fill:#000000;fill-opacity:0;stroke:#000000;stroke-width:3.34386253;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none" />
     </g>
-    <path
-       style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart)"
-       d="m 229.32978,553.75202 69.01651,-13.69384"
-       id="path8745"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#g9005"
-       inkscape:connection-start-point="d4"
-       inkscape:connection-end="#g9017"
-       inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
        d="M 333.58242,512.0853 194.09364,432.72491"
@@ -1727,31 +1684,19 @@
          sodipodi:role="line"
          id="tspan15783"
          x="461.70706"
-         y="276.42981">registriert sich</tspan></text>
+         y="276.42981">verwendet</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="151.21991"
-       y="583.17108"
-       id="text15785"
-       sodipodi:linespacing="125%"
-       transform="matrix(0.9795311,-0.20129286,0.20129286,0.9795311,0,0)"><tspan
-         sodipodi:role="line"
-         id="tspan15787"
-         x="151.21991"
-         y="583.17108">verwendet</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="-96.228706"
-       y="721.25317"
+       x="-118.65793"
+       y="748.02875"
        id="text15789"
        sodipodi:linespacing="125%"
        transform="matrix(0.44492493,-0.89556787,0.89556787,0.44492493,0,0)"><tspan
          sodipodi:role="line"
          id="tspan15791"
-         x="-96.228706"
-         y="721.25317">stellt dar</tspan></text>
+         x="-118.65793"
+         y="748.02875">stellt dar</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
@@ -1844,7 +1789,7 @@
          sodipodi:role="line">registriert sich</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 125.98337,183.19037 -88.749743,0 0,613.40102 157.903763,0"
+       d="m 64.39098,198.74672 0,597.84467 130.74641,0"
        id="path16066"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0"
@@ -1854,7 +1799,7 @@
        inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 130.40442,250.2155 -85.170793,0 0,241.95306 58.938253,0"
+       d="m 130.40442,250.2155 -58.01344,0 0,241.95306 31.7809,0"
        id="path16068"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0"
@@ -1864,7 +1809,7 @@
        inkscape:connection-end-point="d4" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 130.40442,250.2155 -89.170793,0 0,486.37589 153.903763,0"
+       d="m 130.40442,250.2155 -62.01344,0 0,486.37589 126.74641,0"
        id="path16070"
        inkscape:connector-type="orthogonal"
        inkscape:connector-curvature="0"
@@ -1897,7 +1842,7 @@
          y="830.33063">erweitern</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow2Lend)"
-       d="m 661.16029,169.05795 74.19492,108.80799 0,69.52367 -276.66188,371.93833"
+       d="m 661.16029,169.05795 74.19492,108.80799 0,69.52367 -142.74618,279.58161 -124.51422,92.35672"
        id="path16468"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -1908,14 +1853,14 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans"
-       x="-4.0608497"
-       y="794.8714"
+       x="40.435867"
+       y="808.02594"
        id="text16470"
        sodipodi:linespacing="125%"
        transform="matrix(0.59361406,-0.80474987,0.80474987,0.59361406,0,0)"><tspan
          sodipodi:role="line"
          id="tspan16472"
-         x="-4.0608497"
-         y="794.8714">bearbeitet</tspan></text>
+         x="40.435867"
+         y="808.02594">bearbeitet</tspan></text>
   </g>
 </svg>

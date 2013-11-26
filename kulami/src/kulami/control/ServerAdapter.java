@@ -4,7 +4,6 @@
 package kulami.control;
 
 import java.io.BufferedReader;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * ServerMessages establishes a connection to a Kulami server and distributes
+ * ServerAdapter establishes a connection to a Kulami server and distributes
  * server messages. It follows the Observable-Observer pattern. Observers must
  * implement the MessageObserver interface and register with the
  * addObserver(MessageObserver) method.
@@ -20,20 +19,20 @@ import java.util.List;
  * @author gordon
  * 
  */
-public class ServerMessages {
+public class ServerAdapter {
 
 	private ConnectionData serverConnectionData;
 	private List<MessageObserver> observers;
 	private boolean listening;
 
 	/**
-	 * Create a ServerMessages object that can be used to connect to a Kulami
+	 * Create a ServerAdapter object that can be used to connect to a Kulami
 	 * server and distribute server messages. The argument ConnectionData must
 	 * contain the address of a running Kulami server.
 	 * 
 	 * @param serverConnectionData
 	 */
-	public ServerMessages(ConnectionData serverConnectionData) {
+	public ServerAdapter(ConnectionData serverConnectionData) {
 		this.serverConnectionData = serverConnectionData;
 		observers = new ArrayList<>();
 		listening = false;
