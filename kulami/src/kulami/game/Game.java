@@ -9,15 +9,15 @@ package kulami.game;
  */
 public class Game {
 
-	private Map map;
+	private GameMap gameMap;
 	private Player player;
 	
 	/**
 	 * @param board
 	 * @param player
 	 */
-	public Game(Map map, Player player) {
-		this.map = map;
+	public Game(GameMap gameMap, Player player) {
+		this.gameMap = gameMap;
 		this.player = player;
 	}
 	

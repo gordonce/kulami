@@ -11,8 +11,6 @@ public class Field {
 	private Board board;
 	private Owner owner;
 	
-	enum Owner {None, Black, Red};
-	
 	public Field(Board board, Owner owner) {
 		this.board = board;
 		this.owner = owner;
@@ -20,6 +18,10 @@ public class Field {
 	
 	public Owner getOwner() {
 		return owner;
+	}
+	
+	public Board getBoard() {
+		return board;
 	}
 	
 	public void setOwner(Owner owner) {

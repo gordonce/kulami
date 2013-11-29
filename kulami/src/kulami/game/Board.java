@@ -3,9 +3,8 @@
  */
 package kulami.game;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import kulami.game.Field.Owner;
 
 /**
  * @author gordon
@@ -13,31 +12,39 @@ import kulami.game.Field.Owner;
  */
 public class Board {
 	private int size;
-	private Field.Owner owner;
+	private char name;
+	private Owner owner;
 	private List<Field> fields;
 	
 	/**
 	 * @param size
 	 * @param owner
 	 */
-	public Board(int size, Owner owner) {
+	public Board(int size, char name, Owner owner) {
 		this.size = size;
+		this.name = name;
 		this.owner = owner;
-		initializeFields();
+		fields = new ArrayList<>();
 	}
 	
 	public Owner getOwner() {
 		return owner;
 	}
 	
+	public char getName() {
+		return name;
+	}
+	
 	public int getSize() {
 		return size;
 	}
-
-	private void initializeFields() {
-		for (int i = 0; i < size; i++)
-			fields.add(new Field(this, Owner.None));
+	
+	public void addField(Field field) {
+		assert fields.size() < size;
+		fields.add(field);
 	}
+	
+
 	
 	/**
 	 * Update the owner of the board by checking who owns the majority
