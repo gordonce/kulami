@@ -42,6 +42,7 @@ public class Board {
 	public void addField(Field field) {
 		assert fields.size() < size;
 		fields.add(field);
+		updateOwner();
 	}
 	
 

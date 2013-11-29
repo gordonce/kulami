@@ -20,6 +20,8 @@ public class GameMap {
 
 	private Map<Character, Board> boards;
 	private Field[][] fieldMatrix = new Field[10][10];
+	private Pattern fieldPattern;
+	private Matcher mapMatcher;
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -58,31 +60,53 @@ public class GameMap {
 		return mapCode.toString();
 	}
 
+	/**
+	 * Set the Owner of a Field in a particular position of the 10x10 game map
+	 * matrix.
+	 * 
+	 * @param row
+	 * @param col
+	 * @param owner
+	 */
+	public void setOwner(int row, int col, Owner owner) {
+		fieldMatrix[row][col].setOwner(owner);
+	}
+	
+	/**
+	 * Given a map code, update the Owners of the Fields.
+	 * 
+	 * // TODO must throw if the positions of the boards has changed. 
+	 *
+	 * @param mapCode
+	 */
+//	public void updateGameMap(String mapCode) {
+//		int row = 0;
+//		int col = 0;
+//		for int i < 
+//	}
+
 	private void parseMapCode(String mapCode) {
-		Pattern fieldPattern = Pattern.compile("([a-r])([0-2])");
-		Matcher mapMatcher = fieldPattern.matcher(mapCode);
-		int row = 0;
-		int col = 0;
-		for (int i = 0; i < 100; i++) {
-			if (mapMatcher.find()) {
-				char boardIndex = mapMatcher.group(1).charAt(0);
-				int ownerIndex = Integer.parseInt(mapMatcher.group(2));
-				Owner owner;
-				if (ownerIndex == 0)
-					owner = Owner.None;
-				else if (ownerIndex == 1)
-					owner = Owner.Black;
-				else
-					owner = Owner.Red;
-				Board board = boards.get(boardIndex);
-				Field field = new Field(board, owner);
-				board.addField(field);
-				fieldMatrix[row][col] = field;
-				col = (col + 1) % 10;
-				if (col == 0)
-					row++;
-			} else {
-				// TODO throw exception: mapCode does not contain 100 fields
+		fieldPattern = Pattern.compile("([a-r])([0-2])");
+		mapMatcher = fieldPattern.matcher(mapCode);
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				if (mapMatcher.find()) {
+					char boardIndex = mapMatcher.group(1).charAt(0);
+					int ownerIndex = Integer.parseInt(mapMatcher.group(2));
+					Owner owner;
+					if (ownerIndex == 0)
+						owner = Owner.None;
+					else if (ownerIndex == 1)
+						owner = Owner.Black;
+					else
+						owner = Owner.Red;
+					Board board = boards.get(boardIndex);
+					Field field = new Field(board, owner);
+					board.addField(field);
+					fieldMatrix[row][col] = field;
+				} else {
+					// TODO throw exception: mapCode does not contain 100 fields
+				}
 			}
 		}
 
