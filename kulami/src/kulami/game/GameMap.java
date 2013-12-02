@@ -37,8 +37,9 @@ public class GameMap {
 	 * @param mapCode
 	 */
 	public GameMap(String mapCode) {
-
 		initializeBoards();
+		fieldPattern = Pattern.compile("([a-r])([0-2])");
+		mapMatcher = fieldPattern.matcher(mapCode);
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
 	}
@@ -71,23 +72,41 @@ public class GameMap {
 	public void setOwner(int row, int col, Owner owner) {
 		fieldMatrix[row][col].setOwner(owner);
 	}
-	
+
 	/**
 	 * Given a map code, update the Owners of the Fields.
 	 * 
-	 * // TODO must throw if the positions of the panels has changed. 
-	 *
+	 * // TODO must throw if the positions of the panels has changed.
+	 * 
 	 * @param mapCode
 	 */
-//	public void updateGameMap(String mapCode) {
-//		int row = 0;
-//		int col = 0;
-//		for int i < 
-//	}
+	public void updateGameMap(String mapCode) {
+		// TODO remove code duplication with parseMapCode
+		/*
+		 * TODO command pattern? create parse-method that takes an object //
+		 * like a higher order function that tells it what to do with // each
+		 * field
+		 */
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				if (mapMatcher.find()) {
+					int ownerIndex = Integer.parseInt(mapMatcher.group(2));
+					Owner owner;
+					if (ownerIndex == 0)
+						owner = Owner.None;
+					else if (ownerIndex == 1)
+						owner = Owner.Black;
+					else
+						owner = Owner.Red;
+					setOwner(row, col, owner);
+				} else {
+					// TODO throw exception: mapCode does not contain 100 fields
+				}
+			}
+		}
+	}
 
 	private void parseMapCode(String mapCode) {
-		fieldPattern = Pattern.compile("([a-r])([0-2])");
-		mapMatcher = fieldPattern.matcher(mapCode);
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
 				if (mapMatcher.find()) {
