@@ -41,7 +41,7 @@ public class Field {
 	 * 
 	 * @return
 	 */
-	public Panel getBoard() {
+	public Panel getPanel() {
 		return panel;
 	}
 

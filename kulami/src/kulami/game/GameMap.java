@@ -54,7 +54,7 @@ public class GameMap {
 		StringBuilder mapCode = new StringBuilder();
 		for (Field[] row : fieldMatrix)
 			for (Field field : row) {
-				mapCode.append(field.getBoard().getName());
+				mapCode.append(field.getPanel().getName());
 				mapCode.append(field.getOwner().getIdx());
 			}
 		return mapCode.toString();
