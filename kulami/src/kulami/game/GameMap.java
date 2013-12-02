@@ -43,6 +43,14 @@ public class GameMap {
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
 	}
+	
+	public int getPoints(Owner owner) {
+		int points = 0;
+		for (Panel panel: panels.values())
+			if (panel.getOwner() == owner)
+				points += panel.getSize();
+		return points;
+	}
 
 	/**
 	 * Get a textual representation of the GameMap. The map code is a String of
@@ -187,5 +195,7 @@ public class GameMap {
 				+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
 				+ "a0a0a0n0n1n0a0a0a0a0");
 		System.out.println(gameMap);
+		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red));
+		System.out.printf("Schwarz: %d Punkte\n", gameMap.getPoints(Owner.Black));
 	}
 }
