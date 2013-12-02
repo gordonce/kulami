@@ -4,26 +4,26 @@
 package kulami.game;
 
 /**
- * A Field is a field on the Kulami game map. A Field belongs to a Board and has
+ * A Field is a field on the Kulami game map. A Field belongs to a Panel and has
  * an Owner.
  * 
  * @author gordon
  * 
  */
 public class Field {
-	private Board board;
+	private Panel panel;
 	private Owner owner;
 
 	/**
-	 * Create a new Field that belongs to a Board and has an Owner. A Field
-	 * always has a Board and an Owner. The Board is immutable, but the Owner
+	 * Create a new Field that belongs to a Panel and has an Owner. A Field
+	 * always has a Panel and an Owner. The Panel is immutable, but the Owner
 	 * can be changed.
 	 * 
-	 * @param board
+	 * @param panel
 	 * @param owner
 	 */
-	public Field(Board board, Owner owner) {
-		this.board = board;
+	public Field(Panel panel, Owner owner) {
+		this.panel = panel;
 		this.owner = owner;
 	}
 
@@ -37,16 +37,16 @@ public class Field {
 	}
 
 	/**
-	 * Return the Board that the Field belongs to.
+	 * Return the Panel that the Field belongs to.
 	 * 
 	 * @return
 	 */
-	public Board getBoard() {
-		return board;
+	public Panel getBoard() {
+		return panel;
 	}
 
 	/**
-	 * Set the Owner of the Field. The Owner of the Board that the Field belongs
+	 * Set the Owner of the Field. The Owner of the Panel that the Field belongs
 	 * to is automatically updated.
 	 * 
 	 * @param owner
@@ -54,7 +54,7 @@ public class Field {
 	public void setOwner(Owner owner) {
 		if (this.owner != owner) {
 			this.owner = owner;
-			board.updateOwner();
+			panel.updateOwner();
 		}
 	}
 }

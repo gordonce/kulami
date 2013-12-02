@@ -10,7 +10,7 @@ import java.util.List;
  * @author gordon
  *
  */
-public class Board {
+public class Panel {
 	private int size;
 	private char name;
 	private Owner owner;
@@ -20,7 +20,7 @@ public class Board {
 	 * @param size
 	 * @param owner
 	 */
-	public Board(int size, char name, Owner owner) {
+	public Panel(int size, char name, Owner owner) {
 		this.size = size;
 		this.name = name;
 		this.owner = owner;

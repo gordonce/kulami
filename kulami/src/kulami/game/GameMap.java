@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * GameMap represents a map of 17 boards together with its current
+ * GameMap represents a map of 17 panels together with its current
  * configuration. The shape of a 10x10-map is immutable. Only the owners of
  * fields can be changed.
  * 
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
  */
 public class GameMap {
 
-	private Map<Character, Board> boards;
+	private Map<Character, Panel> panels;
 	private Field[][] fieldMatrix = new Field[10][10];
 	private Pattern fieldPattern;
 	private Matcher mapMatcher;
@@ -45,7 +45,7 @@ public class GameMap {
 
 	/**
 	 * Get a textual representation of the GameMap. The map code is a String of
-	 * 100 pairs of characters, the first of which indicates the Board, and the
+	 * 100 pairs of characters, the first of which indicates the Panel, and the
 	 * second of which indicates the Owner.
 	 * 
 	 * @return
@@ -75,7 +75,7 @@ public class GameMap {
 	/**
 	 * Given a map code, update the Owners of the Fields.
 	 * 
-	 * // TODO must throw if the positions of the boards has changed. 
+	 * // TODO must throw if the positions of the panels has changed. 
 	 *
 	 * @param mapCode
 	 */
@@ -100,9 +100,9 @@ public class GameMap {
 						owner = Owner.Black;
 					else
 						owner = Owner.Red;
-					Board board = boards.get(boardIndex);
-					Field field = new Field(board, owner);
-					board.addField(field);
+					Panel panel = panels.get(boardIndex);
+					Field field = new Field(panel, owner);
+					panel.addField(field);
 					fieldMatrix[row][col] = field;
 				} else {
 					// TODO throw exception: mapCode does not contain 100 fields
@@ -113,30 +113,30 @@ public class GameMap {
 	}
 
 	/*
-	 * The internal representation of boards is a list of 18 Boards (including
-	 * one for fields without boards).
+	 * The internal representation of panels is a list of 18 Boards (including
+	 * one for fields without panels).
 	 */
 	private void initializeBoards() {
-		boards = new HashMap<>();
-		boards.put('a', new Board(36, 'a', Owner.None)); // for fields without
-															// boards
-		boards.put('b', new Board(6, 'b', Owner.None));
-		boards.put('c', new Board(6, 'c', Owner.None));
-		boards.put('d', new Board(6, 'd', Owner.None));
-		boards.put('e', new Board(6, 'e', Owner.None));
-		boards.put('f', new Board(4, 'f', Owner.None));
-		boards.put('g', new Board(4, 'g', Owner.None));
-		boards.put('h', new Board(4, 'h', Owner.None));
-		boards.put('i', new Board(4, 'i', Owner.None));
-		boards.put('j', new Board(4, 'j', Owner.None));
-		boards.put('k', new Board(3, 'k', Owner.None));
-		boards.put('l', new Board(3, 'l', Owner.None));
-		boards.put('m', new Board(3, 'm', Owner.None));
-		boards.put('n', new Board(3, 'n', Owner.None));
-		boards.put('o', new Board(2, 'o', Owner.None));
-		boards.put('p', new Board(2, 'p', Owner.None));
-		boards.put('q', new Board(2, 'q', Owner.None));
-		boards.put('r', new Board(2, 'r', Owner.None));
+		panels = new HashMap<>();
+		panels.put('a', new Panel(36, 'a', Owner.None)); // for fields without
+															// panels
+		panels.put('b', new Panel(6, 'b', Owner.None));
+		panels.put('c', new Panel(6, 'c', Owner.None));
+		panels.put('d', new Panel(6, 'd', Owner.None));
+		panels.put('e', new Panel(6, 'e', Owner.None));
+		panels.put('f', new Panel(4, 'f', Owner.None));
+		panels.put('g', new Panel(4, 'g', Owner.None));
+		panels.put('h', new Panel(4, 'h', Owner.None));
+		panels.put('i', new Panel(4, 'i', Owner.None));
+		panels.put('j', new Panel(4, 'j', Owner.None));
+		panels.put('k', new Panel(3, 'k', Owner.None));
+		panels.put('l', new Panel(3, 'l', Owner.None));
+		panels.put('m', new Panel(3, 'm', Owner.None));
+		panels.put('n', new Panel(3, 'n', Owner.None));
+		panels.put('o', new Panel(2, 'o', Owner.None));
+		panels.put('p', new Panel(2, 'p', Owner.None));
+		panels.put('q', new Panel(2, 'q', Owner.None));
+		panels.put('r', new Panel(2, 'r', Owner.None));
 
 	}
 
