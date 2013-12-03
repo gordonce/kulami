@@ -14,9 +14,15 @@ import kulami.gui.Mainframe;
 public class GameController implements MessageObserver {
 
 	private Mainframe mainframe;
-	
+
 	public GameController() {
+
+		mainframe = new Mainframe(this);
 		
+	}
+
+	public void newPlayer() {
+		mainframe.showNewPlayerDialog();
 	}
 	/*
 	 * (non-Javadoc)
@@ -33,14 +39,7 @@ public class GameController implements MessageObserver {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
-		javax.swing.SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				GameController gameController = new GameController();
-				JFrame mainframe = new Mainframe(gameController);
-			}
-		});
-		
+		GameController gameController = new GameController();
 	}
 
 }

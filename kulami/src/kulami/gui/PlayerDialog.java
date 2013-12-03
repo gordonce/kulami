@@ -1,8 +1,5 @@
 package kulami.gui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -10,16 +7,16 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
-public class PlayerDialog implements ActionListener {
+public class PlayerDialog {
 
 	private JFrame parent;
 	
 	public PlayerDialog(JFrame parent) {
 		this.parent = parent;
+		initDialog();
 	}
 	
-	@Override
-	public void actionPerformed(ActionEvent e) {
+	private void initDialog() {
 		String message = "Enter player name";
 		JTextField userField = new JTextField();
 		
