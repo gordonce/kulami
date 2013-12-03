@@ -30,18 +30,6 @@ import kulami.game.GameObservable;
  */
 public class Mainframe extends JFrame {
 
-	private JMenu playerMenu;
-	private JMenu gameMenu;
-	private JMenu boardMenu;
-	private JMenuBar mainMenu;
-	private JCheckBox previousMovesCheckBox;
-	private JCheckBox possibleMovesCheckBox;
-	private JCheckBox boardPossessionCheckBox;
-	private JLabel heroStats;
-	private JLabel villainStats;
-	private JScrollPane messageScrollPane;
-	private JTextArea messageTextArea;
-	private JTextField chatTextField;
 
 	private GameController gameController;
 	private GameDisplay gameDisplay;
@@ -49,6 +37,9 @@ public class Mainframe extends JFrame {
 	private NewGameDialog newGameDialog;
 	private PlayerDialog playerDialog;
 	
+	// GUI elements
+	private JTextArea messageTextArea;
+
 	/**
 	 * The Mainframe is the central GUI element. It depends on a GameController
 	 * to delegate all functionality. It has a GameDisplay element that is
@@ -81,53 +72,43 @@ public class Mainframe extends JFrame {
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
-		playerMenu = new JMenu("Spieler");
-		JMenuItem addPlayer = new JMenuItem("Neuer Spieler");
-		addPlayer.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				gameController.newPlayer();
-			}
-		});
-		playerMenu.add(addPlayer);
+		JMenuBar mainMenu = initMainMenu();
 
-		gameMenu = new JMenu("Server");
-		gameMenu.add(new JMenuItem("Spiel starten"));
-		gameMenu.add(new JMenuItem("Spiel abbrechen"));
-		JMenuItem sendServerMessage = new JMenuItem(
-				"Nachricht an Server senden");
-		sendServerMessage.addActionListener(new ActionListener() {
+		JPanel leftPanel = initLeftPanel();
 
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO
-			}
-		});
-		gameMenu.add(sendServerMessage);
+		JLabel board = initGameBoard();
 
-		boardMenu = new JMenu("Spielfeld");
-		boardMenu.add(new JMenuItem("Spielfeld erstellen"));
-		boardMenu.add(new JMenuItem("Spielfeld bearbeiten"));
-		boardMenu.add(new JMenuItem("Spielfeld laden"));
+		setJMenuBar(mainMenu);
+		add(leftPanel, BorderLayout.WEST);
+		add(board, BorderLayout.CENTER);
 
-		mainMenu = new JMenuBar();
-		mainMenu.add(playerMenu);
-		mainMenu.add(gameMenu);
-		mainMenu.add(boardMenu);
+		pack();
+		
+		setTitle("Kulami");
+		setLocationRelativeTo(null);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+
+	private JLabel initGameBoard() {
+		JLabel board = new JLabel("Spielfeld", JLabel.CENTER);
+		board.setPreferredSize(new Dimension(600, 600));
+		return board;
+	}
+
+	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setPreferredSize(new Dimension(200, 600));
 		leftPanel.setLayout(new GridLayout(0, 1, 5, 5));
 
-		heroStats = new JLabel("Hero");
-		villainStats = new JLabel("Villain");
+		JLabel heroStats = new JLabel("Hero");
+		JLabel villainStats = new JLabel("Villain");
 
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new GridLayout(3, 1, 5, 5));
-		previousMovesCheckBox = new JCheckBox("letzte Züge");
-		possibleMovesCheckBox = new JCheckBox("mögliche Züge");
-		boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
+		JCheckBox previousMovesCheckBox = new JCheckBox("letzte Züge");
+		JCheckBox possibleMovesCheckBox = new JCheckBox("mögliche Züge");
+		JCheckBox boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
 
 		optionsPanel.add(previousMovesCheckBox);
 		optionsPanel.add(possibleMovesCheckBox);
@@ -138,10 +119,10 @@ public class Mainframe extends JFrame {
 
 		messageTextArea = new JTextArea();
 		messageTextArea.setEditable(false);
-		messageScrollPane = new JScrollPane(messageTextArea,
+		JScrollPane messageScrollPane = new JScrollPane(messageTextArea,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		chatTextField = new JTextField();
+		JTextField chatTextField = new JTextField();
 
 		messagePanel.add(messageScrollPane, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
@@ -150,20 +131,49 @@ public class Mainframe extends JFrame {
 		leftPanel.add(villainStats);
 		leftPanel.add(optionsPanel);
 		leftPanel.add(messagePanel);
+		return leftPanel;
+	}
 
-		JLabel board = new JLabel("Spielfeld", JLabel.CENTER);
-		board.setPreferredSize(new Dimension(600, 600));
-
-		setJMenuBar(mainMenu);
-		add(board, BorderLayout.CENTER);
-		add(leftPanel, BorderLayout.WEST);
-
-		pack();
+	private JMenuBar initMainMenu() {
+		JMenuBar mainMenu = new JMenuBar();
+		JMenu playerMenu = new JMenu("Spieler");
 		
-		setTitle("Kulami");
-		setLocationRelativeTo(null);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		JMenuItem addPlayer = new JMenuItem("Neuer Spieler");
+		addPlayer.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameController.newPlayer();
+			}
+		});
+		playerMenu.add(addPlayer);
 
+		JMenu gameMenu = new JMenu("Server");
+		
+		JMenuItem startGame = new JMenuItem("Spiel starten");
+		startGame.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				gameController.newGame();
+			}
+		});
+		gameMenu.add(startGame);
+		
+		gameMenu.add(new JMenuItem("Spiel abbrechen"));
+		
+		JMenu boardMenu = new JMenu("Spielfeld");
+		
+		boardMenu.add(new JMenuItem("Spielfeld erstellen"));
+		boardMenu.add(new JMenuItem("Spielfeld bearbeiten"));
+		boardMenu.add(new JMenuItem("Spielfeld laden"));
+
+		mainMenu = new JMenuBar();
+		mainMenu.add(playerMenu);
+		mainMenu.add(gameMenu);
+		mainMenu.add(boardMenu);
+		
+		return mainMenu;
 	}
 
 }

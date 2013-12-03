@@ -3,8 +3,6 @@
  */
 package kulami.control;
 
-import javax.swing.JFrame;
-
 import kulami.gui.Mainframe;
 
 /**
@@ -23,6 +21,10 @@ public class GameController implements MessageObserver {
 
 	public void newPlayer() {
 		mainframe.showNewPlayerDialog();
+	}
+	
+	public void newGame() {
+		mainframe.showNewGameDialog();
 	}
 	/*
 	 * (non-Javadoc)
