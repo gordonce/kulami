@@ -3,6 +3,8 @@
  */
 package kulami.gui;
 
+import javax.swing.JPanel;
+
 import kulami.game.GameMap;
 import kulami.game.GameObservable;
 
@@ -15,8 +17,8 @@ public class GameDisplay implements GameObserver {
 
 	private MapPainter mapPainter;
 	
-	public GameDisplay(GameObservable game) {
-		mapPainter = new MapPainter();
+	public GameDisplay(GameObservable game, JPanel board) {
+		mapPainter = new MapPainter(board);
 		game.registerObserver(this);
 	}
 	/* (non-Javadoc)

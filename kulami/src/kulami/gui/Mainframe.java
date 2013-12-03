@@ -39,6 +39,7 @@ public class Mainframe extends JFrame {
 	
 	// GUI elements
 	private JTextArea messageTextArea;
+	private JPanel board;
 
 	/**
 	 * The Mainframe is the central GUI element. It depends on a GameController
@@ -54,7 +55,7 @@ public class Mainframe extends JFrame {
 	}
 
 	public void initGameDisplay(GameObservable game) {
-		gameDisplay = new GameDisplay(game);
+		gameDisplay = new GameDisplay(game, board);
 	}
 	
 	public void initMessageDisplay(ServerAdapter serverAdapter) {
@@ -76,7 +77,7 @@ public class Mainframe extends JFrame {
 
 		JPanel leftPanel = initLeftPanel();
 
-		JLabel board = initGameBoard();
+		board = initGameBoard();
 
 		setJMenuBar(mainMenu);
 		add(leftPanel, BorderLayout.WEST);
@@ -90,10 +91,11 @@ public class Mainframe extends JFrame {
 
 	}
 
-	private JLabel initGameBoard() {
-		JLabel board = new JLabel("Spielfeld", JLabel.CENTER);
-		board.setPreferredSize(new Dimension(600, 600));
-		return board;
+	private JPanel initGameBoard() {
+		JPanel boardPanel = new JPanel();
+		boardPanel.setLayout(new GridLayout(10, 10, 5, 5));
+		boardPanel.setPreferredSize(new Dimension(600, 600));
+		return boardPanel;
 	}
 
 	private JPanel initLeftPanel() {
