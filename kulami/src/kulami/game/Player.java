@@ -34,6 +34,11 @@ public abstract class Player {
 	}
 	
 	public void placeMarble(Pos pos) {
-		game.placeMarble(pos);
+		if (marbles > 0) {
+			game.placeMarble(pos);
+			marbles--;
+		} else {
+			// TODO throw an exception
+		}
 	}
 }
