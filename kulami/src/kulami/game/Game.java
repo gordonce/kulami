@@ -3,6 +3,8 @@
  */
 package kulami.game;
 
+import kulami.game.GameMap.Pos;
+
 /**
  * @author gordon
  *
@@ -21,5 +23,11 @@ public class Game {
 		this.player = player;
 	}
 	
+	public void placeMarble(Pos pos) {
+		gameMap.setOwner(pos, player.getCoulour());
+	}
 	
+	public GameMap getGameMap() {
+		return gameMap;
+	}
 }
