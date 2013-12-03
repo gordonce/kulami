@@ -146,20 +146,6 @@ public class GameMap {
 	}
 
 	/**
-	 * Get the current points for Owner.
-	 * 
-	 * @param owner
-	 * @return
-	 */
-	public int getPoints(Owner owner) {
-		int points = 0;
-		for (Panel panel : panels.values())
-			if (panel.getOwner() == owner)
-				points += panel.getSize();
-		return points;
-	}
-
-	/**
 	 * Get a textual representation of the GameMap. The map code is a String of
 	 * 100 pairs of characters, the first of which indicates the Panel, and the
 	 * second of which indicates the Owner.
@@ -221,6 +207,20 @@ public class GameMap {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Get the current points for Owner.
+	 * 
+	 * @param owner
+	 * @return
+	 */
+	public int getPoints(Owner owner) {
+		int points = 0;
+		for (Panel panel : panels.values())
+			if (panel.getOwner() == owner)
+				points += panel.getSize();
+		return points;
 	}
 
 	private void parseMapCode(String mapCode) {
