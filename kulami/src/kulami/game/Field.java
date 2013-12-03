@@ -51,10 +51,12 @@ public class Field {
 	 * 
 	 * @param owner
 	 */
-	public void setOwner(Owner owner) {
+	public boolean setOwner(Owner owner) {
 		if (this.owner != owner) {
 			this.owner = owner;
 			panel.updateOwner();
+			return true;
 		}
+		return false;
 	}
 }

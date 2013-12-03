@@ -3,7 +3,9 @@
  */
 package kulami.game;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,7 +23,57 @@ public class GameMap {
 	private Map<Character, Panel> panels;
 	private Field[][] fieldMatrix = new Field[10][10];
 	private Pattern fieldPattern;
-	private Matcher mapMatcher;
+	private List<Move> history;
+
+	public static class Pos {
+		private int row;
+		private int col;
+
+		public Pos(int row, int col) {
+			assert row >= 0 && row < 10;
+			assert col >= 0 && col < 10;
+			this.row = row;
+			this.col = col;
+		}
+
+		public int getRow() {
+			return row;
+		}
+
+		public int getCol() {
+			return col;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return "[" + row + "," + col + "]";
+		}
+
+	}
+
+	class Move {
+		Pos pos;
+		Owner owner;
+
+		Move(Pos pos, Owner owner) {
+			this.pos = pos;
+			this.owner = owner;
+		}
+
+		Pos getPos() {
+			return pos;
+		}
+
+		Owner getOwner() {
+			return owner;
+		}
+
+	}
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -37,16 +89,71 @@ public class GameMap {
 	 * @param mapCode
 	 */
 	public GameMap(String mapCode) {
-		initializeBoards();
+		history = new ArrayList<>();
 		fieldPattern = Pattern.compile("([a-r])([0-2])");
-		mapMatcher = fieldPattern.matcher(mapCode);
+		initializeBoards();
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
 	}
-	
+
+	public ArrayList<Pos> getLegalFields() {
+		int size = history.size();
+		Pos lastMove = null;
+		Pos nextToLastMove = null;
+		ArrayList<Pos> legalMoves = new ArrayList<>();
+		if (size > 0)
+			lastMove = history.get(size - 1).getPos();
+		if (size > 1)
+			nextToLastMove = history.get(size - 2).getPos();
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++) {
+				Pos pos = new Pos(row, col);
+				if (isLegal(pos, lastMove, nextToLastMove))
+					legalMoves.add(pos);
+			}
+		return legalMoves;
+
+	}
+
+	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
+		Field thisField = getField(pos);
+		Panel thisPanel = thisField.getPanel();
+		// Is there a panel on the field?
+		if (thisPanel.getName() == 'a') {
+			return false;
+		}
+		// Is the field empty?
+		if (thisField.getOwner() != Owner.None)
+			return false;
+		// Same row or column but not on same panel as last move?
+		if (lastMove != null) {
+			Panel lastPanel = getField(lastMove).getPanel();
+			if ((pos.getCol() != lastMove.getCol() && 
+					pos.getRow() != lastMove.getRow()) || thisPanel == lastPanel)
+				return false;
+		}
+		// Not on next to last panel?
+		if (nextToLastMove != null) {
+			Panel nextToLastPanel = getField(nextToLastMove).getPanel();
+			if (thisPanel == nextToLastPanel)
+				return false;
+		}
+		return true;
+	}
+
+	private Field getField(Pos pos) {
+		return fieldMatrix[pos.getRow()][pos.getCol()];
+	}
+
+	/**
+	 * Get the current points for Owner.
+	 * 
+	 * @param owner
+	 * @return
+	 */
 	public int getPoints(Owner owner) {
 		int points = 0;
-		for (Panel panel: panels.values())
+		for (Panel panel : panels.values())
 			if (panel.getOwner() == owner)
 				points += panel.getSize();
 		return points;
@@ -71,14 +178,15 @@ public class GameMap {
 
 	/**
 	 * Set the Owner of a Field in a particular position of the 10x10 game map
-	 * matrix.
+	 * matrix. If the Owner changes, save the move in a history.
 	 * 
 	 * @param row
 	 * @param col
 	 * @param owner
 	 */
-	public void setOwner(int row, int col, Owner owner) {
-		fieldMatrix[row][col].setOwner(owner);
+	public void setOwner(Pos pos, Owner owner) {
+		if (fieldMatrix[pos.getRow()][pos.getCol()].setOwner(owner))
+			history.add(new Move(pos, owner));
 	}
 
 	/**
@@ -95,6 +203,7 @@ public class GameMap {
 		 * like a higher order function that tells it what to do with // each
 		 * field
 		 */
+		Matcher mapMatcher = fieldPattern.matcher(mapCode);
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
 				if (mapMatcher.find()) {
@@ -106,7 +215,7 @@ public class GameMap {
 						owner = Owner.Black;
 					else
 						owner = Owner.Red;
-					setOwner(row, col, owner);
+					setOwner(new Pos(row, col), owner);
 				} else {
 					// TODO throw exception: mapCode does not contain 100 fields
 				}
@@ -115,6 +224,7 @@ public class GameMap {
 	}
 
 	private void parseMapCode(String mapCode) {
+		Matcher mapMatcher = fieldPattern.matcher(mapCode);
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
 				if (mapMatcher.find()) {
@@ -184,6 +294,8 @@ public class GameMap {
 
 	/*
 	 * Test case: create game map and retrieve textual representation.
+	 * Set two new marbles.
+	 * get legal fields
 	 * 
 	 * @param args
 	 */
@@ -196,6 +308,13 @@ public class GameMap {
 				+ "a0a0a0n0n1n0a0a0a0a0");
 		System.out.println(gameMap);
 		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red));
-		System.out.printf("Schwarz: %d Punkte\n", gameMap.getPoints(Owner.Black));
+		System.out.printf("Schwarz: %d Punkte\n",
+				gameMap.getPoints(Owner.Black));
+		gameMap.setOwner(new Pos(1, 3), Owner.Black);
+		gameMap.setOwner(new Pos(5, 3), Owner.Red);
+		System.out.println(gameMap);
+		ArrayList<Pos> legalFields = gameMap.getLegalFields();
+		for (Pos pos : legalFields)
+			System.out.println(pos);
 	}
 }
