@@ -21,6 +21,12 @@ public class GameDisplay implements GameObserver {
 		mapPainter = new MapPainter(board);
 		game.registerObserver(this);
 	}
+	
+	// TODO Test:
+	public GameDisplay(JPanel board) {
+		mapPainter = new MapPainter(board);
+	}
+	
 	/* (non-Javadoc)
 	 * @see kulami.gui.GameObserver#gameChanged()
 	 */

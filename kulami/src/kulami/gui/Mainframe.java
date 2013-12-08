@@ -51,6 +51,8 @@ public class Mainframe extends JFrame {
 	public Mainframe(GameController gameController) {
 		this.gameController = gameController;
 		initGUI();
+		// TODO Test:
+		gameDisplay = new GameDisplay(board);
 		setVisible(true);
 	}
 
