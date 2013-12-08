@@ -212,8 +212,8 @@ public class MapPainter {
 			}
 			if (marble == NONE && active) {
 				g2.setComposite(AlphaComposite.getInstance(
-						AlphaComposite.SRC_OVER, (float) .7));
-				g2.setColor(Color.RED);
+						AlphaComposite.SRC_OVER, (float) .6));
+				g2.setColor(Color.GRAY);
 				g2.fillOval(10, 10, 40, 40);
 			}
 		}
