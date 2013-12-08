@@ -95,7 +95,7 @@ public class Mainframe extends JFrame {
 
 	private JPanel initGameBoard() {
 		JPanel boardPanel = new JPanel();
-		boardPanel.setLayout(new GridLayout(10, 10, 5, 5));
+		boardPanel.setLayout(new GridLayout(10, 10, 0, 0));
 		boardPanel.setPreferredSize(new Dimension(600, 600));
 		return boardPanel;
 	}

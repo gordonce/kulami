@@ -114,6 +114,7 @@ public class GameMap {
 		return legalMoves;
 
 	}
+	
 
 	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
 		Field thisField = getField(pos);
@@ -141,7 +142,7 @@ public class GameMap {
 		return true;
 	}
 
-	private Field getField(Pos pos) {
+	public Field getField(Pos pos) {
 		return fieldMatrix[pos.getRow()][pos.getCol()];
 	}
 
@@ -161,7 +162,7 @@ public class GameMap {
 			}
 		return mapCode.toString();
 	}
-
+	
 	/**
 	 * Set the Owner of a Field in a particular position of the 10x10 game map
 	 * matrix. If the Owner changes, save the move in a history.
