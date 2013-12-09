@@ -9,6 +9,10 @@ package kulami.game;
  */
 public class HumanPlayer extends Player {
 
+	public HumanPlayer() {
+		super();
+	}
+	
 	/**
 	 * @param colour
 	 * @param game

@@ -24,6 +24,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
 
+import kulami.control.GameController;
 import kulami.game.Player;
 
 /**
@@ -42,6 +43,14 @@ public class PlayerDialog extends JDialog {
 
 	private JSpinner spinnerLevel;
 
+	private GameController controller;
+
+	private JRadioButton rdbtnHuman;
+
+	private JRadioButton rdbtnComp;
+
+	private boolean human = true;
+	
 	/**
 	 * Returns a new Player or null if no Player was created
 	 * 
@@ -54,8 +63,9 @@ public class PlayerDialog extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public PlayerDialog(Frame frame) {
+	public PlayerDialog(Frame frame, final GameController controller) {
 		super(frame, true);
+		this.controller = controller;
 		setResizable(false);
 		setTitle("Neuer Spieler");
 
@@ -100,13 +110,23 @@ public class PlayerDialog extends JDialog {
 			contentPanel.add(panel_1);
 			panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 			{
-				JRadioButton rdbtnHuman = new JRadioButton("Mensch");
+				rdbtnHuman = new JRadioButton("Mensch");
+				rdbtnHuman.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						human = true;
+					}
+				});
 				rdbtnHuman.setSelected(true);
 				buttonGroup.add(rdbtnHuman);
 				panel_1.add(rdbtnHuman);
 			}
 			{
-				JRadioButton rdbtnComp = new JRadioButton("Computer");
+				rdbtnComp = new JRadioButton("Computer");
+				rdbtnComp.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						human = false;
+					}
+				});
 				rdbtnComp.addItemListener(new ItemListener() {
 					public void itemStateChanged(ItemEvent e) {
 						if (e.getStateChange() == ItemEvent.SELECTED)
@@ -152,8 +172,10 @@ public class PlayerDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						System.out.println("ok clicked");
-						
+						String name = textName.getText();
+						int level = (int)spinnerLevel.getValue();
+						controller.newPlayer(name, human, level);
+						setVisible(false);
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -186,13 +208,8 @@ public class PlayerDialog extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			JFrame frame = new JFrame("Player Dialog test");
-			frame.getContentPane().add(new JLabel("testing PlayerDialog ..."));
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-			frame.pack();
-			PlayerDialog dialog = new PlayerDialog(frame);
+			PlayerDialog dialog = new PlayerDialog(new JFrame(), new GameController());
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			frame.setVisible(true);
 			dialog.setVisible(true);
 		} catch (Exception e) {
 			e.printStackTrace();

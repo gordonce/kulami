@@ -71,7 +71,8 @@ public class Mainframe extends JFrame {
 	}
 	
 	public void showNewPlayerDialog() {
-//		playerDialog = new PlayerDialog(this);
+		playerDialog = new PlayerDialog(this, gameController);
+		playerDialog.setVisible(true);
 	}
 	
 	private void initGUI() {
@@ -165,7 +166,7 @@ public class Mainframe extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gameController.newGame();
+				gameController.showNewGameDialog();
 			}
 		});
 		gameMenu.add(startGame);

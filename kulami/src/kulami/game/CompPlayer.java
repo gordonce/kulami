@@ -13,6 +13,10 @@ public class CompPlayer extends Player {
 
 	private KulamiStrategy strategy;
 	
+	public CompPlayer() {
+		super();
+	}
+	
 	/**
 	 * @param colour
 	 * @param game

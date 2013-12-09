@@ -3,6 +3,7 @@
  */
 package kulami.control;
 
+import kulami.game.HumanPlayer;
 import kulami.gui.Mainframe;
 
 /**
@@ -23,7 +24,7 @@ public class GameController implements MessageObserver {
 		mainframe.showNewPlayerDialog();
 	}
 	
-	public void newGame() {
+	public void showNewGameDialog() {
 		mainframe.showNewGameDialog();
 	}
 	/*
@@ -42,6 +43,14 @@ public class GameController implements MessageObserver {
 	 */
 	public static void main(String[] args) {
 		GameController gameController = new GameController();
+	}
+
+	/**
+	 * @param name
+	 * @param human
+	 * @param level
+	 */
+	public void newPlayer(String name, boolean human, int level) {
 	}
 
 }
