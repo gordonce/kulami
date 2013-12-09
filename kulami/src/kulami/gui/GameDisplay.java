@@ -33,6 +33,15 @@ public class GameDisplay implements GameObserver {
 	@Override
 	public void gameChanged(GameObservable game) {
 		GameMap gameMap = game.getGameMap();
+		mapPainter.drawMarbles(gameMap);
+	}
+
+	/* (non-Javadoc)
+	 * @see kulami.gui.GameObserver#boardChanged(kulami.game.GameObservable)
+	 */
+	@Override
+	public void boardChanged(GameObservable game) {
+		GameMap gameMap = game.getGameMap();
 		mapPainter.drawMap(gameMap);
 	}
 

@@ -59,4 +59,5 @@ public class Game implements GameObservable {
 		for (GameObserver observer: gameObservers)
 			observer.gameChanged(this);
 	}
+	
 }
