@@ -48,7 +48,7 @@ public class MapPainter {
 	private Image middleH;
 	private Image middleV;
 
-	List<TileComponent> tiles;
+	private List<TileComponent> tiles;
 
 	/**
 	 * @param board
@@ -58,41 +58,6 @@ public class MapPainter {
 		loadImages();
 
 		// board.repaint();
-	}
-
-	private void loadImages() {
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-		String path = "/images/";
-		emptyTile = toolkit.getImage(getClass().getResource(
-				path + "empty_tile.png"));
-		leftEnd = toolkit.getImage(getClass().getResource(
-				path + "left_end_tile.png"));
-		rightEnd = toolkit.getImage(getClass().getResource(
-				path + "right_end_tile.png"));
-		upperEnd = toolkit.getImage(getClass().getResource(
-				path + "upper_end_tile.png"));
-		lowerEnd = toolkit.getImage(getClass().getResource(
-				path + "lower_end_tile.png"));
-		leftSide = toolkit.getImage(getClass().getResource(
-				path + "left_side_tile.png"));
-		rightSide = toolkit.getImage(getClass().getResource(
-				path + "right_side_tile.png"));
-		upperSide = toolkit.getImage(getClass().getResource(
-				path + "upper_side_tile.png"));
-		lowerSide = toolkit.getImage(getClass().getResource(
-				path + "lower_side_tile.png"));
-		upperLeft = toolkit.getImage(getClass().getResource(
-				path + "upper_left_tile.png"));
-		upperRight = toolkit.getImage(getClass().getResource(
-				path + "upper_right_tile.png"));
-		lowerLeft = toolkit.getImage(getClass().getResource(
-				path + "lower_left_tile.png"));
-		lowerRight = toolkit.getImage(getClass().getResource(
-				path + "lower_right_tile.png"));
-		middleV = toolkit.getImage(getClass()
-				.getResource(path + "middle_v.png"));
-		middleH = toolkit.getImage(getClass()
-				.getResource(path + "middle_h.png"));
 	}
 
 	/**
@@ -109,6 +74,9 @@ public class MapPainter {
 		board.repaint();
 	}
 
+	/**
+	 * @param gameMap
+	 */
 	public void drawMarbles(GameMap gameMap) {
 		String mapCode = gameMap.getMapCode();
 		for (int i = 0; i < 100; i++)
@@ -177,14 +145,50 @@ public class MapPainter {
 		return Arrays.asList(imageArray);
 	}
 
+	private void loadImages() {
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		String path = "/images/";
+		emptyTile = toolkit.getImage(getClass().getResource(
+				path + "empty_tile.png"));
+		leftEnd = toolkit.getImage(getClass().getResource(
+				path + "left_end_tile.png"));
+		rightEnd = toolkit.getImage(getClass().getResource(
+				path + "right_end_tile.png"));
+		upperEnd = toolkit.getImage(getClass().getResource(
+				path + "upper_end_tile.png"));
+		lowerEnd = toolkit.getImage(getClass().getResource(
+				path + "lower_end_tile.png"));
+		leftSide = toolkit.getImage(getClass().getResource(
+				path + "left_side_tile.png"));
+		rightSide = toolkit.getImage(getClass().getResource(
+				path + "right_side_tile.png"));
+		upperSide = toolkit.getImage(getClass().getResource(
+				path + "upper_side_tile.png"));
+		lowerSide = toolkit.getImage(getClass().getResource(
+				path + "lower_side_tile.png"));
+		upperLeft = toolkit.getImage(getClass().getResource(
+				path + "upper_left_tile.png"));
+		upperRight = toolkit.getImage(getClass().getResource(
+				path + "upper_right_tile.png"));
+		lowerLeft = toolkit.getImage(getClass().getResource(
+				path + "lower_left_tile.png"));
+		lowerRight = toolkit.getImage(getClass().getResource(
+				path + "lower_right_tile.png"));
+		middleV = toolkit.getImage(getClass()
+				.getResource(path + "middle_v.png"));
+		middleH = toolkit.getImage(getClass()
+				.getResource(path + "middle_h.png"));
+	}
+
 	private class TileComponent extends JComponent implements MouseListener {
 		Image tileImage;
 		int marble;
+		boolean active;
+		
 		static final int NONE = 0;
 		static final int BLACK = 1;
 		static final int RED = 2;
-		boolean active;
-
+		
 		TileComponent(Image tileImage) {
 			this.tileImage = tileImage;
 			marble = 0;
@@ -196,6 +200,9 @@ public class MapPainter {
 			this.marble = marble;
 		}
 
+		/* (non-Javadoc)
+		 * @see javax.swing.JComponent#paint(java.awt.Graphics)
+		 */
 		@Override
 		public void paint(Graphics g) {
 			Graphics2D g2 = (Graphics2D) g;
