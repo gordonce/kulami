@@ -6,6 +6,8 @@ package kulami.gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -69,7 +71,7 @@ public class Mainframe extends JFrame {
 	}
 	
 	public void showNewPlayerDialog() {
-		playerDialog = new PlayerDialog(this);
+//		playerDialog = new PlayerDialog(this);
 	}
 	
 	private void initGUI() {
@@ -90,6 +92,10 @@ public class Mainframe extends JFrame {
 		setTitle("Kulami");
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
+		Image icon = toolkit.getImage(getClass().getResource("/images/kulami_icon.png"));
+		setIconImage(icon);
 
 	}
 
