@@ -26,7 +26,7 @@ public class NewGameDialog extends JDialog {
 	private NewGameDialogAdapter newGameDialogAdapter;
 	private JButton connectButton;
 	private JButton cancelButton;
-	private JTextField hostNameField;
+	private JTextField hostField;
 	private JTextField portField;
 
 	/**
@@ -50,7 +50,7 @@ public class NewGameDialog extends JDialog {
 	}
 	
 	public String getHost() {
-		return hostNameField.getText();
+		return hostField.getText();
 	}
 	
 	public int getPort() {
@@ -88,11 +88,11 @@ public class NewGameDialog extends JDialog {
 	private JPanel initGUI() {
 		JPanel mainPanel = new JPanel();
 		
-		hostNameField = new JTextField(20);
+		hostField = new JTextField(20);
 		portField = new JTextField(5);
 		
 		mainPanel.add(new JLabel("Host name: "));
-		mainPanel.add(hostNameField);
+		mainPanel.add(hostField);
 		mainPanel.add(new JLabel("Port: "));
 		mainPanel.add(portField);
 		
@@ -103,7 +103,7 @@ public class NewGameDialog extends JDialog {
 	 * 
 	 */
 	public void clearAndHide() {
-		hostNameField.setText(null);
+		hostField.setText(null);
 		portField.setText(null);
 		setVisible(false);
 	}

@@ -6,7 +6,7 @@ package kulami.gui;
 import javax.swing.text.JTextComponent;
 
 import kulami.control.MessageObserver;
-import kulami.control.ServerAdapter;
+import kulami.control.ServerProxy;
 
 /**
  * MessageDisplay handles displaying of messages in a text panel shown to the
@@ -21,16 +21,16 @@ public class MessageDisplay implements MessageObserver {
 	private JTextComponent textPager;
 
 	/**
-	 * The constructor takes a ServerAdapter object and a text panel. It
+	 * The constructor takes a ServerProxy object and a text panel. It
 	 * registers the MessageDisplay as an observer of server messages.
 	 * 
-	 * @param serverAdapter
+	 * @param serverProxy
 	 * @param textPager
 	 */
-	public MessageDisplay(ServerAdapter serverAdapter,
+	public MessageDisplay(ServerProxy serverProxy,
 			JTextComponent textPager) {
 		this.textPager = textPager;
-		serverAdapter.addObserver(this);
+		serverProxy.addObserver(this);
 	}
 
 	/*

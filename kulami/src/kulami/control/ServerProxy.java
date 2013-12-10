@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Queue;
 
 /**
- * ServerAdapter establishes a connection to a Kulami server and receives server
+ * ServerProxy establishes a connection to a Kulami server and receives server
  * messages and sends messages to the server. It follows the Observable-Observer
  * pattern. Observers must implement the MessageObserver interface and register
  * with the addObserver(MessageObserver) method.
@@ -23,23 +23,25 @@ import java.util.Queue;
  * @author gordon
  * 
  */
-public class ServerAdapter {
+public class ServerProxy {
 
-	private ConnectionData serverConnectionData;
+	private String host;
+	private int port;
 	private List<MessageObserver> observers;
 	private boolean listening;
 	private Queue<String> sendBuffer;
 	private Socket kulamiSocket;
 
 	/**
-	 * Create a ServerAdapter object that can be used to connect to a Kulami
+	 * Create a ServerProxy object that can be used to connect to a Kulami
 	 * server and distribute server messages. The argument ConnectionData must
 	 * contain the address of a running Kulami server.
 	 * 
 	 * @param serverConnectionData
 	 */
-	public ServerAdapter(ConnectionData serverConnectionData) {
-		this.serverConnectionData = serverConnectionData;
+	public ServerProxy(String host, int port) {
+		this.host = host;
+		this.port = port;
 		observers = new ArrayList<>();
 		sendBuffer = new LinkedList<>();
 		listening = false;
@@ -55,8 +57,7 @@ public class ServerAdapter {
 	public void connectAndListen() {
 		// TODO establish connection to server
 		try {
-			kulamiSocket = new Socket(serverConnectionData.getHostName(),
-					serverConnectionData.getPort());
+			kulamiSocket = new Socket(host, port);
 
 			Thread listenThread = new Thread(new Runnable() {
 

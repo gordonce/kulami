@@ -29,8 +29,9 @@ public class GameController implements MessageObserver {
 	private GameDisplay gameDisplay;
 	private MessageDisplay messageDisplay;
 	
-	private Game game;
+	private ServerProxy serverProxy;
 	
+	private Game game;
 	private Player player;
 	
 	private String playerName;
@@ -87,6 +88,10 @@ public class GameController implements MessageObserver {
 	 * 
 	 */
 	public void connectServer() {
+		String hostName = newGameDialog.getHost();
+		int port = newGameDialog.getPort();
+		
+		serverProxy = new ServerProxy(hostName, port);
 		
 	}
 

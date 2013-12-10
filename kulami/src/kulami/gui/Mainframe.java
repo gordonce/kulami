@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 
 import kulami.control.GameController;
 import kulami.control.MainframeAdapter;
-import kulami.control.ServerAdapter;
+import kulami.control.ServerProxy;
 import kulami.game.GameObservable;
 
 /**
@@ -58,7 +58,7 @@ public class Mainframe extends JFrame {
 //		gameDisplay = new GameDisplay(game, board);
 	}
 
-	public void initMessageDisplay(ServerAdapter serverAdapter) {
+	public void initMessageDisplay(ServerProxy serverProxy) {
 //		messageDisplay = new MessageDisplay(serverAdapter, messageTextArea);
 	}
 
