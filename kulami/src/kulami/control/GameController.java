@@ -111,11 +111,12 @@ public class GameController {
 	}
 
 	/**
+	 * @param msg 
 	 * 
 	 */
-	public void displayMessage() {
+	public void displayMessage(String msg) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("message received:" + msg);
 	}
 
 	/**
@@ -127,83 +128,97 @@ public class GameController {
 	}
 
 	/**
+	 * @param opponentName 
+	 * @param colour 
+	 * @param level 
+	 * @param mapCode 
 	 * 
 	 */
-	public void receiveParameters() {
+	public void receiveParameters(String mapCode, int level, char colour, String opponentName) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param name 
 	 * 
 	 */
-	public void playerTwoConnected() {
+	public void playerTwoConnected(String name) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param colour
 	 * 
 	 */
-	public void assignColour() {
+	public void assignColour(char colour) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param startingPlayer
 	 * 
 	 */
-	public void startGame() {
+	public void startGame(char startingPlayer) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param msg 
 	 * 
 	 */
-	public void illegalMove() {
+	public void illegalMove(String msg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param mapCode 
 	 * 
 	 */
-	public void legalMove() {
+	public void legalMove(String mapCode) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param mapCode 
 	 * 
 	 */
-	public void opponentMoved() {
+	public void opponentMoved(String mapCode) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param pointsBlack 
+	 * @param pointsRed 
 	 * 
 	 */
-	public void endGame() {
+	public void endGame(int pointsRed, int pointsBlack) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param msg 
 	 * 
 	 */
-	public void displayPlayerMessage() {
+	public void displayPlayerMessage(String msg) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	/**
+	 * @param message 
 	 * 
 	 */
-	public void unknownMessage() {
+	public void unknownMessage(String message) {
 		// TODO Auto-generated method stub
-		
+		mainframe.displayWarning("Unbekannte Nachricht empfangen:\n" + message);
 	}
 
 

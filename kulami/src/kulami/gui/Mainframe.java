@@ -19,12 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
-import kulami.control.GameController;
 import kulami.control.MainframeAdapter;
 import kulami.control.ServerProxy;
 import kulami.game.GameObservable;
@@ -238,6 +238,14 @@ public class Mainframe extends JFrame {
 		mainMenu.add(boardMenu);
 
 		return mainMenu;
+	}
+
+	/**
+	 * @param message
+	 */
+	public void displayWarning(String message) {
+		JOptionPane.showMessageDialog(this, message,
+				"Kulami", JOptionPane.WARNING_MESSAGE);
 	}
 
 }
