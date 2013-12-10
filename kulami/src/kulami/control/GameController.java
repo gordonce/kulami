@@ -3,7 +3,6 @@
  */
 package kulami.control;
 
-import kulami.game.HumanPlayer;
 import kulami.gui.Mainframe;
 
 /**
@@ -13,20 +12,31 @@ import kulami.gui.Mainframe;
 public class GameController implements MessageObserver {
 
 	private Mainframe mainframe;
+	private MainframeAdapter mainframeAdapter;
 
 	public GameController() {
 
-		mainframe = new Mainframe(this);
-		
+		mainframeAdapter = new MainframeAdapter(this);
+		mainframe = new Mainframe(mainframeAdapter);
+		mainframe.setVisible(true);
 	}
 
-	public void newPlayer() {
-		mainframe.showNewPlayerDialog();
+	public void showNewPlayerDialog() {
+		System.out.println("show new player dialog");
 	}
-	
+
+	/**
+	 * @param name
+	 * @param human
+	 * @param level
+	 */
+	public void newPlayer(String name, boolean human, int level) {
+	}
+
 	public void showNewGameDialog() {
-		mainframe.showNewGameDialog();
+		// mainframe.showNewGameDialog();
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,21 +46,6 @@ public class GameController implements MessageObserver {
 	public void inform(String message) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		GameController gameController = new GameController();
-	}
-
-	/**
-	 * @param name
-	 * @param human
-	 * @param level
-	 */
-	public void newPlayer(String name, boolean human, int level) {
 	}
 
 }
