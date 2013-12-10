@@ -88,7 +88,7 @@ public class PlayerDialog extends JDialog {
 	
 	public void clearAndHide() {
 		nameField.setText(null);
-		// TODO clear other compnents
+		// TODO clear other components
 		setVisible(false);
 	}
 	

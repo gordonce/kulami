@@ -25,7 +25,7 @@ public class PlayerDialogAdapter {
 	}
 
 	public void cancelPressed() {
-
+		gameController.cancelPlayerDialog();
 	}
 
 	public void windowClosed() {

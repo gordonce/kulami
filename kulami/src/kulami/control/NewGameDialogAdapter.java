@@ -20,11 +20,11 @@ public class NewGameDialogAdapter {
 	}
 
 	public void connectClicked() {
-		
+		gameController.connectServer();
 	}
 	
 	public void cancelClicked() {
-		
+		gameController.cancelNewGameDialog();
 	}
 	
 	

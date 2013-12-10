@@ -44,7 +44,6 @@ public class GameController implements MessageObserver {
 	}
 
 	public void showPlayerDialog() {
-		System.out.println("show new player dialog");
 		playerDialogAdapter = new PlayerDialogAdapter(this);
 		playerDialog = new PlayerDialog(mainframe, playerDialogAdapter);
 		playerDialog.setVisible(true);
@@ -62,7 +61,8 @@ public class GameController implements MessageObserver {
 
 	public void showNewGameDialog() {
 		newGameDialogAdapter = new NewGameDialogAdapter(this);
-		newGameDialog = new NewGameDialog(newGameDialogAdapter);
+		newGameDialog = new NewGameDialog(mainframe, newGameDialogAdapter);
+		newGameDialog.setVisible(true);
 	}
 
 	/*
@@ -75,5 +75,27 @@ public class GameController implements MessageObserver {
 		// TODO Auto-generated method stub
 
 	}
+
+	/**
+	 * 
+	 */
+	public void cancelPlayerDialog() {
+		playerDialog.clearAndHide();
+	}
+
+	/**
+	 * 
+	 */
+	public void connectServer() {
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void cancelNewGameDialog() {
+		newGameDialog.clearAndHide();
+	}
+
 
 }

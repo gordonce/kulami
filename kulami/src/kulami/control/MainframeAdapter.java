@@ -20,7 +20,7 @@ public class MainframeAdapter {
 	}
 	
 	public void startGameClicked() {
-		
+		gameController.showNewGameDialog();
 	}
 	
 	public void abortGameClicked() {
