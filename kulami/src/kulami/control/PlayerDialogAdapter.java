@@ -3,14 +3,16 @@
  */
 package kulami.control;
 
+import kulami.gui.PlayerDialog;
+
 /**
  * @author gordon
- *
+ * 
  */
 public class PlayerDialogAdapter {
 
 	private GameController gameController;
-	
+
 	/**
 	 * @param gameController
 	 */
@@ -19,13 +21,13 @@ public class PlayerDialogAdapter {
 	}
 
 	public void okPressed() {
-		
+		gameController.newPlayer();
 	}
-	
+
 	public void cancelPressed() {
-		
+
 	}
-	
+
 	public void windowClosed() {
 	}
 }

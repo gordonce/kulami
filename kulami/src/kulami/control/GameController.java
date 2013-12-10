@@ -51,11 +51,13 @@ public class GameController implements MessageObserver {
 	}
 
 	/**
-	 * @param name
-	 * @param human
-	 * @param level
 	 */
-	public void newPlayer(String name, boolean human, int level) {
+	public void newPlayer() {
+		playerName = playerDialog.getName();
+		playerHuman = playerDialog.getHuman();
+		compPlayerLevel= playerDialog.getCompLevel();
+		
+		playerDialog.clearAndHide();
 	}
 
 	public void showNewGameDialog() {
