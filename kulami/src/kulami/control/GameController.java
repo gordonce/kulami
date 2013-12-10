@@ -15,7 +15,7 @@ import kulami.gui.PlayerDialog;
  * @author gordon
  * 
  */
-public class GameController implements MessageObserver {
+public class GameController {
 
 	private Mainframe mainframe;
 	private MainframeAdapter mainframeAdapter;
@@ -37,6 +37,7 @@ public class GameController implements MessageObserver {
 	private String playerName;
 	private boolean playerHuman;
 	private int compPlayerLevel;
+	private ServerAdapter serverAdapter;
 	
 	public GameController() {
 		mainframeAdapter = new MainframeAdapter(this);
@@ -66,17 +67,6 @@ public class GameController implements MessageObserver {
 		newGameDialog.setVisible(true);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see kulami.control.MessageObserver#inform(java.lang.String)
-	 */
-	@Override
-	public void inform(String message) {
-		// TODO Auto-generated method stub
-
-	}
-
 	/**
 	 * 
 	 */
@@ -92,7 +82,12 @@ public class GameController implements MessageObserver {
 		int port = newGameDialog.getPort();
 		
 		serverProxy = new ServerProxy(hostName, port);
+		serverAdapter = new ServerAdapter(this);
 		
+		serverProxy.addObserver(serverAdapter);
+		
+		serverProxy.connectAndListen();
+		// TODO display error message if connection fails
 	}
 
 	/**
@@ -100,6 +95,115 @@ public class GameController implements MessageObserver {
 	 */
 	public void cancelNewGameDialog() {
 		newGameDialog.clearAndHide();
+	}
+	
+	public void serverMessageReceived(String message) {
+		System.out.println("Received: " + message);
+	}
+
+	/**
+	 * Server sent "Kulami?"
+	 * Connection was successfully established.
+	 */
+	public void sendName() {
+		newGameDialog.clearAndHide();
+		serverProxy.sendMessage(String.format("neuerClient(%s).", playerName));
+	}
+
+	/**
+	 * 
+	 */
+	public void displayMessage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void sendParameters() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void receiveParameters() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void playerTwoConnected() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void assignColour() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void startGame() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void illegalMove() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void legalMove() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void opponentMoved() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void endGame() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void displayPlayerMessage() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void unknownMessage() {
+		// TODO Auto-generated method stub
+		
 	}
 
 
