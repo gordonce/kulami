@@ -9,6 +9,16 @@ package kulami.control;
  */
 public class NewGameDialogAdapter {
 
+	private GameController gameController;
+	
+	
+	/**
+	 * @param gameController
+	 */
+	public NewGameDialogAdapter(GameController gameController) {
+		this.gameController = gameController;
+	}
+
 	public void connectClicked() {
 		
 	}

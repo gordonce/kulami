@@ -36,9 +36,6 @@ import kulami.game.GameObservable;
 public class Mainframe extends JFrame {
 
 	private MainframeAdapter mainframeAdapter;
-	// TODO display objects should be managed by the controller!
-	private GameDisplay gameDisplay;
-	private MessageDisplay messageDisplay;
 
 	// GUI elements
 	private JTextArea messageTextArea;
@@ -58,11 +55,11 @@ public class Mainframe extends JFrame {
 	}
 
 	public void initGameDisplay(GameObservable game) {
-		gameDisplay = new GameDisplay(game, board);
+//		gameDisplay = new GameDisplay(game, board);
 	}
 
 	public void initMessageDisplay(ServerAdapter serverAdapter) {
-		messageDisplay = new MessageDisplay(serverAdapter, messageTextArea);
+//		messageDisplay = new MessageDisplay(serverAdapter, messageTextArea);
 	}
 
 	private void initGUI() {

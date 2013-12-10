@@ -9,6 +9,15 @@ package kulami.control;
  */
 public class PlayerDialogAdapter {
 
+	private GameController gameController;
+	
+	/**
+	 * @param gameController
+	 */
+	public PlayerDialogAdapter(GameController gameController) {
+		this.gameController = gameController;
+	}
+
 	public void okPressed() {
 		
 	}

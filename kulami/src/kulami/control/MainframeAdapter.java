@@ -16,7 +16,7 @@ public class MainframeAdapter {
 	}
 	
 	public void newPlayerClicked() {
-		gameController.showNewPlayerDialog();
+		gameController.showPlayerDialog();
 	}
 	
 	public void startGameClicked() {
