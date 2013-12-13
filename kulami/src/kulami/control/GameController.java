@@ -5,9 +5,8 @@ package kulami.control;
 
 import kulami.game.Game;
 import kulami.game.Player;
-import kulami.gui.GameDisplay;
 import kulami.gui.Mainframe;
-import kulami.gui.MessageDisplay;
+import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.PlayerDialog;
 
@@ -26,9 +25,6 @@ public class GameController {
 	private NewGameDialog newGameDialog;
 	private NewGameDialogAdapter newGameDialogAdapter;
 	
-	private GameDisplay gameDisplay;
-	private MessageDisplay messageDisplay;
-	
 	private ServerProxy serverProxy;
 	
 	private Game game;
@@ -38,10 +34,12 @@ public class GameController {
 	private boolean playerHuman;
 	private int compPlayerLevel;
 	private ServerAdapter serverAdapter;
+	private MessagePager messagePager;
 	
 	public GameController() {
 		mainframeAdapter = new MainframeAdapter(this);
 		mainframe = new Mainframe(mainframeAdapter);
+		messagePager = mainframe.initMessageDisplay();
 		mainframe.setVisible(true);
 	}
 
@@ -96,11 +94,9 @@ public class GameController {
 	public void cancelNewGameDialog() {
 		newGameDialog.clearAndHide();
 	}
-	
-	public void serverMessageReceived(String message) {
-		System.out.println("Received: " + message);
-	}
 
+	/* Methods to handle server messages */
+	
 	/**
 	 * Server sent "Kulami?"
 	 * Connection was successfully established.
@@ -111,12 +107,11 @@ public class GameController {
 	}
 
 	/**
-	 * @param msg 
+	 * @param message 
 	 * 
 	 */
-	public void displayMessage(String msg) {
-		// TODO Auto-generated method stub
-		System.out.println("message received:" + msg);
+	public void displayMessage(String message) {
+		messagePager.display("Server: " + message);
 	}
 
 	/**
@@ -217,7 +212,6 @@ public class GameController {
 	 * 
 	 */
 	public void unknownMessage(String message) {
-		// TODO Auto-generated method stub
 		mainframe.displayWarning("Unbekannte Nachricht empfangen:\n" + message);
 	}
 

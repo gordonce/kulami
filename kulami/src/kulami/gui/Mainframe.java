@@ -57,9 +57,11 @@ public class Mainframe extends JFrame {
 	public void initGameDisplay(GameObservable game) {
 //		gameDisplay = new GameDisplay(game, board);
 	}
+	
+	
 
-	public void initMessageDisplay(ServerProxy serverProxy) {
-//		messageDisplay = new MessageDisplay(serverAdapter, messageTextArea);
+	public MessagePager initMessageDisplay() {
+		return new MessageDisplay(messageTextArea);
 	}
 
 	private void initGUI() {
