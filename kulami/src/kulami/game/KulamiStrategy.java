@@ -10,5 +10,5 @@ import kulami.game.GameMap.Pos;
  *
  */
 public interface KulamiStrategy {
-	public Pos choosePos(Game game, Player player);
+	public Pos choosePos(GameMap gameMap);
 }

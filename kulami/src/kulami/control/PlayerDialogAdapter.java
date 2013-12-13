@@ -3,7 +3,6 @@
  */
 package kulami.control;
 
-import kulami.gui.PlayerDialog;
 
 /**
  * @author gordon

@@ -9,17 +9,12 @@ package kulami.game;
  */
 public class HumanPlayer extends Player {
 
-	public HumanPlayer() {
-		super();
-	}
-	
 	/**
-	 * @param colour
-	 * @param game
+	 * @param playerName
+	 * @param owner
 	 */
-	public HumanPlayer(Owner colour, Game game) {
-		super(colour, game);
-		// TODO Auto-generated constructor stub
+	public HumanPlayer(String name, Owner colour) {
+		super(name, colour);
 	}
 
 }

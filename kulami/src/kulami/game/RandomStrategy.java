@@ -19,14 +19,12 @@ public class RandomStrategy implements KulamiStrategy {
 	public RandomStrategy() {
 		randomGen = new Random();
 	}
+
 	/* (non-Javadoc)
-	 * @see kulami.game.KulamiStrategy#choosePos(kulami.game.Game, kulami.game.Player)
+	 * @see kulami.game.KulamiStrategy#choosePos(kulami.game.GameMap, kulami.game.Player)
 	 */
 	@Override
-		
-	public Pos choosePos(Game game, Player player) {
-		GameMap gameMap = game.getGameMap();
-//		Owner nextPlayer = player.getCoulour();
+	public Pos choosePos(GameMap gameMap) {
 		ArrayList<Pos> candidates = gameMap.getLegalFields();
 		int randomIdx = randomGen.nextInt(candidates.size());
 		return candidates.get(randomIdx);

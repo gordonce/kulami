@@ -3,7 +3,6 @@
  */
 package kulami.game;
 
-import kulami.game.GameMap.Pos;
 
 /**
  * @author gordon
@@ -11,8 +10,8 @@ import kulami.game.GameMap.Pos;
  */
 public abstract class Player {
 
+	private String name;
 	private Owner colour;
-	protected Game game;
 	private int marbles;
 
 	public Player() {
@@ -23,20 +22,16 @@ public abstract class Player {
 	 * @param colour
 	 * @param marbles
 	 */
-	public Player(Owner colour, Game game) {
+	public Player(String name, Owner colour) {
+		this.name = name;
 		this.colour = colour;
-		this.game = game;
 		marbles = 20;
 	}
 
-	public void setOwner(Owner owner) {
-		this.colour = owner;
+	public String getName() {
+		return name;
 	}
 	
-	public void setGame(Game game) {
-		this.game = game;
-	}
-
 	public Owner getCoulour() {
 		return colour;
 	}
@@ -45,12 +40,4 @@ public abstract class Player {
 		return marbles;
 	}
 
-	public void placeMarble(Pos pos) {
-		if (marbles > 0) {
-			game.placeMarble(pos);
-			marbles--;
-		} else {
-			// TODO throw an exception
-		}
-	}
 }

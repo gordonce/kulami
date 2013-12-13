@@ -3,6 +3,8 @@
  */
 package kulami.game;
 
+import kulami.game.GameMap.Pos;
+
 
 
 /**
@@ -18,16 +20,16 @@ public class CompPlayer extends Player {
 	}
 	
 	/**
-	 * @param colour
-	 * @param game
+	 * @param playerName
+	 * @param owner
 	 */
-	public CompPlayer(Owner colour, Game game) {
-		super(colour, game);
+	public CompPlayer(String playerName, Owner owner) {
+		super(playerName, owner);
 		strategy = new RandomStrategy();
 	}
 	
-	public void makeMove() {
-		placeMarble(strategy.choosePos(game, this));
+	public Pos getMove(GameMap gameMap) {
+		return strategy.choosePos(gameMap);
 	}
 
 }
