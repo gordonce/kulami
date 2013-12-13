@@ -26,10 +26,15 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import kulami.control.MainframeAdapter;
-import kulami.control.ServerProxy;
 import kulami.game.GameObservable;
 
 /**
+ * The Mainframe is the central GUI element. It depends on a GameController to
+ * take care of all functionality. The Mainframe does not have a direct
+ * reference to the controller, but forwards all user actions to a
+ * MainframeAdapter. Displaying the current game is delegated to a GameDisplay
+ * and displaying messages is delegated to a MessageDisplay.
+ * 
  * @author gordon
  * 
  */
@@ -43,9 +48,8 @@ public class Mainframe extends JFrame {
 	private JTextField chatTextField;
 
 	/**
-	 * The Mainframe is the central GUI element. It depends on a GameController
-	 * to delegate all functionality. It has a GameDisplay element that is
-	 * responsible for displaying the current game.
+	 * Construct a new Mainframe with a MainframeAdapter provided by a
+	 * controller.
 	 * 
 	 * @param gameController
 	 */
@@ -54,14 +58,30 @@ public class Mainframe extends JFrame {
 		initGUI();
 	}
 
-	public void initGameDisplay(GameObservable game) {
-//		gameDisplay = new GameDisplay(game, board);
-	}
-	
-	
-
+	/**
+	 * Return a MessagePager that can be used to display messages to the user.
+	 * The MessagePager is created by the Mainframe, because only the Mainframe
+	 * knows where it wants messages to be displayed. The controller takes care
+	 * of sending messages to the pager.
+	 * 
+	 * @return
+	 */
 	public MessagePager initMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
+	}
+
+	public GameDisplay initGameDisplay(GameObservable game) {
+		return new GameDisplay(game, board);
+	}
+
+	/**
+	 * Tell the Mainframe to display a warning dialogue.
+	 * 
+	 * @param message The message to be displayed.
+	 */
+	public void displayWarning(String message) {
+		JOptionPane.showMessageDialog(this, message, "Kulami",
+				JOptionPane.WARNING_MESSAGE);
 	}
 
 	private void initGUI() {
@@ -153,7 +173,7 @@ public class Mainframe extends JFrame {
 		JScrollPane messageScrollPane = new JScrollPane(messageTextArea,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		
+
 		chatTextField = new JTextField();
 		chatTextField.addActionListener(new ActionListener() {
 			@Override
@@ -240,14 +260,6 @@ public class Mainframe extends JFrame {
 		mainMenu.add(boardMenu);
 
 		return mainMenu;
-	}
-
-	/**
-	 * @param message
-	 */
-	public void displayWarning(String message) {
-		JOptionPane.showMessageDialog(this, message,
-				"Kulami", JOptionPane.WARNING_MESSAGE);
 	}
 
 }
