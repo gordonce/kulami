@@ -49,7 +49,7 @@ public class Mainframe extends JFrame {
 
 	/**
 	 * Construct a new Mainframe with a MainframeAdapter provided by a
-	 * controller.
+	 * controller and initialize all GUI elements.
 	 * 
 	 * @param gameController
 	 */
@@ -64,12 +64,16 @@ public class Mainframe extends JFrame {
 	 * knows where it wants messages to be displayed. The controller takes care
 	 * of sending messages to the pager.
 	 * 
-	 * @return
+	 * @return A MessagePager that can be used to display messages.
 	 */
 	public MessagePager initMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
 	}
 
+	/**
+	 * @param game
+	 * @return
+	 */
 	public GameDisplay initGameDisplay(GameObservable game) {
 		return new GameDisplay(game, board);
 	}
