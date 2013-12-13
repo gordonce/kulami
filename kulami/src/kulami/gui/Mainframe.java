@@ -66,7 +66,7 @@ public class Mainframe extends JFrame {
 	 * 
 	 * @return A MessagePager that can be used to display messages.
 	 */
-	public MessagePager initMessageDisplay() {
+	public MessagePager getMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
 	}
 

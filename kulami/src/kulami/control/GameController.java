@@ -39,7 +39,7 @@ public class GameController {
 	public GameController() {
 		mainframeAdapter = new MainframeAdapter(this);
 		mainframe = new Mainframe(mainframeAdapter);
-		messagePager = mainframe.initMessageDisplay();
+		messagePager = mainframe.getMessageDisplay();
 		mainframe.setVisible(true);
 	}
 
