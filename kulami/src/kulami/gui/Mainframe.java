@@ -47,6 +47,10 @@ public class Mainframe extends JFrame {
 	private JPanel board;
 	private JTextField chatTextField;
 
+	private JPanel heroPanel;
+
+	private JPanel villainPanel;
+
 	/**
 	 * Construct a new Mainframe with a MainframeAdapter provided by a
 	 * controller and initialize all GUI elements.
@@ -68,6 +72,10 @@ public class Mainframe extends JFrame {
 	 */
 	public MessagePager getMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
+	}
+	
+	public StatusDisplayer getStatusDisplay() {
+		return new StatusDisplay(heroPanel, villainPanel);
 	}
 
 	/**
@@ -126,9 +134,12 @@ public class Mainframe extends JFrame {
 		leftPanel.setPreferredSize(new Dimension(200, 600));
 		leftPanel.setLayout(new GridLayout(0, 1, 5, 5));
 
-		JLabel heroStats = new JLabel("Hero");
-		JLabel villainStats = new JLabel("Villain");
+//		JLabel heroPanel = new JLabel("Hero");
+//		JLabel villainPanel = new JLabel("Villain");
 
+		heroPanel = new JPanel();
+		villainPanel = new JPanel();
+		
 		JPanel optionsPanel = new JPanel();
 		optionsPanel.setLayout(new GridLayout(3, 1, 5, 5));
 
@@ -189,8 +200,8 @@ public class Mainframe extends JFrame {
 		messagePanel.add(messageScrollPane, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
 
-		leftPanel.add(heroStats);
-		leftPanel.add(villainStats);
+		leftPanel.add(heroPanel);
+		leftPanel.add(villainPanel);
 		leftPanel.add(optionsPanel);
 		leftPanel.add(messagePanel);
 		return leftPanel;

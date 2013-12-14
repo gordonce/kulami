@@ -14,6 +14,7 @@ import kulami.gui.Mainframe;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.PlayerDialog;
+import kulami.gui.StatusDisplayer;
 
 /**
  * The GameController is the layer between the GUI and the game logic. The GUI
@@ -45,7 +46,10 @@ public class GameController {
 	private int compPlayerLevel;
 	private ServerAdapter serverAdapter;
 	private MessagePager messagePager;
+	private StatusDisplayer statusDisplayer;
 	private GameDisplay gameDisplay;
+
+	private String opponentName;
 
 	/**
 	 * The GameController constructor creates a Mainframe and displays it. It
@@ -56,6 +60,7 @@ public class GameController {
 		mainframeAdapter = new MainframeAdapter(this);
 		mainframe = new Mainframe(mainframeAdapter);
 		messagePager = mainframe.getMessageDisplay();
+		statusDisplayer = mainframe.getStatusDisplay();
 		mainframe.setVisible(true);
 	}
 
@@ -77,8 +82,10 @@ public class GameController {
 		playerName = playerDialog.getName();
 		playerHuman = playerDialog.getHuman();
 		compPlayerLevel = playerDialog.getCompLevel();
-
+		
 		playerDialog.clearAndHide();
+		
+		statusDisplayer.setHeroName(playerName);
 	}
 
 	/**
@@ -145,6 +152,7 @@ public class GameController {
 	}
 
 	/**
+	 * Server asked for game parameters. (We are player 1.)
 	 * 
 	 */
 	public void sendParameters() {
@@ -179,7 +187,10 @@ public class GameController {
 		else
 			player = new CompPlayer(playerName, owner);
 		game = new Game(gameMap, player);
-		// TODO set opponent name display
+		this.opponentName = opponentName;
+		statusDisplayer.setVillainName(opponentName);
+		statusDisplayer.setHeroColour(colour);
+		statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
 		startGameDisplay();
 
 	}
@@ -192,9 +203,9 @@ public class GameController {
 	 *            The name of the opponent.
 	 * 
 	 */
-	public void playerTwoConnected(String name) {
-		// TODO Tell mainframe to display the name.
-
+	public void playerTwoConnected(String opponentName) {
+		this.opponentName = opponentName;
+		statusDisplayer.setVillainName(opponentName);
 	}
 
 	/**
@@ -202,65 +213,86 @@ public class GameController {
 	 * object can now be created and the display adjusted.
 	 * 
 	 * @param colour
+	 *            'b' for black or 'r' for red.
 	 * 
 	 */
 	public void assignColour(char colour) {
 		// TODO implement method. Same as ReceiveParameters()
+		statusDisplayer.setHeroColour(colour);
+		statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
 	}
 
 	/**
+	 * Server sent signal to start the game. The argument is the colour of the
+	 * player who begins.
+	 * 
 	 * @param startingPlayer
+	 *            'b' for black or 'r' for red.
 	 * 
 	 */
 	public void startGame(char startingPlayer) {
-		// TODO Auto-generated method stub
+		// TODO Display an appropriate message.
+		// TODO If this player begins, make move.
+		statusDisplayer.setCurrentPlayer(startingPlayer);
 
 	}
 
 	/**
-	 * @param msg
+	 * Server complained about an illegal move. The String indicates the reason.
+	 * 
+	 * @param msg Reason for illegal move.
 	 * 
 	 */
 	public void illegalMove(String msg) {
-		// TODO Auto-generated method stub
+		messagePager.display("Server: illegal move (" + msg + ")");
+		// TODO Make move.
 
 	}
 
 	/**
+	 * Server sent new board in response to a legal move.
+	 * 
 	 * @param mapCode
 	 * 
 	 */
 	public void legalMove(String mapCode) {
-		// TODO Auto-generated method stub
-
+		// TODO Verify the new board.
+		// TODO display that the opponent is now making a move
 	}
 
 	/**
+	 * Server sent opponents move.
+	 * 
 	 * @param mapCode
 	 * 
 	 */
 	public void opponentMoved(String mapCode) {
-		// TODO Auto-generated method stub
+		// TODO display new board
+		// TODO Make move
 
 	}
 
 	/**
+	 * Server signaled that the game is over and sends the final points.
+	 * 
 	 * @param pointsBlack
 	 * @param pointsRed
 	 * 
 	 */
 	public void endGame(int pointsRed, int pointsBlack) {
-		// TODO Auto-generated method stub
+		// TODO Display points
+		// TODO Prompt for rematch
 
 	}
 
 	/**
+	 * Opponent sent a message via the server.
+	 * 
 	 * @param msg
 	 * 
 	 */
-	public void displayPlayerMessage(String msg) {
-		// TODO Auto-generated method stub
-
+	public void displayPlayerMessage(String message) {
+		messagePager.display(opponentName + ": " + message);
 	}
 
 	/**
