@@ -205,7 +205,7 @@ public class ChooseBoardDialog extends JDialog {
 		boardPanel.add(fileButton);
 
 		mainPanel.add(new JLabel("Spielfeld", JLabel.RIGHT));
-
+		mainPanel.add(boardPanel);
 		mainPanel.add(new JLabel("Level", JLabel.RIGHT));
 		mainPanel.add(levelPanel);
 		return mainPanel;

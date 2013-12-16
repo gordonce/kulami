@@ -39,7 +39,8 @@ public class GameController {
 	private NewGameDialogAdapter newGameDialogAdapter;
 
 	private ServerProxy serverProxy;
-
+	private MessageSender messageSender;
+	
 	private Game game;
 	private Player player;
 
@@ -130,6 +131,9 @@ public class GameController {
 		serverProxy.addObserver(serverAdapter);
 
 		serverProxy.connectAndListen();
+		
+		messageSender = new MessageSender(serverProxy);
+		
 		// TODO display error message if connection fails
 	}
 
@@ -149,6 +153,9 @@ public class GameController {
 		int level = chooseBoardDialog.getLevel();
 		
 		GameMap board = new GameMap(boardCode);
+		System.out.println("Board: \n" + board.toString());
+		
+		messageSender.sendParameters(boardCode, level);
 		// TODO has player even been created yet?
 		game = new Game(board, player, level);
 		
@@ -169,7 +176,8 @@ public class GameController {
 	 */
 	public void sendName() {
 		newGameDialog.clearAndHide();
-		serverProxy.sendMessage(String.format("neuerClient(%s).", playerName));
+//		serverProxy.sendMessage(String.format("neuerClient(%s).", playerName));
+		messageSender.newClient(playerName);
 	}
 
 	/**

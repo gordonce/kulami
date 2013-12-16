@@ -21,10 +21,10 @@ public class ChooseBoardDialogAdapter {
 	}
 	
 	public void okClicked() {
-		
+		gameController.loadGame();
 	}
 	
 	public void cancelClicked() {
-		
+		gameController.chooseBoardCancelled();
 	}
 }
