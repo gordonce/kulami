@@ -97,19 +97,19 @@ public class ServerAdapter implements MessageObserver {
 
 	private List<Pattern> initPatterns() {
 		List<Pattern> patterns = new ArrayList<>();
-		patterns.add(Pattern.compile("Kulami\\?"));
-		patterns.add(Pattern.compile("message\\((.*)\\)\\."));
-		patterns.add(Pattern.compile("spielparameter\\?"));
+		patterns.add(Pattern.compile("(?i)Kulami\\?"));
+		patterns.add(Pattern.compile("(?i)message\\((.*)\\)\\."));
+		patterns.add(Pattern.compile("(?i)spielparameter\\?"));
 		patterns.add(Pattern
-				.compile("spielparameter\\(([a-r0-2]+), ?(\\d), ?(r|b), ?(.*)\\)\\."));
-		patterns.add(Pattern.compile("name\\((.*)\\)\\."));
-		patterns.add(Pattern.compile("farbe\\((r|b)\\)\\."));
-		patterns.add(Pattern.compile("spielstart\\((r|b)\\)\\."));
-		patterns.add(Pattern.compile("ungültig\\((.*)\\)\\."));
-		patterns.add(Pattern.compile("gültig\\(([a-z0-2]+)\\)\\."));
-		patterns.add(Pattern.compile("zug\\(([a-z0-2]+)\\)\\."));
-		patterns.add(Pattern.compile("spielende\\((\\d+), ?(\\d+)\\)\\."));
-		patterns.add(Pattern.compile("playerMessage\\((.*)\\)\\."));
+				.compile("(?i)spielparameter\\(([a-r0-2]+), ?(\\d), ?(r|b), ?(.*)\\)\\."));
+		patterns.add(Pattern.compile("(?i)name\\((.*)\\)\\."));
+		patterns.add(Pattern.compile("(?i)farbe\\((r|b)\\)\\."));
+		patterns.add(Pattern.compile("(?i)spielstart\\((r|b)\\)\\."));
+		patterns.add(Pattern.compile("(?i)ungültig\\((.*)\\)\\."));
+		patterns.add(Pattern.compile("(?i)gültig\\(([a-z0-2]+)\\)\\."));
+		patterns.add(Pattern.compile("(?i)zug\\(([a-z0-2]+)\\)\\."));
+		patterns.add(Pattern.compile("(?i)spielende\\((\\d+), ?(\\d+)\\)\\."));
+		patterns.add(Pattern.compile("(?i)playerMessage\\((.*)\\)\\."));
 		return patterns;
 	}
 
