@@ -36,6 +36,11 @@ public class Game implements GameObservable {
 		informObservers();
 	}
 	
+	public void pushMap() {
+		for (GameObserver observer: gameObservers)
+			observer.boardChanged(this);
+	}
+	
 	@Override
 	public GameMap getGameMap() {
 		return gameMap;

@@ -156,10 +156,12 @@ public class GameController {
 		System.out.println("Board: \n" + board.toString());
 		
 		messageSender.sendParameters(boardCode, level);
+
+		chooseBoardDialog.clearAndHide();
+		
 		// TODO has player even been created yet?
 		game = new Game(board, player, level);
-		
-		chooseBoardDialog.clearAndHide();
+		startGameDisplay();
 	}
 	
 	public void chooseBoardCancelled() {
@@ -347,6 +349,7 @@ public class GameController {
 	private void startGameDisplay() {
 		gameDisplay = mainframe.initGameDisplay(game);
 		// TODO make the game display show the empty board
+		game.pushMap();
 	}
 
 }
