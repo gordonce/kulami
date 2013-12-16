@@ -9,6 +9,8 @@ import kulami.game.GameMap;
 import kulami.game.HumanPlayer;
 import kulami.game.Owner;
 import kulami.game.Player;
+import kulami.gui.ChooseBoardDialog;
+import kulami.gui.ChooseBoardDialogAdapter;
 import kulami.gui.GameDisplay;
 import kulami.gui.Mainframe;
 import kulami.gui.MessagePager;
@@ -50,6 +52,8 @@ public class GameController {
 	private GameDisplay gameDisplay;
 
 	private String opponentName;
+	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
+	private ChooseBoardDialog chooseBoardDialog;
 
 	/**
 	 * The GameController constructor creates a Mainframe and displays it. It
@@ -129,6 +133,34 @@ public class GameController {
 		// TODO display error message if connection fails
 	}
 
+	/* Methods to handle the Choose Board dialog */
+
+	public void showChooseBoardDialog() {
+		chooseBoardDialogAdapter = new ChooseBoardDialogAdapter(this);
+		chooseBoardDialog = new ChooseBoardDialog(mainframe, chooseBoardDialogAdapter);
+		chooseBoardDialog.setVisible(true);
+	}
+	
+	/**
+	 * User has clicked OK on the Choose Board dialog. 
+	 */
+	public void loadGame() {
+		String boardCode = chooseBoardDialog.getBoardCode();
+		int level = chooseBoardDialog.getLevel();
+		
+		GameMap board = new GameMap(boardCode);
+		// TODO has player even been created yet?
+		game = new Game(board, player, level);
+		
+		chooseBoardDialog.clearAndHide();
+	}
+	
+	public void chooseBoardCancelled() {
+		chooseBoardDialog.clearAndHide();
+		serverProxy.disconnect();
+	}
+	
+
 	/* Methods to handle server messages */
 
 	/**
@@ -155,8 +187,9 @@ public class GameController {
 	 * Server asked for game parameters. (We are player 1.)
 	 * 
 	 */
-	public void sendParameters() {
+	public void serverWantsParameters() {
 		// TODO Display dialog asking for board and level
+		showChooseBoardDialog();
 		// TODO send board and level to server
 	}
 
@@ -186,7 +219,7 @@ public class GameController {
 			player = new HumanPlayer(playerName, owner);
 		else
 			player = new CompPlayer(playerName, owner);
-		game = new Game(gameMap, player);
+		game = new Game(gameMap, player, level);
 		this.opponentName = opponentName;
 		statusDisplayer.setVillainName(opponentName);
 		statusDisplayer.setHeroColour(colour);

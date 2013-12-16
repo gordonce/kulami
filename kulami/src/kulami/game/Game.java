@@ -17,13 +17,15 @@ public class Game implements GameObservable {
 
 	private GameMap gameMap;
 	private Player player;
+	private int level;
+	
 	private List<GameObserver> gameObservers;
 	
 	/**
 	 * @param board
 	 * @param player
 	 */
-	public Game(GameMap gameMap, Player player) {
+	public Game(GameMap gameMap, Player player, int level) {
 		this.gameMap = gameMap;
 		this.player = player;
 		gameObservers = new ArrayList<>();

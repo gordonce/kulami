@@ -49,7 +49,7 @@ public class ServerAdapter implements MessageObserver {
 			gameController.displayMessage(msg);
 		} else if (matchers.get(2).matches()) {
 			// spielparameter?
-			gameController.sendParameters();
+			gameController.serverWantsParameters();
 		} else if (matchers.get(3).matches()) {
 			// spielparameter(<Board>,<Level>,<Farbe>,<Name>).
 			String mapCode = matchers.get(3).group(1);

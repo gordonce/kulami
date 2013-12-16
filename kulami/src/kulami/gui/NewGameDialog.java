@@ -4,6 +4,7 @@
 package kulami.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -58,6 +59,15 @@ public class NewGameDialog extends JDialog {
 		return Integer.parseInt(portField.getText());
 	}
 	
+	/**
+	 * 
+	 */
+	public void clearAndHide() {
+		hostField.setText(null);
+		portField.setText(null);
+		setVisible(false);
+	}
+	
 	private void initListeners() {
 		connectButton.addActionListener(new ActionListener() {
 			@Override
@@ -73,7 +83,7 @@ public class NewGameDialog extends JDialog {
 			}
 		});
 	}
-	private JPanel initButtons() {
+	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
 		connectButton = new JButton("Verbinden");
@@ -85,7 +95,7 @@ public class NewGameDialog extends JDialog {
 		return buttonPanel;
 	}
 	
-	private JPanel initGUI() {
+	private Component initGUI() {
 		JPanel mainPanel = new JPanel();
 		
 		hostField = new JTextField(20);
@@ -99,12 +109,5 @@ public class NewGameDialog extends JDialog {
 		return mainPanel;
 	}
 
-	/**
-	 * 
-	 */
-	public void clearAndHide() {
-		hostField.setText(null);
-		portField.setText(null);
-		setVisible(false);
-	}
+
 }
