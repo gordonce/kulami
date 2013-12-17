@@ -1,3 +1,5 @@
 /bin
 /kulami.log
 /kulami.log.1
+/kulami.log.lck
+/kulami.log.1.lck

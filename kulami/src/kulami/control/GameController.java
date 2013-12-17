@@ -375,7 +375,7 @@ public class GameController {
 	public void fieldClicked(Pos pos) {
 		logger.finer("User clicked on tile at pos " + pos);
 		game.placeMarble(pos);
-		messageSender.makeMove(pos.getRow(), pos.getCol());
+		messageSender.makeMove(pos.getCol(), pos.getRow());
 	}
 
 }
