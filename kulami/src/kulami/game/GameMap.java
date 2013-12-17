@@ -45,6 +45,15 @@ public class GameMap {
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
 	}
+	
+	/**
+	 * Set the owner of all fields to None.
+	 */
+	public void clearOwners() {
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++)
+				fieldMatrix[row][col].setOwner(Owner.None);
+	}
 
 	public ArrayList<Pos> getLegalFields() {
 		int size = history.size();
