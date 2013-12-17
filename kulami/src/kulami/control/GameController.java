@@ -43,10 +43,8 @@ public class GameController {
 	private MainframeAdapter mainframeAdapter;
 
 	private PlayerDialog playerDialog;
-	private PlayerDialogAdapter playerDialogAdapter;
 
 	private NewGameDialog newGameDialog;
-	private NewGameDialogAdapter newGameDialogAdapter;
 
 	private ServerProxy serverProxy;
 	private MessageSender messageSender;
@@ -62,7 +60,6 @@ public class GameController {
 	private GameDisplay gameDisplay;
 
 	private String opponentName;
-	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
 	private ChooseBoardDialog chooseBoardDialog;
 	private GameDisplayAdapter gameDisplayAdapter;
 	private char playerColour;
@@ -153,8 +150,6 @@ public class GameController {
 				});
 		newGameDialog.setVisible(true);
 	}
-
-	/* Methods to handle the Choose Board dialog */
 
 	public void showChooseBoardDialog() {
 		chooseBoardDialog = new ChooseBoardDialog(mainframe,
