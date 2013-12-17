@@ -81,8 +81,8 @@ public class Mainframe extends JFrame {
 	 * @param game
 	 * @return
 	 */
-	public GameDisplay initGameDisplay(GameObservable game) {
-		return new GameDisplay(game, board);
+	public GameDisplay initGameDisplay(GameObservable game, GameDisplayAdapter gameDisplayAdapter) {
+		return new GameDisplay(game, board, gameDisplayAdapter);
 	}
 
 	/**

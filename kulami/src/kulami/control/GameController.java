@@ -11,9 +11,11 @@ import kulami.game.GameMap;
 import kulami.game.HumanPlayer;
 import kulami.game.Owner;
 import kulami.game.Player;
+import kulami.game.Pos;
 import kulami.gui.ChooseBoardDialog;
 import kulami.gui.ChooseBoardDialogAdapter;
 import kulami.gui.GameDisplay;
+import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
@@ -57,6 +59,7 @@ public class GameController {
 	private String opponentName;
 	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
 	private ChooseBoardDialog chooseBoardDialog;
+	private GameDisplayAdapter gameDisplayAdapter;
 
 	private static final Logger logger = Logger.getLogger("kulami.control.GameController");
 	/**
@@ -350,9 +353,17 @@ public class GameController {
 
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
-		gameDisplay = mainframe.initGameDisplay(game);
+		gameDisplayAdapter = new GameDisplayAdapter(this);
+		gameDisplay = mainframe.initGameDisplay(game, gameDisplayAdapter);
 		// TODO make the game display show the empty board
 		game.pushMap();
+	}
+
+	/**
+	 * 
+	 */
+	public void fieldClicked(Pos pos) {
+		logger.finer("User clicked on tile at pos " + pos);
 	}
 
 }
