@@ -66,11 +66,13 @@ public class MapPainter {
 	public void drawMap(GameMap gameMap) {
 		List<Image> tileImages = mapToImageList(gameMap);
 		tiles = new ArrayList<>(100);
-		for (Image tile : tileImages) {
-			TileComponent tileComp = new TileComponent(tile);
-			board.add(tileComp);
-			tiles.add(tileComp);
-		}
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++) {
+				Image tileImg = tileImages.get(row * 10 + col);
+				TileComponent tileComp = new TileComponent(tileImg, row, col);
+				board.add(tileComp);
+				tiles.add(tileComp);
+			}
 		board.repaint();
 	}
 
@@ -184,13 +186,18 @@ public class MapPainter {
 		Image tileImage;
 		int marble;
 		boolean active;
-		
+
+		int x;
+		int y;
+
 		static final int NONE = 0;
 		static final int BLACK = 1;
 		static final int RED = 2;
-		
-		TileComponent(Image tileImage) {
+
+		TileComponent(Image tileImage, int x, int y) {
 			this.tileImage = tileImage;
+			this.x = x;
+			this.y = y;
 			marble = 0;
 			active = false;
 			addMouseListener(this);
@@ -200,7 +207,9 @@ public class MapPainter {
 			this.marble = marble;
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see javax.swing.JComponent#paint(java.awt.Graphics)
 		 */
 		@Override
