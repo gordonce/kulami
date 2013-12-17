@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -33,10 +32,8 @@ public class ServerProxy {
 	private boolean listening;
 	private Queue<String> sendBuffer;
 	private Socket kulamiSocket;
+	
 	private static final Logger logger = Logger.getLogger("kulami.control.ServerProxy");
-	static {
-		logger.setLevel(Level.FINE);
-	}
 
 	/**
 	 * Create a ServerProxy object that can be used to connect to a Kulami
@@ -51,7 +48,6 @@ public class ServerProxy {
 		observers = new ArrayList<>();
 		sendBuffer = new LinkedList<>();
 		listening = false;
-		logger.fine(String.format("Host set to %s:%d.", host, port));
 	}
 
 	/**
@@ -65,7 +61,8 @@ public class ServerProxy {
 		// TODO establish connection to server
 		try {
 			kulamiSocket = new Socket(host, port);
-			logger.config(String.format("Created socket connection with %s:%d.", host, port));
+			
+			logger.info(String.format("Established connectin with %s:%d.", host, port));
 			
 			Thread listenThread = new Thread(new Runnable() {
 
@@ -112,6 +109,7 @@ public class ServerProxy {
 			String inMessage;
 			while (listening) {
 				inMessage = socketReader.readLine();
+				logger.fine(String.format("Received message: %s", inMessage));
 				if (inMessage != null)
 					informObservers(inMessage);
 				inMessage = null;
@@ -122,6 +120,7 @@ public class ServerProxy {
 	}
 	
 	private void send() {
+		// TODO try with resources
 		try {
 
 			BufferedWriter socketWriter = new BufferedWriter(
@@ -132,13 +131,14 @@ public class ServerProxy {
 				if (outMessage != null) {
 					socketWriter.write(outMessage + '\n');
 					socketWriter.flush();
+					logger.fine(String.format("Sent message: %s",outMessage));
 					outMessage = null;
 				}
 				Thread.sleep(1000);
 			}
 			kulamiSocket.close();
 		} catch (IOException | InterruptedException e) {
-			System.err.println("Couldn't write to server");
+			logger.severe("Exception sending message: " + e.getMessage());
 		}
 	}
 
