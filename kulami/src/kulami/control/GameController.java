@@ -3,6 +3,8 @@
  */
 package kulami.control;
 
+import java.util.logging.Logger;
+
 import kulami.game.CompPlayer;
 import kulami.game.Game;
 import kulami.game.GameMap;
@@ -56,6 +58,7 @@ public class GameController {
 	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
 	private ChooseBoardDialog chooseBoardDialog;
 
+	private static final Logger logger = Logger.getLogger("kulami.control.GameController");
 	/**
 	 * The GameController constructor creates a Mainframe and displays it. It
 	 * also requests a MessagePager from the Mainframe so that messages can be
@@ -347,6 +350,7 @@ public class GameController {
 	}
 
 	private void startGameDisplay() {
+		logger.finer("Initializing game display for game: " + game);
 		gameDisplay = mainframe.initGameDisplay(game);
 		// TODO make the game display show the empty board
 		game.pushMap();

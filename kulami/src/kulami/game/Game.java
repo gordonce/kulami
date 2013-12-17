@@ -66,5 +66,12 @@ public class Game implements GameObservable {
 		for (GameObserver observer: gameObservers)
 			observer.gameChanged(this);
 	}
+
+	@Override
+	public String toString() {
+		return "Game with map: \n" + gameMap;
+	}
+	
+	
 	
 }

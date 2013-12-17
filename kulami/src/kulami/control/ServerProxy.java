@@ -109,9 +109,10 @@ public class ServerProxy {
 			String inMessage;
 			while (listening) {
 				inMessage = socketReader.readLine();
-				logger.fine(String.format("Received message: %s", inMessage));
-				if (inMessage != null)
+				if (inMessage != null) {
+					logger.fine(String.format("Received message: %s", inMessage));
 					informObservers(inMessage);
+				}
 				inMessage = null;
 			}
 		} catch (IOException e) {
