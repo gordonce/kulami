@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * ServerProxy establishes a connection to a Kulami server and receives server
@@ -31,6 +33,10 @@ public class ServerProxy {
 	private boolean listening;
 	private Queue<String> sendBuffer;
 	private Socket kulamiSocket;
+	private static final Logger logger = Logger.getLogger("kulami.control.ServerProxy");
+	static {
+		logger.setLevel(Level.FINE);
+	}
 
 	/**
 	 * Create a ServerProxy object that can be used to connect to a Kulami
@@ -45,6 +51,7 @@ public class ServerProxy {
 		observers = new ArrayList<>();
 		sendBuffer = new LinkedList<>();
 		listening = false;
+		logger.fine(String.format("Host set to %s:%d.", host, port));
 	}
 
 	/**
@@ -58,7 +65,8 @@ public class ServerProxy {
 		// TODO establish connection to server
 		try {
 			kulamiSocket = new Socket(host, port);
-
+			logger.config(String.format("Created socket connection with %s:%d.", host, port));
+			
 			Thread listenThread = new Thread(new Runnable() {
 
 				@Override
@@ -77,7 +85,7 @@ public class ServerProxy {
 			listenThread.start();
 			sendThread.start();
 		} catch (IOException e) {
-			System.err.println("Couldn't connect to socket");
+			logger.warning(String.format("Couldn't connect to %s:%d.", host, port));
 		}
 	}
 
