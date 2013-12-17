@@ -25,56 +25,6 @@ public class GameMap {
 	private Pattern fieldPattern;
 	private List<Move> history;
 
-	public static class Pos {
-		private int row;
-		private int col;
-
-		public Pos(int row, int col) {
-			assert row >= 0 && row < 10;
-			assert col >= 0 && col < 10;
-			this.row = row;
-			this.col = col;
-		}
-
-		public int getRow() {
-			return row;
-		}
-
-		public int getCol() {
-			return col;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.lang.Object#toString()
-		 */
-		@Override
-		public String toString() {
-			return "[" + row + "," + col + "]";
-		}
-
-	}
-
-	class Move {
-		Pos pos;
-		Owner owner;
-
-		Move(Pos pos, Owner owner) {
-			this.pos = pos;
-			this.owner = owner;
-		}
-
-		Pos getPos() {
-			return pos;
-		}
-
-		Owner getOwner() {
-			return owner;
-		}
-
-	}
-
 	/**
 	 * Construct a map given a 200-character representation of a map.
 	 * 
@@ -114,7 +64,6 @@ public class GameMap {
 		return legalMoves;
 
 	}
-	
 
 	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
 		Field thisField = getField(pos);
@@ -129,8 +78,8 @@ public class GameMap {
 		// Same row or column but not on same panel as last move?
 		if (lastMove != null) {
 			Panel lastPanel = getField(lastMove).getPanel();
-			if ((pos.getCol() != lastMove.getCol() && 
-					pos.getRow() != lastMove.getRow()) || thisPanel == lastPanel)
+			if ((pos.getCol() != lastMove.getCol() && pos.getRow() != lastMove
+					.getRow()) || thisPanel == lastPanel)
 				return false;
 		}
 		// Not on next to last panel?
@@ -162,7 +111,7 @@ public class GameMap {
 			}
 		return mapCode.toString();
 	}
-	
+
 	/**
 	 * Set the Owner of a Field in a particular position of the 10x10 game map
 	 * matrix. If the Owner changes, save the move in a history.
@@ -294,9 +243,8 @@ public class GameMap {
 	}
 
 	/*
-	 * Test case: create game map and retrieve textual representation.
-	 * Set two new marbles.
-	 * get legal fields
+	 * Test case: create game map and retrieve textual representation. Set two
+	 * new marbles. get legal fields
 	 * 
 	 * @param args
 	 */

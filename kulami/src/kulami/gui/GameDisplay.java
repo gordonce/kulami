@@ -3,6 +3,9 @@
  */
 package kulami.gui;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
@@ -23,7 +26,7 @@ public class GameDisplay implements GameObserver {
 	
 	public GameDisplay(GameObservable game, JPanel board) {
 		mapPainter = new MapPainter(board);
-		
+		initTileListeners();
 		game.registerObserver(this);
 	}
 	
@@ -51,4 +54,17 @@ public class GameDisplay implements GameObserver {
 		mapPainter.drawMap(gameMap);
 	}
 
+	private void initTileListeners() {
+		mapPainter.registerTileListeners(new MouseAdapter() {
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
+			 */
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+			}
+			
+		});
+	}
 }

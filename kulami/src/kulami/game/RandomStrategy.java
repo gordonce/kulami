@@ -6,8 +6,6 @@ package kulami.game;
 import java.util.ArrayList;
 import java.util.Random;
 
-import kulami.game.GameMap.Pos;
-
 /**
  * @author gordon
  *

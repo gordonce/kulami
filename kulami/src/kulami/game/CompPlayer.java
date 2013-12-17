@@ -3,7 +3,6 @@
  */
 package kulami.game;
 
-import kulami.game.GameMap.Pos;
 
 
 

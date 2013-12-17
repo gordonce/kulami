@@ -6,7 +6,6 @@ package kulami.game;
 import java.util.ArrayList;
 import java.util.List;
 
-import kulami.game.GameMap.Pos;
 import kulami.gui.GameObserver;
 
 /**
