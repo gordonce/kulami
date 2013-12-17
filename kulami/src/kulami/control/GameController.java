@@ -24,6 +24,7 @@ import kulami.gui.Mainframe;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.PlayerDialog;
+import kulami.gui.PlayerDialogAdapter;
 import kulami.gui.StatusDisplayer;
 
 /**
@@ -86,30 +87,31 @@ public class GameController {
 	 * and decide whether to play in human or in computer mode.
 	 */
 	public void showPlayerDialog() {
-		playerDialogAdapter = new PlayerDialogAdapter(this);
-		playerDialog = new PlayerDialog(mainframe, playerDialogAdapter);
+		playerDialog = new PlayerDialog(mainframe, new PlayerDialogAdapter() {
+
+			@Override
+			public void okPressed() {
+				playerName = playerDialog.getName();
+				playerHuman = playerDialog.getHuman();
+				compPlayerLevel = playerDialog.getCompLevel();
+
+				playerDialog.clearAndHide();
+
+				statusDisplayer.setHeroName(playerName);
+			}
+
+			@Override
+			public void cancelPressed() {
+				playerDialog.clearAndHide();
+			}
+
+			@Override
+			public void windowClosed() {
+				playerDialog.clearAndHide();
+			}
+
+		});
 		playerDialog.setVisible(true);
-	}
-
-	/**
-	 * Get player data from the New Player dialog and save them for a later
-	 * game.
-	 */
-	public void newPlayer() {
-		playerName = playerDialog.getName();
-		playerHuman = playerDialog.getHuman();
-		compPlayerLevel = playerDialog.getCompLevel();
-
-		playerDialog.clearAndHide();
-
-		statusDisplayer.setHeroName(playerName);
-	}
-
-	/**
-	 * Close the New Player dialog without taking any action.
-	 */
-	public void cancelPlayerDialog() {
-		playerDialog.clearAndHide();
 	}
 
 	/**
@@ -182,8 +184,6 @@ public class GameController {
 		chooseBoardDialog.clearAndHide();
 		serverProxy.disconnect();
 	}
-
-	/* Methods to handle server messages */
 
 	/**
 	 * @param pos
@@ -365,7 +365,6 @@ public class GameController {
 			}
 		});
 	}
-
 
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
