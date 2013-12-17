@@ -116,7 +116,7 @@ public class ServerProxy {
 				inMessage = null;
 			}
 		} catch (IOException e) {
-			System.err.println("Couldn't read from server");
+			logger.severe("Exception listening to server: " + e.getMessage());
 		}
 	}
 	

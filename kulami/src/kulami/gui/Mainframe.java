@@ -118,6 +118,8 @@ public class Mainframe extends JFrame {
 		Image icon = toolkit.getImage(getClass().getResource(
 				"/images/kulami_icon.png"));
 		setIconImage(icon);
+		
+		setResizable(false);
 
 	}
 
@@ -132,9 +134,6 @@ public class Mainframe extends JFrame {
 		JPanel leftPanel = new JPanel();
 		leftPanel.setPreferredSize(new Dimension(200, 600));
 		leftPanel.setLayout(new GridLayout(0, 1, 5, 5));
-
-//		JLabel heroPanel = new JLabel("Hero");
-//		JLabel villainPanel = new JLabel("Villain");
 
 		heroPanel = new JPanel();
 		villainPanel = new JPanel();

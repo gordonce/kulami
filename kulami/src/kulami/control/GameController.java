@@ -156,7 +156,6 @@ public class GameController {
 		int level = chooseBoardDialog.getLevel();
 		
 		GameMap board = new GameMap(boardCode);
-		System.out.println("Board: \n" + board.toString());
 		
 		messageSender.sendParameters(boardCode, level);
 
