@@ -30,6 +30,7 @@ public class Game implements GameObservable {
 	public Game(GameMap gameMap, Player player, int level) {
 		this.gameMap = gameMap;
 		this.player = player;
+		this.level = level;
 		gameObservers = new ArrayList<>();
 	}
 	
