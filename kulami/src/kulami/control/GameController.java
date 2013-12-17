@@ -44,9 +44,8 @@ public class GameController {
 
 	private ServerProxy serverProxy;
 	private MessageSender messageSender;
-	
+
 	private Game game;
-	private Player player;
 
 	private String playerName;
 	private boolean playerHuman;
@@ -60,8 +59,11 @@ public class GameController {
 	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
 	private ChooseBoardDialog chooseBoardDialog;
 	private GameDisplayAdapter gameDisplayAdapter;
+	private char playerColour;
 
-	private static final Logger logger = Logger.getLogger("kulami.control.GameController");
+	private static final Logger logger = Logger
+			.getLogger("kulami.control.GameController");
+
 	/**
 	 * The GameController constructor creates a Mainframe and displays it. It
 	 * also requests a MessagePager from the Mainframe so that messages can be
@@ -93,9 +95,9 @@ public class GameController {
 		playerName = playerDialog.getName();
 		playerHuman = playerDialog.getHuman();
 		compPlayerLevel = playerDialog.getCompLevel();
-		
+
 		playerDialog.clearAndHide();
-		
+
 		statusDisplayer.setHeroName(playerName);
 	}
 
@@ -137,9 +139,9 @@ public class GameController {
 		serverProxy.addObserver(serverAdapter);
 
 		serverProxy.connectAndListen();
-		
+
 		messageSender = new MessageSender(serverProxy);
-		
+
 		// TODO display error message if connection fails
 	}
 
@@ -147,33 +149,32 @@ public class GameController {
 
 	public void showChooseBoardDialog() {
 		chooseBoardDialogAdapter = new ChooseBoardDialogAdapter(this);
-		chooseBoardDialog = new ChooseBoardDialog(mainframe, chooseBoardDialogAdapter);
+		chooseBoardDialog = new ChooseBoardDialog(mainframe,
+				chooseBoardDialogAdapter);
 		chooseBoardDialog.setVisible(true);
 	}
-	
+
 	/**
-	 * User has clicked OK on the Choose Board dialog. 
+	 * User has clicked OK on the Choose Board dialog.
 	 */
 	public void loadGame() {
 		String boardCode = chooseBoardDialog.getBoardCode();
 		int level = chooseBoardDialog.getLevel();
-		
+
 		GameMap board = new GameMap(boardCode);
-		
+
 		messageSender.sendParameters(boardCode, level);
 
 		chooseBoardDialog.clearAndHide();
-		
-		// TODO has player even been created yet?
-		game = new Game(board, player, level);
+
+		game = new Game(board, createPlayer(), level);
 		startGameDisplay();
 	}
-	
+
 	public void chooseBoardCancelled() {
 		chooseBoardDialog.clearAndHide();
 		serverProxy.disconnect();
 	}
-	
 
 	/* Methods to handle server messages */
 
@@ -183,7 +184,8 @@ public class GameController {
 	 */
 	public void sendName() {
 		newGameDialog.clearAndHide();
-//		serverProxy.sendMessage(String.format("neuerClient(%s).", playerName));
+		// serverProxy.sendMessage(String.format("neuerClient(%s).",
+		// playerName));
 		messageSender.newClient(playerName);
 	}
 
@@ -225,16 +227,8 @@ public class GameController {
 	public void receiveParameters(String mapCode, int level, char colour,
 			String opponentName) {
 		GameMap gameMap = new GameMap(mapCode);
-		Owner owner;
-		if (colour == 'r')
-			owner = Owner.Red;
-		else
-			owner = Owner.Black;
-		if (playerHuman)
-			player = new HumanPlayer(playerName, owner);
-		else
-			player = new CompPlayer(playerName, owner);
-		game = new Game(gameMap, player, level);
+		playerColour = colour;
+		game = new Game(gameMap, createPlayer() , level);
 		this.opponentName = opponentName;
 		statusDisplayer.setVillainName(opponentName);
 		statusDisplayer.setHeroColour(colour);
@@ -265,9 +259,9 @@ public class GameController {
 	 * 
 	 */
 	public void assignColour(char colour) {
-		// TODO implement method. Same as ReceiveParameters()
 		statusDisplayer.setHeroColour(colour);
 		statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+		playerColour = colour;
 	}
 
 	/**
@@ -288,7 +282,8 @@ public class GameController {
 	/**
 	 * Server complained about an illegal move. The String indicates the reason.
 	 * 
-	 * @param msg Reason for illegal move.
+	 * @param msg
+	 *            Reason for illegal move.
 	 * 
 	 */
 	public void illegalMove(String msg) {
@@ -357,6 +352,19 @@ public class GameController {
 		gameDisplay = mainframe.initGameDisplay(game, gameDisplayAdapter);
 		// TODO make the game display show the empty board
 		game.pushMap();
+		mainframe.repaint();
+	}
+
+	private Player createPlayer() {
+		Owner owner;
+		if (playerColour == 'r')
+			owner = Owner.Red;
+		else
+			owner = Owner.Black;
+		if (playerHuman)
+			return new HumanPlayer(playerName, owner);
+		else
+			return new CompPlayer(playerName, owner);
 	}
 
 	/**
@@ -364,6 +372,8 @@ public class GameController {
 	 */
 	public void fieldClicked(Pos pos) {
 		logger.finer("User clicked on tile at pos " + pos);
+		game.placeMarble(pos);
+		messageSender.makeMove(pos.getRow(), pos.getCol());
 	}
 
 }

@@ -40,4 +40,11 @@ public abstract class Player {
 		return marbles;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s,  %d marbles", name, marbles);
+	}
+	
+	
+
 }

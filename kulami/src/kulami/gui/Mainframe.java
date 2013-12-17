@@ -119,7 +119,7 @@ public class Mainframe extends JFrame {
 				"/images/kulami_icon.png"));
 		setIconImage(icon);
 		
-		setResizable(false);
+//		setResizable(false);
 
 	}
 

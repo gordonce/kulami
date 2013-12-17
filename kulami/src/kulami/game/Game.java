@@ -5,6 +5,7 @@ package kulami.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 import kulami.gui.GameObserver;
 
@@ -20,6 +21,8 @@ public class Game implements GameObservable {
 	
 	private List<GameObserver> gameObservers;
 	
+	private static final Logger logger = Logger.getLogger("kulami.game.Game");
+	
 	/**
 	 * @param board
 	 * @param player
@@ -31,6 +34,7 @@ public class Game implements GameObservable {
 	}
 	
 	public void placeMarble(Pos pos) {
+		logger.fine(String.format("%s placed marble at %s.", player, pos));
 		gameMap.setOwner(pos, player.getCoulour());
 		informObservers();
 	}
