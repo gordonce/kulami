@@ -5,6 +5,7 @@ package kulami.control;
 
 import java.util.logging.Logger;
 
+import kulami.connectivity.InProtocolObserver;
 import kulami.connectivity.MessageSender;
 import kulami.connectivity.ServerAdapter;
 import kulami.connectivity.ServerProxy;
@@ -137,7 +138,9 @@ public class GameController {
 		int port = newGameDialog.getPort();
 
 		serverProxy = new ServerProxy(hostName, port);
-		serverAdapter = new ServerAdapter(this);
+		serverAdapter = new ServerAdapter();
+
+		registerInProtocolObserver();
 
 		serverProxy.addObserver(serverAdapter);
 
@@ -183,173 +186,186 @@ public class GameController {
 	/* Methods to handle server messages */
 
 	/**
-	 * Server sent "Kulami?" Connection was successfully established. Continue
-	 * protocol by sending the user name.
+	 * @param pos
 	 */
-	public void sendName() {
-		newGameDialog.clearAndHide();
-		// serverProxy.sendMessage(String.format("neuerClient(%s).",
-		// playerName));
-		messageSender.newClient(playerName);
+	public void fieldClicked(Pos pos) {
+		logger.finer("User clicked on tile at pos " + pos);
+		game.placeMarble(pos);
+		messageSender.makeMove(pos.getCol(), pos.getRow());
 	}
 
-	/**
-	 * Server sent a message. The message is displayed to the user.
-	 * 
-	 * @param message
-	 *            The message.
-	 * 
-	 */
-	public void displayMessage(String message) {
-		messagePager.display("Server: " + message);
+	private void registerInProtocolObserver() {
+		serverAdapter.registerObserver(new InProtocolObserver() {
+
+			/**
+			 * Server sent "Kulami?" Connection was successfully established.
+			 * Continue protocol by sending the user name.
+			 */
+			@Override
+			public void kulamiQ() {
+				newGameDialog.clearAndHide();
+				messageSender.newClient(playerName);
+			}
+
+			/**
+			 * Server sent a message. The message is displayed to the user.
+			 */
+			@Override
+			public void message(String msg) {
+				messagePager.display("Server: " + msg);
+			}
+
+			/**
+			 * Server asked for game parameters. (We are player 1.)
+			 */
+			@Override
+			public void spielparameterQ() {
+				showChooseBoardDialog();
+			}
+
+			/**
+			 * Server sent the game parameters. (We are player 2.) Create a
+			 * GameMap, a Player, and a Game and start displaying the game.
+			 * 
+			 * @param opponentName
+			 *            The name of the opponent.
+			 * @param colour
+			 *            The player's colour ('b' for black or 'r' for red).
+			 * @param level
+			 *            The game level (1, 2, or 3)
+			 * @param mapCode
+			 *            The 200-character map code.
+			 * 
+			 */
+			@Override
+			public void spielparameter(String boardCode, int level,
+					char colour, String opponentName) {
+				GameMap gameMap = new GameMap(boardCode);
+				gameMap.clearOwners();
+				playerColour = colour;
+				game = new Game(gameMap, createPlayer(), level);
+				GameController.this.opponentName = opponentName;
+				statusDisplayer.setVillainName(opponentName);
+				statusDisplayer.setHeroColour(colour);
+				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+				startGameDisplay();
+			}
+
+			/**
+			 * Server sent name of player 2. (We are player 1). Set the display
+			 * accordingly.
+			 * 
+			 * @param name
+			 *            The name of the opponent.
+			 * 
+			 */
+			@Override
+			public void name(String opponentName) {
+				GameController.this.opponentName = opponentName;
+				statusDisplayer.setVillainName(opponentName);
+			}
+
+			/**
+			 * Server sent colour. (We are player 1.) The Player object and the
+			 * Game object can now be created and the display adjusted.
+			 * 
+			 * @param colour
+			 *            'b' for black or 'r' for red.
+			 * 
+			 */
+			@Override
+			public void farbe(char colour) {
+				// TODO Auto-generated method stub
+				statusDisplayer.setHeroColour(colour);
+				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+				playerColour = colour;
+			}
+
+			/**
+			 * Server sent signal to start the game. The argument is the colour
+			 * of the player who begins.
+			 * 
+			 * @param startingPlayer
+			 *            'b' for black or 'r' for red.
+			 * 
+			 */
+			@Override
+			public void spielstart(char colour) {
+				// TODO Display an appropriate message.
+				// TODO If this player begins, make move.
+				statusDisplayer.setCurrentPlayer(colour);
+			}
+
+			/**
+			 * Server complained about an illegal move. The String indicates the
+			 * reason.
+			 * 
+			 * @param msg
+			 *            Reason for illegal move.
+			 * 
+			 */
+			@Override
+			public void ungueltig(String msg) {
+				messagePager.display("Server: illegal move (" + msg + ")");
+				// TODO Make move.
+			}
+
+			/**
+			 * Server sent new board in response to a legal move.
+			 * 
+			 * @param mapCode
+			 * 
+			 */
+			@Override
+			public void gueltig(String boardCode) {
+				// TODO Verify the new board.
+				// TODO display that the opponent is now making a move
+			}
+
+			/**
+			 * Server sent opponents move.
+			 * 
+			 * @param mapCode
+			 * 
+			 */
+			@Override
+			public void zug(String boardCode) {
+				// TODO display new board
+				// TODO Make move
+			}
+
+			/**
+			 * Server signaled that the game is over and sends the final points.
+			 * 
+			 * @param pointsBlack
+			 * @param pointsRed
+			 * 
+			 */
+			@Override
+			public void spielende(int pointsRed, int pointsBlack) {
+				// TODO Display points
+				// TODO Prompt for rematch
+			}
+
+			/**
+			 * Opponent sent a message via the server.
+			 * 
+			 * @param msg
+			 * 
+			 */
+			@Override
+			public void playerMessage(String msg) {
+				messagePager.display(opponentName + ": " + msg);
+			}
+
+			@Override
+			public void unknownMessage(String msg) {
+				mainframe.displayWarning("Unbekannte Nachricht empfangen:\n"
+						+ msg);
+			}
+		});
 	}
 
-	/**
-	 * Server asked for game parameters. (We are player 1.)
-	 * 
-	 */
-	public void serverWantsParameters() {
-		// TODO Display dialog asking for board and level
-		showChooseBoardDialog();
-		// TODO send board and level to server
-	}
-
-	/**
-	 * Server sent the game parameters. (We are player 2.) Create a GameMap, a
-	 * Player, and a Game and start displaying the game.
-	 * 
-	 * @param opponentName
-	 *            The name of the opponent.
-	 * @param colour
-	 *            The player's colour ('b' for black or 'r' for red).
-	 * @param level
-	 *            The game level (1, 2, or 3)
-	 * @param mapCode
-	 *            The 200-character map code.
-	 * 
-	 */
-	public void receiveParameters(String mapCode, int level, char colour,
-			String opponentName) {
-		GameMap gameMap = new GameMap(mapCode);
-		gameMap.clearOwners();
-		playerColour = colour;
-		game = new Game(gameMap, createPlayer() , level);
-		this.opponentName = opponentName;
-		statusDisplayer.setVillainName(opponentName);
-		statusDisplayer.setHeroColour(colour);
-		statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-		startGameDisplay();
-
-	}
-
-	/**
-	 * Server sent name of player 2. (We are player 1). Set the display
-	 * accordingly.
-	 * 
-	 * @param name
-	 *            The name of the opponent.
-	 * 
-	 */
-	public void playerTwoConnected(String opponentName) {
-		this.opponentName = opponentName;
-		statusDisplayer.setVillainName(opponentName);
-	}
-
-	/**
-	 * Server sent colour. (We are player 1.) The Player object and the Game
-	 * object can now be created and the display adjusted.
-	 * 
-	 * @param colour
-	 *            'b' for black or 'r' for red.
-	 * 
-	 */
-	public void assignColour(char colour) {
-		statusDisplayer.setHeroColour(colour);
-		statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-		playerColour = colour;
-	}
-
-	/**
-	 * Server sent signal to start the game. The argument is the colour of the
-	 * player who begins.
-	 * 
-	 * @param startingPlayer
-	 *            'b' for black or 'r' for red.
-	 * 
-	 */
-	public void startGame(char startingPlayer) {
-		// TODO Display an appropriate message.
-		// TODO If this player begins, make move.
-		statusDisplayer.setCurrentPlayer(startingPlayer);
-
-	}
-
-	/**
-	 * Server complained about an illegal move. The String indicates the reason.
-	 * 
-	 * @param msg
-	 *            Reason for illegal move.
-	 * 
-	 */
-	public void illegalMove(String msg) {
-		messagePager.display("Server: illegal move (" + msg + ")");
-		// TODO Make move.
-
-	}
-
-	/**
-	 * Server sent new board in response to a legal move.
-	 * 
-	 * @param mapCode
-	 * 
-	 */
-	public void legalMove(String mapCode) {
-		// TODO Verify the new board.
-		// TODO display that the opponent is now making a move
-	}
-
-	/**
-	 * Server sent opponents move.
-	 * 
-	 * @param mapCode
-	 * 
-	 */
-	public void opponentMoved(String mapCode) {
-		// TODO display new board
-		// TODO Make move
-
-	}
-
-	/**
-	 * Server signaled that the game is over and sends the final points.
-	 * 
-	 * @param pointsBlack
-	 * @param pointsRed
-	 * 
-	 */
-	public void endGame(int pointsRed, int pointsBlack) {
-		// TODO Display points
-		// TODO Prompt for rematch
-
-	}
-
-	/**
-	 * Opponent sent a message via the server.
-	 * 
-	 * @param msg
-	 * 
-	 */
-	public void displayPlayerMessage(String message) {
-		messagePager.display(opponentName + ": " + message);
-	}
-
-	/**
-	 * @param message
-	 * 
-	 */
-	public void unknownMessage(String message) {
-		mainframe.displayWarning("Unbekannte Nachricht empfangen:\n" + message);
-	}
 
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
@@ -370,15 +386,6 @@ public class GameController {
 			return new HumanPlayer(playerName, owner);
 		else
 			return new CompPlayer(playerName, owner);
-	}
-
-	/**
-	 * 
-	 */
-	public void fieldClicked(Pos pos) {
-		logger.finer("User clicked on tile at pos " + pos);
-		game.placeMarble(pos);
-		messageSender.makeMove(pos.getCol(), pos.getRow());
 	}
 
 }

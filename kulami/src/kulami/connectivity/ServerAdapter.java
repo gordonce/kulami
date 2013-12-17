@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import kulami.control.GameController;
-
 /**
  * The ServerAdapter knows the Kulami client/server protocol and delegates to
  * the appropriate methods.
@@ -19,18 +17,26 @@ import kulami.control.GameController;
  */
 public class ServerAdapter implements MessageObserver {
 
-	private GameController gameController;
 	private List<Pattern> patterns;
+	private List<InProtocolObserver> observers;
 
 	/**
-	 * The ServerAdapter constructor needs a GameController that the
-	 * ServerAdapter object can delegate to.
+	 * The ServerAdapter constructor
 	 * 
 	 * @param gameController
 	 */
-	public ServerAdapter(GameController gameController) {
-		this.gameController = gameController;
+	public ServerAdapter() {
 		patterns = initPatterns();
+		observers = new ArrayList<>();
+	}
+
+	/**
+	 * Register an InProtocolObserver to handle incoming server messages.
+	 * 
+	 * @param observer
+	 */
+	public void registerObserver(InProtocolObserver observer) {
+		observers.add(observer);
 	}
 
 	/*
@@ -44,57 +50,70 @@ public class ServerAdapter implements MessageObserver {
 		System.out.println("Received from server: " + message);
 		if (matchers.get(0).matches()) {
 			// Kulami?
-			gameController.sendName();
+			for (InProtocolObserver observer : observers)
+				observer.kulamiQ();
 		} else if (matchers.get(1).matches()) {
 			// message(<Nachricht>).
 			String msg = matchers.get(1).group(1);
-			gameController.displayMessage(msg);
+			for (InProtocolObserver observer : observers)
+				observer.message(msg);
 		} else if (matchers.get(2).matches()) {
 			// spielparameter?
-			gameController.serverWantsParameters();
+			for (InProtocolObserver observer : observers)
+				observer.spielparameterQ();
 		} else if (matchers.get(3).matches()) {
 			// spielparameter(<Board>,<Level>,<Farbe>,<Name>).
 			String mapCode = matchers.get(3).group(1);
 			int level = Integer.parseInt(matchers.get(3).group(2));
 			char colour = matchers.get(3).group(3).charAt(0);
 			String name = matchers.get(3).group(4);
-			gameController.receiveParameters(mapCode, level, colour, name);
+			for (InProtocolObserver observer : observers)
+				observer.spielparameter(mapCode, level, colour, name);
 		} else if (matchers.get(4).matches()) {
 			// name(<Name>).
 			String name = matchers.get(4).group(1);
-			gameController.playerTwoConnected(name);
+			for (InProtocolObserver observer : observers)
+				observer.name(name);
 		} else if (matchers.get(5).matches()) {
 			// farbe(<Farbe>).
 			char colour = matchers.get(5).group(1).charAt(0);
-			gameController.assignColour(colour);
+			for (InProtocolObserver observer : observers)
+				observer.farbe(colour);
 		} else if (matchers.get(6).matches()) {
 			// spielstart(<Farbe>).
-			char player = matchers.get(6).group(1).charAt(0);
-			gameController.startGame(player);
+			char colour = matchers.get(6).group(1).charAt(0);
+			for (InProtocolObserver observer : observers)
+				observer.spielstart(colour);
 		} else if (matchers.get(7).matches()) {
 			// ungültig(<Nachricht>).
 			String msg = matchers.get(7).group(1);
-			gameController.illegalMove(msg);
+			for (InProtocolObserver observer : observers)
+				observer.ungueltig(msg);
 		} else if (matchers.get(8).matches()) {
 			// gültig(<Board>).
 			String mapCode = matchers.get(8).group(1);
-			gameController.legalMove(mapCode);
+			for (InProtocolObserver observer : observers)
+				observer.gueltig(mapCode);
 		} else if (matchers.get(9).matches()) {
 			// zug(<Board>).
 			String mapCode = matchers.get(9).group(1);
-			gameController.opponentMoved(mapCode);
+			for (InProtocolObserver observer : observers)
+				observer.zug(mapCode);
 		} else if (matchers.get(10).matches()) {
 			// spielende(<punkteRot>,<punkteSchwarz>).
 			int pointsRed = Integer.parseInt(matchers.get(10).group(1));
 			int pointsBlack = Integer.parseInt(matchers.get(10).group(2));
-			gameController.endGame(pointsRed, pointsBlack);
+			for (InProtocolObserver observer : observers)
+				observer.spielende(pointsRed, pointsBlack);
 		} else if (matchers.get(11).matches()) {
 			// playerMessage(<Nachricht>).
 			String msg = matchers.get(11).group(1);
-			gameController.displayPlayerMessage(msg);
+			for (InProtocolObserver observer : observers)
+				observer.playerMessage(msg);
 		} else
 			// ???
-			gameController.unknownMessage(message);
+			for (InProtocolObserver observer : observers)
+				observer.unknownMessage(message);
 	}
 
 	private List<Pattern> initPatterns() {
