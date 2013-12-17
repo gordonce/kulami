@@ -5,6 +5,9 @@ package kulami.control;
 
 import java.util.logging.Logger;
 
+import kulami.connectivity.MessageSender;
+import kulami.connectivity.ServerAdapter;
+import kulami.connectivity.ServerProxy;
 import kulami.game.CompPlayer;
 import kulami.game.Game;
 import kulami.game.GameMap;

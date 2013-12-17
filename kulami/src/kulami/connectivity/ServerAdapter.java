@@ -1,12 +1,14 @@
 /**
  * 
  */
-package kulami.control;
+package kulami.connectivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import kulami.control.GameController;
 
 /**
  * The ServerAdapter knows the Kulami client/server protocol and delegates to

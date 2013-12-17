@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.control;
+package kulami.connectivity;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

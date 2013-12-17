@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.control;
+package kulami.connectivity;
 
 /**
  * @author gordon
