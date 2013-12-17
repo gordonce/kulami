@@ -7,9 +7,10 @@ package kulami.gui;
  * @author gordon
  * 
  */
-public interface ChooseBoardDialogAdapter {
+public interface NewGameDialogAdapter {
 
-	public void okClicked();
+	public void connectClicked();
 
 	public void cancelClicked();
+
 }

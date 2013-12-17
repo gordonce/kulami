@@ -16,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import kulami.control.NewGameDialogAdapter;
-
 /**
  * @author gordon
  *

@@ -23,6 +23,7 @@ import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
+import kulami.gui.NewGameDialogAdapter;
 import kulami.gui.PlayerDialog;
 import kulami.gui.PlayerDialogAdapter;
 import kulami.gui.StatusDisplayer;
@@ -119,70 +120,69 @@ public class GameController {
 	 * connection.
 	 */
 	public void showNewGameDialog() {
-		newGameDialogAdapter = new NewGameDialogAdapter(this);
-		newGameDialog = new NewGameDialog(mainframe, newGameDialogAdapter);
+		newGameDialog = new NewGameDialog(mainframe,
+				new NewGameDialogAdapter() {
+
+					/**
+					 * Get Kulami server connection data from the New Game
+					 * dialog and try to connect to the server.
+					 */
+					@Override
+					public void connectClicked() {
+						String hostName = newGameDialog.getHost();
+						int port = newGameDialog.getPort();
+
+						serverProxy = new ServerProxy(hostName, port);
+						serverAdapter = new ServerAdapter();
+
+						registerInProtocolObserver();
+
+						serverProxy.addObserver(serverAdapter);
+
+						serverProxy.connectAndListen();
+
+						messageSender = new MessageSender(serverProxy);
+
+						// TODO display error message if connection fails
+					}
+
+					@Override
+					public void cancelClicked() {
+						newGameDialog.clearAndHide();
+					}
+				});
 		newGameDialog.setVisible(true);
-	}
-
-	/**
-	 * Close the New Game dialog without taking any action.
-	 */
-	public void cancelNewGameDialog() {
-		newGameDialog.clearAndHide();
-	}
-
-	/**
-	 * Get Kulami server connection data from the New Game dialog and try to
-	 * connect to the server.
-	 */
-	public void connectServer() {
-		String hostName = newGameDialog.getHost();
-		int port = newGameDialog.getPort();
-
-		serverProxy = new ServerProxy(hostName, port);
-		serverAdapter = new ServerAdapter();
-
-		registerInProtocolObserver();
-
-		serverProxy.addObserver(serverAdapter);
-
-		serverProxy.connectAndListen();
-
-		messageSender = new MessageSender(serverProxy);
-
-		// TODO display error message if connection fails
 	}
 
 	/* Methods to handle the Choose Board dialog */
 
 	public void showChooseBoardDialog() {
-		chooseBoardDialogAdapter = new ChooseBoardDialogAdapter(this);
 		chooseBoardDialog = new ChooseBoardDialog(mainframe,
-				chooseBoardDialogAdapter);
+				new ChooseBoardDialogAdapter() {
+
+					@Override
+					public void okClicked() {
+						String boardCode = chooseBoardDialog.getBoardCode();
+						int level = chooseBoardDialog.getLevel();
+
+						GameMap board = new GameMap(boardCode);
+						board.clearOwners();
+
+						messageSender.sendParameters(board.getMapCode(), level);
+
+						chooseBoardDialog.clearAndHide();
+
+						game = new Game(board, createPlayer(), level);
+						startGameDisplay();
+					}
+
+					@Override
+					public void cancelClicked() {
+						chooseBoardDialog.clearAndHide();
+						serverProxy.disconnect();
+					}
+				});
 		chooseBoardDialog.setVisible(true);
-	}
-
-	/**
-	 * User has clicked OK on the Choose Board dialog.
-	 */
-	public void loadGame() {
-		String boardCode = chooseBoardDialog.getBoardCode();
-		int level = chooseBoardDialog.getLevel();
-
-		GameMap board = new GameMap(boardCode);
-		board.clearOwners();
-
-		messageSender.sendParameters(board.getMapCode(), level);
-
-		chooseBoardDialog.clearAndHide();
-
-		game = new Game(board, createPlayer(), level);
-		startGameDisplay();
-	}
-
-	public void chooseBoardCancelled() {
-		chooseBoardDialog.clearAndHide();
-		serverProxy.disconnect();
 	}
 
 	/**
