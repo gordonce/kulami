@@ -162,8 +162,9 @@ public class GameController {
 		int level = chooseBoardDialog.getLevel();
 
 		GameMap board = new GameMap(boardCode);
+		board.clearOwners();
 
-		messageSender.sendParameters(boardCode, level);
+		messageSender.sendParameters(board.getMapCode(), level);
 
 		chooseBoardDialog.clearAndHide();
 
@@ -227,6 +228,7 @@ public class GameController {
 	public void receiveParameters(String mapCode, int level, char colour,
 			String opponentName) {
 		GameMap gameMap = new GameMap(mapCode);
+		gameMap.clearOwners();
 		playerColour = colour;
 		game = new Game(gameMap, createPlayer() , level);
 		this.opponentName = opponentName;
