@@ -14,22 +14,22 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
 
+import kulami.game.Pos;
+
 class TileComponent extends JComponent implements MouseListener {
 	private Image tileImage;
 	private int marble;
 	private boolean active;
 
-	private int x;
-	private int y;
+	private Pos pos;
 
 	static final int NONE = 0;
 	static final int BLACK = 1;
 	static final int RED = 2;
 
-	public TileComponent(Image tileImage, int x, int y) {
+	public TileComponent(Image tileImage, Pos pos) {
 		this.tileImage = tileImage;
-		this.x = x;
-		this.y = y;
+		this.pos = pos;
 		marble = 0;
 		active = false;
 		addMouseListener(this);
@@ -39,6 +39,9 @@ class TileComponent extends JComponent implements MouseListener {
 		this.marble = marble;
 	}
 
+	public Pos getPos() {
+		return pos;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

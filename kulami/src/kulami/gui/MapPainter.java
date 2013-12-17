@@ -16,6 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import kulami.game.GameMap;
+import kulami.game.Pos;
 
 /**
  * @author gordon
@@ -62,7 +63,7 @@ public class MapPainter {
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
 				Image tileImg = tileImages.get(row * 10 + col);
-				TileComponent tileComp = new TileComponent(tileImg, row, col);
+				TileComponent tileComp = new TileComponent(tileImg, new Pos(row, col));
 				board.add(tileComp);
 				tiles.add(tileComp);
 			}
