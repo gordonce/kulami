@@ -80,15 +80,6 @@ public class GameController {
 	}
 
 	/**
-	 * @param pos
-	 */
-	public void fieldClicked(Pos pos) {
-		logger.finer("User clicked on tile at pos " + pos);
-		game.placeMarble(pos);
-		messageSender.makeMove(pos.getCol(), pos.getRow());
-	}
-
-	/**
 	 * @return
 	 */
 	private void initMainframe() {
@@ -446,11 +437,19 @@ public class GameController {
 
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
-		gameDisplayAdapter = new GameDisplayAdapter(this);
-		gameDisplay = mainframe.initGameDisplay(game, gameDisplayAdapter);
+		gameDisplay = mainframe.initGameDisplay(game, new GameDisplayAdapter() {
+			
+			@Override
+			public void tileClicked(Pos pos) {
+				logger.finer("User clicked on tile at pos " + pos);
+				game.placeMarble(pos);
+				messageSender.makeMove(pos.getCol(), pos.getRow());
+			}
+		});
 		// TODO make the game display show the empty board
 		game.pushMap();
 	}
+	
 
 	private Player createPlayer() {
 		Owner owner;
