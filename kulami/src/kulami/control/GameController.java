@@ -367,7 +367,6 @@ public class GameController {
 		gameDisplay = mainframe.initGameDisplay(game, gameDisplayAdapter);
 		// TODO make the game display show the empty board
 		game.pushMap();
-		mainframe.repaint();
 	}
 
 	private Player createPlayer() {
