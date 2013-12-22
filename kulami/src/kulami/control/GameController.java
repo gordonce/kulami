@@ -73,18 +73,110 @@ public class GameController {
 	 * displayed at any time.
 	 */
 	public GameController() {
-		mainframeAdapter = new MainframeAdapter(this);
-		mainframe = new Mainframe(mainframeAdapter);
+		initMainframe();
 		messagePager = mainframe.getMessageDisplay();
 		statusDisplayer = mainframe.getStatusDisplay();
 		mainframe.setVisible(true);
 	}
 
 	/**
+	 * @param pos
+	 */
+	public void fieldClicked(Pos pos) {
+		logger.finer("User clicked on tile at pos " + pos);
+		game.placeMarble(pos);
+		messageSender.makeMove(pos.getCol(), pos.getRow());
+	}
+
+	/**
+	 * @return
+	 */
+	private void initMainframe() {
+		mainframe = new Mainframe(new MainframeAdapter() {
+			
+			@Override
+			public void startGameClicked() {
+				showNewGameDialog();
+			}
+			
+			@Override
+			public void previousMovesDeactivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void previousMovesActivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void possibleMovesDeactivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void possibleMovesActivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void newPlayerClicked() {
+				showPlayerDialog();
+			}
+			
+			@Override
+			public void newGameMapClicked() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void messageEntered(String message) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void loadGameMapClicked() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void editGameMapClicked() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void boardPossessionDeactivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void boardPossessionActivated() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void abortGameClicked() {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
+
+	/**
 	 * Display the New Player dialog which prompts the user to enter a user name
 	 * and decide whether to play in human or in computer mode.
 	 */
-	public void showPlayerDialog() {
+	private void showPlayerDialog() {
 		playerDialog = new PlayerDialog(mainframe, new PlayerDialogAdapter() {
 
 			@Override
@@ -116,7 +208,7 @@ public class GameController {
 	 * Display the New Game dialog which prompts the user for a Kulami server
 	 * connection.
 	 */
-	public void showNewGameDialog() {
+	private void showNewGameDialog() {
 		newGameDialog = new NewGameDialog(mainframe,
 				new NewGameDialogAdapter() {
 
@@ -151,7 +243,7 @@ public class GameController {
 		newGameDialog.setVisible(true);
 	}
 
-	public void showChooseBoardDialog() {
+	private void showChooseBoardDialog() {
 		chooseBoardDialog = new ChooseBoardDialog(mainframe,
 				new ChooseBoardDialogAdapter() {
 
@@ -178,15 +270,6 @@ public class GameController {
 					}
 				});
 		chooseBoardDialog.setVisible(true);
-	}
-
-	/**
-	 * @param pos
-	 */
-	public void fieldClicked(Pos pos) {
-		logger.finer("User clicked on tile at pos " + pos);
-		game.placeMarble(pos);
-		messageSender.makeMove(pos.getCol(), pos.getRow());
 	}
 
 	private void registerInProtocolObserver() {
