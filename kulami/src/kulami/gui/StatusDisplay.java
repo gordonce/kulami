@@ -5,6 +5,7 @@ package kulami.gui;
 
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -36,6 +37,9 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	private JLabel villainMarblesLabel;
 	private JLabel heroPointsLabel;
 	private JLabel villainPointsLabel;
+	
+	private static final Logger logger = Logger
+			.getLogger("kulami.gui.StatusDisplay");
 
 	public StatusDisplay(JPanel heroPanel, JPanel villainPanel) {
 		this.heroPanel = heroPanel;
@@ -179,6 +183,7 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	@Override
 	public void setCurrentPlayer(char colour) {
 		this.currentPlayer = colour;
+		logger.fine("Current player is now " + currentPlayer);
 		updateHeroPanel();
 		updateVillainPanel();
 	}
@@ -196,30 +201,36 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	}
 
 	private void updateHeroPanel() {
-		heroNameLabel.setText(heroName);
+		if (currentPlayer == heroColour && currentPlayer != 0)
+			heroNameLabel.setText(String.format("<html><i>%s</i>", heroName));
+		else
+			heroNameLabel.setText(heroName);
 		if (heroColour == 'r')
 			heroNameLabel.setForeground(Color.RED);
 		else
 			heroNameLabel.setForeground(Color.BLACK);
-		if (currentPlayer == heroColour && currentPlayer != 0)
-			heroNameLabel.setBackground(Color.YELLOW);
 		heroMarblesLabel.setText(String.format("%d marbles", heroMarbles));
 		if (pointsVisible)
 			heroPointsLabel.setText(String.format("%d points", heroPoints));
+		heroPanel.repaint();
+		logger.fine("Updated hero stats");
 	}
 
 	private void updateVillainPanel() {
-		villainNameLabel.setText(villainName);
+		if (currentPlayer == villainColour && currentPlayer != 0)
+			villainNameLabel.setText(String.format("<html><i>%s</i>", villainName));
+		else
+			villainNameLabel.setText(villainName);
 		if (villainColour == 'r')
 			villainNameLabel.setForeground(Color.RED);
 		else
 			villainNameLabel.setForeground(Color.BLACK);
-		if (currentPlayer == villainColour && currentPlayer != 0)
-			villainNameLabel.setBackground(Color.YELLOW);
 		villainMarblesLabel
 				.setText(String.format("%d marbles", villainMarbles));
 		if (pointsVisible)
 			villainPointsLabel.setText(String
 					.format("%d points", villainPoints));
+		villainPanel.repaint();
+		logger.fine("Updated hero stats");
 	}
 }

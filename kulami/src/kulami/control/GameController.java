@@ -384,7 +384,7 @@ public class GameController {
 
 			/**
 			 * Server sent new board in response to a legal move.
-			 * 
+			 * 	
 			 * @param mapCode
 			 * 
 			 */
@@ -392,6 +392,7 @@ public class GameController {
 			public void gueltig(String boardCode) {
 				// TODO Verify the new board.
 				// TODO display that the opponent is now making a move
+				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b' : 'r');
 			}
 
 			/**
@@ -405,6 +406,7 @@ public class GameController {
 				game.updateGame(boardCode);
 				// TODO display new board
 				// TODO Make move
+				statusDisplayer.setCurrentPlayer(playerColour);
 			}
 
 			/**
