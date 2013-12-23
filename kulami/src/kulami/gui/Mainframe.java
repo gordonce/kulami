@@ -5,6 +5,7 @@ package kulami.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Event;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -12,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -23,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 
 import kulami.control.MainframeAdapter;
 import kulami.game.GameObservable;
@@ -209,8 +212,11 @@ public class Mainframe extends JFrame {
 	private JMenuBar initMainMenu() {
 		JMenuBar mainMenu = new JMenuBar();
 		JMenu playerMenu = new JMenu("Spieler");
+		playerMenu.setMnemonic(KeyEvent.VK_S);
 
 		JMenuItem addPlayer = new JMenuItem("Neuer Spieler");
+		addPlayer.setMnemonic(KeyEvent.VK_N);
+		addPlayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Event.CTRL_MASK));
 		addPlayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -220,8 +226,11 @@ public class Mainframe extends JFrame {
 		playerMenu.add(addPlayer);
 
 		JMenu gameMenu = new JMenu("Server");
+		gameMenu.setMnemonic(KeyEvent.VK_V);
 
 		JMenuItem startGame = new JMenuItem("Spiel starten");
+		startGame.setMnemonic(KeyEvent.VK_S);
+		startGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
 		startGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -231,6 +240,7 @@ public class Mainframe extends JFrame {
 		gameMenu.add(startGame);
 
 		JMenuItem abortGame = new JMenuItem("Spiel abbrechen");
+		abortGame.setMnemonic(KeyEvent.VK_B);
 		abortGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -240,8 +250,10 @@ public class Mainframe extends JFrame {
 		gameMenu.add(abortGame);
 
 		JMenu boardMenu = new JMenu("Spielfeld");
+		boardMenu.setMnemonic(KeyEvent.VK_F);
 
 		JMenuItem newGameMap = new JMenuItem("Spielfeld erstellen");
+		newGameMap.setMnemonic(KeyEvent.VK_E);
 		newGameMap.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -251,6 +263,7 @@ public class Mainframe extends JFrame {
 		boardMenu.add(newGameMap);
 
 		JMenuItem editGameMap = new JMenuItem("Spielfeld bearbeiten");
+		editGameMap.setMnemonic(KeyEvent.VK_B);
 		editGameMap.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -260,6 +273,7 @@ public class Mainframe extends JFrame {
 		boardMenu.add(editGameMap);
 
 		JMenuItem loadGameMap = new JMenuItem("Spielfeld laden");
+		loadGameMap.setMnemonic(KeyEvent.VK_L);
 		loadGameMap.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
