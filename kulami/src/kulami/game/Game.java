@@ -40,6 +40,11 @@ public class Game implements GameObservable {
 		informObservers();
 	}
 	
+	public void updateGame(String mapCode) {
+		gameMap.updateGameMap(mapCode);
+		informObservers();
+	}
+	
 	public void pushMap() {
 		for (GameObserver observer: gameObservers)
 			observer.boardChanged(this);

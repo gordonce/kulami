@@ -14,6 +14,7 @@ import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import kulami.game.GameMap;
 import kulami.game.Pos;
@@ -79,6 +80,13 @@ public class MapPainter {
 			tiles.get(i).setMarble(
 					Integer.parseInt(mapCode
 							.substring((i * 2 + 1), (i * 2 + 2))));
+		SwingUtilities.invokeLater(new Runnable() {
+			
+			@Override
+			public void run() {
+				board.repaint();
+			}
+		});
 	}
 	
 	public void registerTileListeners(MouseListener tileListener) {

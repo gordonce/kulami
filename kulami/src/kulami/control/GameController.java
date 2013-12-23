@@ -3,7 +3,10 @@
  */
 package kulami.control;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
+
+import javax.swing.SwingUtilities;
 
 import kulami.connectivity.InProtocolObserver;
 import kulami.connectivity.MessageSender;
@@ -84,81 +87,81 @@ public class GameController {
 	 */
 	private void initMainframe() {
 		mainframe = new Mainframe(new MainframeAdapter() {
-			
+
 			@Override
 			public void startGameClicked() {
 				showNewGameDialog();
 			}
-			
+
 			@Override
 			public void previousMovesDeactivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void previousMovesActivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void possibleMovesDeactivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void possibleMovesActivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void newPlayerClicked() {
 				showPlayerDialog();
 			}
-			
+
 			@Override
 			public void newGameMapClicked() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void messageEntered(String message) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void loadGameMapClicked() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void editGameMapClicked() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void boardPossessionDeactivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void boardPossessionActivated() {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void abortGameClicked() {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 	}
@@ -398,7 +401,8 @@ public class GameController {
 			 * 
 			 */
 			@Override
-			public void zug(String boardCode) {
+			public void zug(final String boardCode) {
+				game.updateGame(boardCode);
 				// TODO display new board
 				// TODO Make move
 			}
@@ -438,7 +442,7 @@ public class GameController {
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
 		gameDisplay = mainframe.initGameDisplay(game, new GameDisplayAdapter() {
-			
+
 			@Override
 			public void tileClicked(Pos pos) {
 				logger.finer("User clicked on tile at pos " + pos);
@@ -449,7 +453,6 @@ public class GameController {
 		// TODO make the game display show the empty board
 		game.pushMap();
 	}
-	
 
 	private Player createPlayer() {
 		Owner owner;
