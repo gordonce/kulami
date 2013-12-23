@@ -384,7 +384,7 @@ public class GameController {
 
 			/**
 			 * Server sent new board in response to a legal move.
-			 * 	
+			 * 
 			 * @param mapCode
 			 * 
 			 */
@@ -392,7 +392,8 @@ public class GameController {
 			public void gueltig(String boardCode) {
 				// TODO Verify the new board.
 				// TODO display that the opponent is now making a move
-				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b' : 'r');
+				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b'
+						: 'r');
 			}
 
 			/**
@@ -448,8 +449,13 @@ public class GameController {
 			@Override
 			public void tileClicked(Pos pos) {
 				logger.finer("User clicked on tile at pos " + pos);
-				game.placeMarble(pos);
-				messageSender.makeMove(pos.getCol(), pos.getRow());
+				if (game.isLegalMove(pos)) {
+					logger.fine("field is legal");
+					game.placeMarble(pos);
+					messageSender.makeMove(pos.getCol(), pos.getRow());
+				} else {
+					logger.fine("field is illegal");
+				}
 			}
 		});
 		// TODO make the game display show the empty board

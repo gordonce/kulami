@@ -50,6 +50,14 @@ public class Game implements GameObservable {
 			observer.boardChanged(this);
 	}
 	
+	public boolean isLegalMove(Pos pos) {
+		List<Pos> legalFields = gameMap.getLegalFields();
+		logger.finest("legal fields:");
+		for (Pos p: legalFields)
+			logger.finest(p.toString());
+		return legalFields.contains(pos);
+	}
+	
 	@Override
 	public GameMap getGameMap() {
 		return gameMap;

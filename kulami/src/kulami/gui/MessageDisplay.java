@@ -3,7 +3,7 @@
  */
 package kulami.gui;
 
-import javax.swing.text.JTextComponent;
+import javax.swing.JTextArea;
 
 /**
  * MessageDisplay handles displaying of messages in a text panel shown to the
@@ -15,14 +15,14 @@ import javax.swing.text.JTextComponent;
  */
 public class MessageDisplay implements MessagePager {
 
-	private JTextComponent textPager;
+	private JTextArea textPager;
 
 	/**
 	 * The constructor takes a ServerProxy object and a text panel.
 	 * 
 	 * @param textPager
 	 */
-	public MessageDisplay(JTextComponent textPager) {
+	public MessageDisplay(JTextArea textPager) {
 		this.textPager = textPager;
 	}
 
@@ -30,7 +30,8 @@ public class MessageDisplay implements MessagePager {
 	 * @see kulami.gui.MessagePager#display(java.lang.String)
 	 */
 	public void display(String message) {
-		textPager.setText(textPager.getText() + "\n" + message);
+		textPager.append(textPager.getText() + "\n" + message);
+		textPager.setCaretPosition(textPager.getDocument().getLength());
 	}
 
 }

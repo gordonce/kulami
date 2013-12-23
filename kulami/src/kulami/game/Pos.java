@@ -32,4 +32,17 @@ public class Pos {
 		return "[" + row + "," + col + "]";
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Pos) {
+			Pos that = (Pos)obj;
+			return this.row == that.row && this.col == that.col;
+		} else
+			return false;
+	}
+
+	
 }

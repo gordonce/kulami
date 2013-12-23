@@ -183,6 +183,7 @@ public class Mainframe extends JFrame {
 
 		messageTextArea = new JTextArea();
 		messageTextArea.setEditable(false);
+		messageTextArea.setLineWrap(true);
 		JScrollPane messageScrollPane = new JScrollPane(messageTextArea,
 				JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
