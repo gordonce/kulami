@@ -24,6 +24,8 @@ import kulami.gui.ChooseBoardDialogAdapter;
 import kulami.gui.GameDisplay;
 import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
+import kulami.gui.MapEditor;
+import kulami.gui.MapEditorAdapter;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.NewGameDialogAdapter;
@@ -43,7 +45,6 @@ import kulami.gui.StatusDisplayer;
 public class GameController {
 
 	private Mainframe mainframe;
-	private MainframeAdapter mainframeAdapter;
 
 	private PlayerDialog playerDialog;
 
@@ -66,6 +67,8 @@ public class GameController {
 	private ChooseBoardDialog chooseBoardDialog;
 	private GameDisplayAdapter gameDisplayAdapter;
 	private char playerColour;
+
+	private MapEditor mapEditor;
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.control.GameController");
@@ -124,8 +127,7 @@ public class GameController {
 
 			@Override
 			public void newGameMapClicked() {
-				// TODO Auto-generated method stub
-
+				showMapEditor();
 			}
 
 			@Override
@@ -163,6 +165,15 @@ public class GameController {
 				// TODO Auto-generated method stub
 
 			}
+		});
+	}
+
+	/**
+	 * 
+	 */
+	private void showMapEditor() {
+		// TODO Auto-generated method stub
+		mapEditor = new MapEditor(new MapEditorAdapter() {
 		});
 	}
 
