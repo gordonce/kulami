@@ -42,8 +42,10 @@ import kulami.game.GameObservable;
  */
 public class Mainframe extends JFrame {
 
+	public static final int FIELDSIZE = 60;
+	
 	private MainframeAdapter mainframeAdapter;
-
+	
 	// GUI elements
 	private JTextArea messageTextArea;
 	private JPanel board;

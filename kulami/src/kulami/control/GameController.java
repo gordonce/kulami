@@ -29,6 +29,7 @@ import kulami.gui.MapEditorAdapter;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.NewGameDialogAdapter;
+import kulami.gui.Orientation;
 import kulami.gui.PlayerDialog;
 import kulami.gui.PlayerDialogAdapter;
 import kulami.gui.StatusDisplayer;
@@ -174,6 +175,24 @@ public class GameController {
 	private void showMapEditor() {
 		// TODO Auto-generated method stub
 		mapEditor = new MapEditor(new MapEditorAdapter() {
+
+			@Override
+			public void newPanelSelected(int size, Orientation orientation) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void saveMap() {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void closeMapEditor() {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
 
