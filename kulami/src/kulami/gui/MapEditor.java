@@ -14,7 +14,6 @@ import java.awt.event.KeyEvent;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,6 +21,8 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
+
+import kulami.game.GameMap;
 
 /**
  * @author gordon
@@ -36,6 +37,7 @@ public class MapEditor extends JFrame {
 	private int fourFieldsLeft = 5;
 	private int threeFieldsLeft = 4;
 	private int twoFieldsLeft = 4;
+	private MapPainter mapPainter;
 
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
 		this.mapEditorAdapter = mapEditorAdapter;
@@ -43,6 +45,10 @@ public class MapEditor extends JFrame {
 		setVisible(true);
 	}
 
+	public void drawMap(GameMap gameMap) {
+		mapPainter.drawMap(gameMap);
+	}
+	
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
@@ -50,8 +56,9 @@ public class MapEditor extends JFrame {
 
 		JPanel leftPanel = initLeftPanel();
 
-		initBoard();
-
+		JPanel board = initBoard();
+		mapPainter = new MapPainter(board);
+		
 		setJMenuBar(menu);
 		add(leftPanel, BorderLayout.WEST);
 		add(board, BorderLayout.CENTER);
@@ -163,11 +170,12 @@ public class MapEditor extends JFrame {
 		return leftPanel;
 	}
 
-	private void initBoard() {
-		board = new JPanel();
+	private JPanel initBoard() {
+		JPanel board = new JPanel();
 		board.setLayout(new GridLayout(10, 10, 0, 0));
 		board.setPreferredSize(new Dimension(Mainframe.FIELDSIZE * 10,
 				Mainframe.FIELDSIZE * 10));
+		return board;
 	}
 
 }

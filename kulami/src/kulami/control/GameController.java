@@ -174,26 +174,7 @@ public class GameController {
 	 */
 	private void showMapEditor() {
 		// TODO Auto-generated method stub
-		mapEditor = new MapEditor(new MapEditorAdapter() {
-
-			@Override
-			public void newPanelSelected(int size, Orientation orientation) {
-				// TODO Auto-generated method stub
-				logger.fine(String.format("Inserting panel size %d (%s)", size, orientation));
-			}
-
-			@Override
-			public void saveMap() {
-				// TODO Auto-generated method stub
-				
-			}
-
-			@Override
-			public void closeMapEditor() {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+		new MapEditorController(this);
 	}
 
 	/**
