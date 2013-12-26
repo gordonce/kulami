@@ -4,23 +4,24 @@
 package kulami.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Event;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
+import javax.swing.ButtonGroup;
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
-import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 
 /**
  * @author gordon
@@ -35,8 +36,6 @@ public class MapEditor extends JFrame {
 	private int fourFieldsLeft = 5;
 	private int threeFieldsLeft = 4;
 	private int twoFieldsLeft = 4;
-
-	private Orientation orientation = Orientation.Horizontal;
 
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
 		this.mapEditorAdapter = mapEditorAdapter;
@@ -102,60 +101,64 @@ public class MapEditor extends JFrame {
 
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel();
+		leftPanel
+				.setPreferredSize(new Dimension(150, Mainframe.FIELDSIZE * 10));
 
-		leftPanel.setPreferredSize(new Dimension(Mainframe.FIELDSIZE * 6,
-				Mainframe.FIELDSIZE * 10));
+		JPanel sizeSelectionPanel = new JPanel(new GridLayout(4, 1));
+		sizeSelectionPanel.setBorder(new TitledBorder("Holzplattengröße"));
+		sizeSelectionPanel.setPreferredSize(new Dimension(150,
+				Mainframe.FIELDSIZE * 4));
+		// panelSelectionPanel.add(new JLabel("<html><b>Holzplattengröße</b>"));
+		final ButtonGroup sizeSelectionGroup = new ButtonGroup();
+		JRadioButton sixButton = new JRadioButton("6 Felder", true);
+		sixButton.setActionCommand("6");
+		sizeSelectionGroup.add(sixButton);
+		sizeSelectionPanel.add(sixButton);
+		JRadioButton fourButton = new JRadioButton("4 Felder", false);
+		fourButton.setActionCommand("4");
+		sizeSelectionGroup.add(fourButton);
+		sizeSelectionPanel.add(fourButton);
+		JRadioButton threeButton = new JRadioButton("3 Felder", false);
+		threeButton.setActionCommand("3");
+		sizeSelectionGroup.add(threeButton);
+		sizeSelectionPanel.add(threeButton);
+		JRadioButton twoButton = new JRadioButton("2 Felder", false);
+		twoButton.setActionCommand("2");
+		sizeSelectionGroup.add(twoButton);
+		sizeSelectionPanel.add(twoButton);
 
-		JPanel fieldsPanel = new JPanel(new GridLayout(4, 1, 5, 5));
+		JPanel orientationPanel = new JPanel(new GridLayout(2, 1));
+		orientationPanel.setBorder(new TitledBorder("Ausrichtung"));
+		orientationPanel.setPreferredSize(new Dimension(150,
+				Mainframe.FIELDSIZE * 2));
+		// orientationPanel.add(new JLabel("<html><b>Ausrichtung</b>"));
+		final ButtonGroup orientationGroup = new ButtonGroup();
+		JRadioButton horizontalButton = new JRadioButton("Horizontal", true);
+		horizontalButton.setActionCommand("horizontal");
+		orientationGroup.add(horizontalButton);
+		orientationPanel.add(horizontalButton);
+		JRadioButton verticalButton = new JRadioButton("Vertikal", false);
+		verticalButton.setActionCommand("vertical");
+		orientationGroup.add(verticalButton);
+		orientationPanel.add(verticalButton);
 
-		leftPanel.add(fieldsPanel);
-		
-		JPanel sixFields = new JPanel();
-		sixFields.setLayout(new GridLayout(6, 6, 0, 0));
-		sixFields.addMouseListener(new MouseAdapter() {
+		JButton addButton = new JButton("Hinzufügen");
+
+		addButton.addActionListener(new ActionListener() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (sixFieldsLeft > 0)
-					mapEditorAdapter.newPanelSelected(6, orientation);
-			}
-
-		});
-		
-		JPanel fourFields = new JPanel();
-		fourFields.setLayout(new GridLayout(4, 4, 0, 0));
-		fourFields.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (fourFieldsLeft > 0)
-					mapEditorAdapter.newPanelSelected(4, orientation);
-			}
-		});
-		
-		JPanel threeFields = new JPanel();
-		threeFields.setLayout(new GridLayout(3, 3, 0, 0));
-		threeFields.setBorder(new LineBorder(Color.BLACK, 3));
-		threeFields.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (threeFieldsLeft > 0)
-					mapEditorAdapter.newPanelSelected(3, orientation);
+			public void actionPerformed(ActionEvent e) {
+				int size = Integer.parseInt(sizeSelectionGroup.getSelection()
+						.getActionCommand());
+				Orientation orientation = orientationGroup.getSelection()
+						.getActionCommand().equals("horizontal") ? Orientation.Horizontal
+						: Orientation.Vertical;
+				mapEditorAdapter.newPanelSelected(size, orientation);
 			}
 		});
 
-		JPanel twoFields = new JPanel();
-		twoFields.setLayout(new GridLayout(2, 2, 0, 0));
-		twoFields.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				if (twoFieldsLeft > 0)
-					mapEditorAdapter.newPanelSelected(2, orientation);
-			}
-		});
-
-		fieldsPanel.add(sixFields);
-		fieldsPanel.add(fourFields);
-		fieldsPanel.add(threeFields);
-		fieldsPanel.add(twoFields);
+		leftPanel.add(sizeSelectionPanel);
+		leftPanel.add(orientationPanel);
+		leftPanel.add(addButton);
 
 		return leftPanel;
 	}
@@ -166,5 +169,5 @@ public class MapEditor extends JFrame {
 		board.setPreferredSize(new Dimension(Mainframe.FIELDSIZE * 10,
 				Mainframe.FIELDSIZE * 10));
 	}
-	
+
 }

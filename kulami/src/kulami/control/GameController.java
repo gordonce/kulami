@@ -179,7 +179,7 @@ public class GameController {
 			@Override
 			public void newPanelSelected(int size, Orientation orientation) {
 				// TODO Auto-generated method stub
-				
+				logger.fine(String.format("Inserting panel size %d (%s)", size, orientation));
 			}
 
 			@Override
