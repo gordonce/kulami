@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
@@ -31,12 +33,6 @@ import kulami.game.GameMap;
 public class MapEditor extends JFrame {
 
 	private MapEditorAdapter mapEditorAdapter;
-	private JPanel board;
-
-	private int sixFieldsLeft = 4;
-	private int fourFieldsLeft = 5;
-	private int threeFieldsLeft = 4;
-	private int twoFieldsLeft = 4;
 	private MapPainter mapPainter;
 
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
@@ -47,6 +43,7 @@ public class MapEditor extends JFrame {
 
 	public void drawMap(GameMap gameMap) {
 		mapPainter.drawMap(gameMap);
+		initTileListeners();
 	}
 	
 	private void initGUI() {
@@ -178,4 +175,23 @@ public class MapEditor extends JFrame {
 		return board;
 	}
 
+	private void initTileListeners() {
+		mapPainter.registerTileListeners(new MouseAdapter() {
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
+			 */
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Object source = e.getSource();
+				TileComponent tile;
+				if (source instanceof TileComponent)
+					tile = (TileComponent) e.getSource();
+				else
+					return;
+				mapEditorAdapter.tileClicked(tile.getPos());
+				
+			}
+		});
+	}
 }

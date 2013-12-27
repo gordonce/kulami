@@ -123,4 +123,13 @@ class TileComponent extends JComponent implements MouseListener {
 		active = false;
 		repaint();
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "TileComponent [tileImage=" + tileImage + ", marble=" + marble
+				+ ", active=" + active + ", pos=" + pos + "]";
+	}
 }

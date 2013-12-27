@@ -59,4 +59,8 @@ public class Field {
 		}
 		return false;
 	}
+	
+	public void setPanel(Panel panel) {
+		this.panel = panel;
+	}
 }

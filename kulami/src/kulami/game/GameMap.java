@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import kulami.gui.Orientation;
 
 /**
  * GameMap represents a map of 17 panels together with its current
@@ -24,6 +27,9 @@ public class GameMap {
 	private Field[][] fieldMatrix = new Field[10][10];
 	private Pattern fieldPattern;
 	private List<Move> history;
+
+	private static final Logger logger = Logger
+			.getLogger("kulami.game.GameMap");
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -45,7 +51,17 @@ public class GameMap {
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
 	}
-	
+
+	/**
+	 * A factory method to construct an empty GameMap.
+	 * 
+	 * @return
+	 */
+	public static GameMap getEmpyMap() {
+		String emptyCode = new String(new char[100]).replace("\0", "a0");
+		return new GameMap(emptyCode);
+	}
+
 	/**
 	 * Set the owner of all fields to None.
 	 */
@@ -180,6 +196,158 @@ public class GameMap {
 			if (panel.getOwner() == owner)
 				points += panel.getSize();
 		return points;
+	}
+
+	/**
+	 * @param size
+	 *            Panel of size 6, 4, 3, or 2
+	 * @param orientation
+	 *            Horizontal or vertical
+	 * @param pos
+	 *            Position of the upper left corner
+	 */
+	public void insertPanel(int size, Orientation orientation, Pos pos) {
+		logger.finer(String.format(
+				"Trying to insert panel of size %d at position %s", size, pos));
+		// is a slot for the size left?
+		int row = pos.getRow();
+		int col = pos.getCol();
+		Pos[] fields;
+
+		if (size == 6)
+			for (char ch = 'b'; ch <= 'e'; ch++)
+				if (!panelPlaced(ch)) {
+					// is space left for the panel
+					if (orientation == Orientation.Horizontal) {
+						if (col <= 7 && row <= 8) {
+							fields = new Pos[] { pos, new Pos(row, col + 1),
+									new Pos(row, col + 2),
+									new Pos(row + 1, col),
+									new Pos(row + 1, col + 1),
+									new Pos(row + 1, col + 2) };
+						} else {
+							// TODO throw
+							return;
+						}
+					} else {
+						if (col <= 8 && row <= 7) {
+							fields = new Pos[] { pos, new Pos(row, col + 1),
+									new Pos(row + 1, col),
+									new Pos(row + 1, col + 1),
+									new Pos(row + 2, col),
+									new Pos(row + 2, col + 1) };
+						} else {
+							// TODO throw
+							return;
+						}
+					}
+					if (fieldsEmpty(fields)) {
+						logger.finer(String
+								.format("Inserting panel at %s", pos));
+
+						putPanelOnFields(panels.get(ch), fields);
+					}
+				}
+
+		if (size == 4)
+			for (char ch = 'f'; ch <= 'j'; ch++)
+				if (!panelPlaced(ch)) {
+					// is space left for the panel
+					if (col <= 8 && row <= 8) {
+						fields = new Pos[] { pos, new Pos(row, col + 1),
+								new Pos(row + 1, col),
+								new Pos(row + 1, col + 1) };
+					} else {
+						// TODO throw
+						return;
+					}
+					if (fieldsEmpty(fields)) {
+						logger.finer(String
+								.format("Inserting panel at %s", pos));
+
+						putPanelOnFields(panels.get(ch), fields);
+					}
+				}
+
+		if (size == 3)
+			for (char ch = 'k'; ch <= 'n'; ch++)
+				if (!panelPlaced(ch)) {
+					// is space left for the panel
+					if (orientation == Orientation.Horizontal) {
+						if (col <= 7) {
+							fields = new Pos[] { pos, new Pos(row, col + 1),
+									new Pos(row, col + 2) };
+						} else {
+							// TODO throw
+							return;
+						}
+					} else {
+						if (row <= 7) {
+							fields = new Pos[] { pos, new Pos(row + 1, col),
+									new Pos(row + 2, col) };
+						} else {
+							// TODO throw
+							return;
+						}
+					}
+					if (fieldsEmpty(fields)) {
+						logger.finer(String
+								.format("Inserting panel at %s", pos));
+
+						putPanelOnFields(panels.get(ch), fields);
+					}
+				}
+
+		if (size == 2)
+			for (char ch = 'o'; ch <= 'r'; ch++)
+				if (!panelPlaced(ch)) {
+					// is space left for the panel
+					if (orientation == Orientation.Horizontal) {
+						if (col <= 8) {
+							fields = new Pos[] { pos, new Pos(row, col + 1) };
+						} else {
+							// TODO throw
+							return;
+						}
+					} else {
+						if (row <= 8) {
+							fields = new Pos[] { pos, new Pos(row + 1, col) };
+						} else {
+							// TODO throw
+							return;
+						}
+					}
+					if (fieldsEmpty(fields)) {
+						logger.finer(String
+								.format("Inserting panel at %s", pos));
+
+						putPanelOnFields(panels.get(ch), fields);
+					}
+				}
+
+	}
+
+	private boolean fieldsEmpty(Pos[] fields) {
+		for (Pos pos : fields)
+			if (getField(pos).getPanel().getName() != 'a')
+				return false;
+		return true;
+	}
+
+	private boolean panelPlaced(char name) {
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++)
+				if (getField(new Pos(row, col)).getPanel().getName() == name)
+					return true;
+		return false;
+
+	}
+
+	private void putPanelOnFields(Panel panel, Pos[] fields) {
+		for (Pos pos : fields) {
+			logger.finer(String.format("Putting panel on %s", pos));
+			getField(pos).setPanel(panel);
+		}
 	}
 
 	private void parseMapCode(String mapCode) {

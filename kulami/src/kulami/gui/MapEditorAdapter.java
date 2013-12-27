@@ -3,6 +3,8 @@
  */
 package kulami.gui;
 
+import kulami.game.Pos;
+
 /**
  * @author gordon
  *
@@ -14,5 +16,12 @@ public interface MapEditorAdapter {
 	public void saveMap();
 	
 	public void closeMapEditor();
+	
+	public void placePanel(Pos pos);
+
+	/**
+	 * @param pos
+	 */
+	public void tileClicked(Pos pos);
 	
 }

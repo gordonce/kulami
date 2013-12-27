@@ -3,10 +3,7 @@
  */
 package kulami.control;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Logger;
-
-import javax.swing.SwingUtilities;
 
 import kulami.connectivity.InProtocolObserver;
 import kulami.connectivity.MessageSender;
@@ -25,11 +22,9 @@ import kulami.gui.GameDisplay;
 import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
 import kulami.gui.MapEditor;
-import kulami.gui.MapEditorAdapter;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.NewGameDialogAdapter;
-import kulami.gui.Orientation;
 import kulami.gui.PlayerDialog;
 import kulami.gui.PlayerDialogAdapter;
 import kulami.gui.StatusDisplayer;
@@ -174,7 +169,7 @@ public class GameController {
 	 */
 	private void showMapEditor() {
 		// TODO Auto-generated method stub
-		new MapEditorController(this);
+		new MapEditorController();
 	}
 
 	/**
