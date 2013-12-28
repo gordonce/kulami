@@ -12,13 +12,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
@@ -34,6 +41,9 @@ public class MapEditor extends JFrame {
 
 	private MapEditorAdapter mapEditorAdapter;
 	private MapPainter mapPainter;
+	
+	private static final Logger logger = Logger
+			.getLogger("kulami.gui.MapEditor");
 
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
 		this.mapEditorAdapter = mapEditorAdapter;
@@ -45,7 +55,35 @@ public class MapEditor extends JFrame {
 		mapPainter.drawMap(gameMap);
 		initTileListeners();
 	}
-	
+
+	/**
+	 * @param gameMap
+	 */
+	public void saveMap(GameMap gameMap) {
+		String mapCode = gameMap.getMapCode();
+		JFileChooser chooser = new JFileChooser();
+		int result = chooser.showSaveDialog(this);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			File file = chooser.getSelectedFile();
+			try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
+				writer.println(mapCode);
+				logger.info(String.format("Board\n%s \n in Datei %s geschrieben.", gameMap.toString(), file.toString()));
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(this, String.format(
+						"Fehler beim Schreiben in Datei %s : %s",
+						file.getName(), e.getMessage()), "Fehler",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		}
+	}
+
+	/**
+	 * MapEditor schließen.
+	 */
+	public void clearAndHide() {
+		setVisible(false);
+	}
+
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
@@ -55,7 +93,7 @@ public class MapEditor extends JFrame {
 
 		JPanel board = initBoard();
 		mapPainter = new MapPainter(board);
-		
+
 		setJMenuBar(menu);
 		add(leftPanel, BorderLayout.WEST);
 		add(board, BorderLayout.CENTER);
@@ -178,8 +216,12 @@ public class MapEditor extends JFrame {
 	private void initTileListeners() {
 		mapPainter.registerTileListeners(new MouseAdapter() {
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.MouseAdapter#mouseClicked(java.awt.event.MouseEvent
+			 * )
 			 */
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -190,7 +232,7 @@ public class MapEditor extends JFrame {
 				else
 					return;
 				mapEditorAdapter.tileClicked(tile.getPos());
-				
+
 			}
 		});
 	}

@@ -68,8 +68,7 @@ public class MapEditorController implements MapEditorAdapter {
 	 */
 	@Override
 	public void saveMap() {
-		// TODO save map
-
+		mapEditor.saveMap(gameMap);
 	}
 
 	/*
@@ -80,7 +79,7 @@ public class MapEditorController implements MapEditorAdapter {
 	@Override
 	public void closeMapEditor() {
 		// TODO Auto-generated method stub
-
+		mapEditor.clearAndHide();
 	}
 
 	/*
