@@ -13,24 +13,25 @@ package kulami.game;
 class Field {
 	private Panel panel;
 	private Owner owner;
+	private Pos pos;
 
 	/**
 	 * Create a new Field that belongs to a Panel and has an Owner. A Field
-	 * always has a Panel and an Owner. The Panel is immutable, but the Owner
-	 * can be changed.
+	 * always has a Panel and an Owner.
 	 * 
 	 * @param panel
 	 * @param owner
 	 */
-	public Field(Panel panel, Owner owner) {
+	public Field(Panel panel, Owner owner, Pos pos) {
 		this.panel = panel;
 		this.owner = owner;
+		this.pos = pos;
 	}
 
 	/**
 	 * Return the current Owner of the Field.
 	 * 
-	 * @return
+	 * @return The Owner
 	 */
 	public Owner getOwner() {
 		return owner;
@@ -39,28 +40,19 @@ class Field {
 	/**
 	 * Return the Panel that the Field belongs to.
 	 * 
-	 * @return
+	 * @return The Panel
 	 */
 	public Panel getPanel() {
 		return panel;
 	}
-
-	/**
-	 * Set the Owner of the Field. The Owner of the Panel that the Field belongs
-	 * to is automatically updated.
-	 * 
-	 * @param owner
-	 */
-	public boolean setOwner(Owner owner) {
-		if (this.owner != owner) {
-			this.owner = owner;
-			panel.updateOwner();
-			return true;
-		}
-		return false;
-	}
 	
-	public void setPanel(Panel panel) {
-		this.panel = panel;
+	/**
+	 * Return the position of the Field on the board.
+	 * 
+	 * @return The position
+	 */
+	public Pos getPos() {
+		return pos;
 	}
+
 }

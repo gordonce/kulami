@@ -13,20 +13,32 @@ public class Pos {
 	private int row;
 	private int col;
 
-	/**
-	 * Construct an immutable position with a row starting with row 1 at the top
-	 * and a column starting with row 1 at the left side of a board.
-	 * 
-	 * @param row
-	 *            Row between 1 and 10
-	 * @param col
-	 *            Column between 1 and 10
-	 */
-	public Pos(int row, int col) {
+	private static Pos[][] positions = new Pos[10][10];
+
+	static {
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++)
+				positions[row][col] = new Pos(row, col);
+	}
+
+	private Pos(int row, int col) {
 		assert row >= 0 && row < 10;
 		assert col >= 0 && col < 10;
 		this.row = row;
 		this.col = col;
+	}
+
+	/**
+	 * Get an immutable position with a row starting with row 1 at the top and a
+	 * column starting with row 1 at the left side of a board.
+	 * 
+	 * @param row
+	 *            Row between 0 and 9
+	 * @param col
+	 *            Column between 0 and 9
+	 */
+	public static Pos getPos(int row, int col) {
+		return positions[row][col];
 	}
 
 	/**

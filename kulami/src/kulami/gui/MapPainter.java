@@ -66,12 +66,12 @@ public class MapPainter {
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
 				Image tileImg = tileImages.get(row * 10 + col);
-				TileComponent tileComp = new TileComponent(tileImg, new Pos(
+				TileComponent tileComp = new TileComponent(tileImg, Pos.getPos(
 						row, col));
 				board.add(tileComp);
 				tiles.add(tileComp);
 			}
-//		board.repaint();
+		// board.repaint();
 		board.revalidate();
 	}
 

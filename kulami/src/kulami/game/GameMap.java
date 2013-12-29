@@ -4,7 +4,6 @@
 package kulami.game;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -15,8 +14,8 @@ import kulami.gui.Orientation;
 
 /**
  * GameMap represents a map of 17 panels together with its current
- * configuration. The shape of a 10x10-map is immutable. Only the owners of
- * fields can be changed.
+ * configuration. A GameMap is immutable so that it is easy to try different
+ * moves without changing the original GameMap.
  * 
  * @author gordon
  * 
@@ -24,8 +23,8 @@ import kulami.gui.Orientation;
 public class GameMap {
 
 	private Map<Character, Panel> panels;
-	private Field[][] fieldMatrix = new Field[10][10];
-	private Pattern fieldPattern;
+	private Field[][] fields = new Field[10][10];
+	private Pattern fieldPattern = Pattern.compile("([a-r])([0-2])");
 	private List<Move> history;
 
 	private static final Logger logger = Logger
@@ -46,10 +45,15 @@ public class GameMap {
 	 */
 	public GameMap(String mapCode) {
 		history = new ArrayList<>();
-		fieldPattern = Pattern.compile("([a-r])([0-2])");
-		initializeBoards();
 		// TODO catch exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
+	}
+
+	private GameMap(Map<Character, Panel> panels, Field[][] fields,
+			List<Move> history) {
+		this.panels = panels;
+		this.fields = fields;
+		this.history = history;
 	}
 
 	/**
@@ -63,12 +67,18 @@ public class GameMap {
 	}
 
 	/**
-	 * Set the owner of all fields to None.
+	 * Set the owner of all fields to None and erase the history.
 	 */
-	public void clearOwners() {
+	public GameMap clearOwners() {
+		Field[][] newFields = new Field[10][10];
 		for (int row = 0; row < 10; row++)
-			for (int col = 0; col < 10; col++)
-				fieldMatrix[row][col].setOwner(Owner.None);
+			for (int col = 0; col < 10; col++) {
+				Field field = fields[row][col];
+				Panel panel = field.getPanel();
+				Pos pos = field.getPos();
+				newFields[row][col] = new Field(panel, Owner.None, pos);
+			}
+		return new GameMap(panels, newFields, new ArrayList<Move>());
 	}
 
 	public ArrayList<Pos> getLegalFields() {
@@ -82,7 +92,7 @@ public class GameMap {
 			nextToLastMove = history.get(size - 2).getPos();
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
-				Pos pos = new Pos(row, col);
+				Pos pos = Pos.getPos(row, col);
 				if (isLegal(pos, lastMove, nextToLastMove))
 					legalMoves.add(pos);
 			}
@@ -117,7 +127,7 @@ public class GameMap {
 	}
 
 	public Field getField(Pos pos) {
-		return fieldMatrix[pos.getRow()][pos.getCol()];
+		return fields[pos.getRow()][pos.getCol()];
 	}
 
 	/**
@@ -129,7 +139,7 @@ public class GameMap {
 	 */
 	public String getMapCode() {
 		StringBuilder mapCode = new StringBuilder();
-		for (Field[] row : fieldMatrix)
+		for (Field[] row : fields)
 			for (Field field : row) {
 				mapCode.append(field.getPanel().getName());
 				mapCode.append(field.getOwner().getIdx());
@@ -145,9 +155,28 @@ public class GameMap {
 	 * @param col
 	 * @param owner
 	 */
-	public void setOwner(Pos pos, Owner owner) {
-		if (fieldMatrix[pos.getRow()][pos.getCol()].setOwner(owner))
-			history.add(new Move(pos, owner));
+	public GameMap setOwner(Pos pos, Owner owner) {
+		Field[][] newFields = new Field[10][10];
+		List<Move> newHistory = history;
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++) {
+				Field field = fields[row][col];
+				Panel panel = field.getPanel();
+				if (row == pos.getRow() && col == pos.getCol()) {
+					newFields[row][col] = new Field(panel, owner, pos);
+					if (owner != field.getOwner())
+						newHistory = append(history, new Move(pos, owner));
+				} else
+					newFields[row][col] = field;
+			}
+		return new GameMap(panels, newFields, newHistory);
+	}
+
+	private <T> ArrayList<T> append(List<T> list, T el) {
+		ArrayList<T> newList = new ArrayList<T>();
+		newList.addAll(list);
+		newList.add(el);
+		return newList;
 	}
 
 	/**
@@ -157,13 +186,14 @@ public class GameMap {
 	 * 
 	 * @param mapCode
 	 */
-	public void updateGameMap(String mapCode) {
+	public GameMap updateGameMap(String mapCode) {
 		// TODO remove code duplication with parseMapCode
 		/*
 		 * TODO command pattern? create parse-method that takes an object //
 		 * like a higher order function that tells it what to do with // each
 		 * field
 		 */
+		GameMap newGameMap = this;
 		Matcher mapMatcher = fieldPattern.matcher(mapCode);
 		for (int row = 0; row < 10; row++) {
 			for (int col = 0; col < 10; col++) {
@@ -176,12 +206,19 @@ public class GameMap {
 						owner = Owner.Black;
 					else
 						owner = Owner.Red;
-					setOwner(new Pos(row, col), owner);
+					if (fields[row][col].getOwner() != owner) {
+						newGameMap = setOwner(Pos.getPos(row, col), owner);
+						logger.fine(String.format(
+								"Updated field at %s. New owner: %s", Pos.getPos(
+										row, col), owner));
+					}
 				} else {
 					// TODO throw exception: mapCode does not contain 100 fields
 				}
 			}
 		}
+
+		return newGameMap;
 	}
 
 	/**
@@ -206,129 +243,101 @@ public class GameMap {
 	 * @param pos
 	 *            Position of the upper left corner
 	 */
-	public void insertPanel(int size, Orientation orientation, Pos pos) {
+	public GameMap insertPanel(int size, Orientation orientation, Pos pos) {
 		logger.finer(String.format(
 				"Trying to insert panel of size %d at position %s", size, pos));
 		// is a slot for the size left?
-		int row = pos.getRow();
-		int col = pos.getCol();
-		Pos[] fields;
 
-		if (size == 6)
-			for (char ch = 'b'; ch <= 'e'; ch++)
-				if (!panelPlaced(ch)) {
-					// is space left for the panel
-					if (orientation == Orientation.Horizontal) {
-						if (col <= 7 && row <= 8) {
-							fields = new Pos[] { pos, new Pos(row, col + 1),
-									new Pos(row, col + 2),
-									new Pos(row + 1, col),
-									new Pos(row + 1, col + 1),
-									new Pos(row + 1, col + 2) };
-						} else {
-							// TODO throw
-							return;
-						}
-					} else {
-						if (col <= 8 && row <= 7) {
-							fields = new Pos[] { pos, new Pos(row, col + 1),
-									new Pos(row + 1, col),
-									new Pos(row + 1, col + 1),
-									new Pos(row + 2, col),
-									new Pos(row + 2, col + 1) };
-						} else {
-							// TODO throw
-							return;
-						}
-					}
-					if (fieldsEmpty(fields)) {
-						logger.finer(String
-								.format("Inserting panel at %s", pos));
+		int width = 0, height = 0;
+		char loCode = '\0', hiCode = '\0';
 
-						putPanelOnFields(panels.get(ch), fields);
-					}
-				}
+		switch (size) {
+		case 6:
+			loCode = 'b';
+			hiCode = 'e';
+			if (orientation == Orientation.Horizontal) {
+				width = 3;
+				height = 2;
+			} else {
+				width = 2;
+				height = 3;
+			}
+			break;
 
-		if (size == 4)
-			for (char ch = 'f'; ch <= 'j'; ch++)
-				if (!panelPlaced(ch)) {
-					// is space left for the panel
-					if (col <= 8 && row <= 8) {
-						fields = new Pos[] { pos, new Pos(row, col + 1),
-								new Pos(row + 1, col),
-								new Pos(row + 1, col + 1) };
-					} else {
-						// TODO throw
-						return;
-					}
-					if (fieldsEmpty(fields)) {
-						logger.finer(String
-								.format("Inserting panel at %s", pos));
+		case 4:
+			loCode = 'f';
+			hiCode = 'j';
+			width = 2;
+			height = 2;
+			break;
 
-						putPanelOnFields(panels.get(ch), fields);
-					}
-				}
+		case 3:
+			loCode = 'k';
+			hiCode = 'n';
+			if (orientation == Orientation.Horizontal) {
+				width = 3;
+				height = 1;
+			} else {
+				width = 1;
+				height = 3;
+			}
+			break;
 
-		if (size == 3)
-			for (char ch = 'k'; ch <= 'n'; ch++)
-				if (!panelPlaced(ch)) {
-					// is space left for the panel
-					if (orientation == Orientation.Horizontal) {
-						if (col <= 7) {
-							fields = new Pos[] { pos, new Pos(row, col + 1),
-									new Pos(row, col + 2) };
-						} else {
-							// TODO throw
-							return;
-						}
-					} else {
-						if (row <= 7) {
-							fields = new Pos[] { pos, new Pos(row + 1, col),
-									new Pos(row + 2, col) };
-						} else {
-							// TODO throw
-							return;
-						}
-					}
-					if (fieldsEmpty(fields)) {
-						logger.finer(String
-								.format("Inserting panel at %s", pos));
+		case 2:
+			loCode = 'o';
+			hiCode = 'r';
+			if (orientation == Orientation.Horizontal) {
+				width = 2;
+				height = 1;
+			} else {
+				width = 1;
+				height = 2;
+			}
+			break;
 
-						putPanelOnFields(panels.get(ch), fields);
-					}
-				}
+		}
 
-		if (size == 2)
-			for (char ch = 'o'; ch <= 'r'; ch++)
-				if (!panelPlaced(ch)) {
-					// is space left for the panel
-					if (orientation == Orientation.Horizontal) {
-						if (col <= 8) {
-							fields = new Pos[] { pos, new Pos(row, col + 1) };
-						} else {
-							// TODO throw
-							return;
-						}
-					} else {
-						if (row <= 8) {
-							fields = new Pos[] { pos, new Pos(row + 1, col) };
-						} else {
-							// TODO throw
-							return;
-						}
-					}
-					if (fieldsEmpty(fields)) {
-						logger.finer(String
-								.format("Inserting panel at %s", pos));
+		Character ch = '\0'; 
+		List<Pos> positions = getFieldsForPanel(loCode, hiCode, pos, width,
+				height, ch);
+		if (fieldsEmpty(positions)) {
+			logger.finer(String.format("Inserting panel at %s", pos));
 
-						putPanelOnFields(panels.get(ch), fields);
-					}
-				}
+			return putPanelOnFields(panels.get(ch), positions);
+		} else {
+			// TODO throw
+			return null;
+		}
 
 	}
 
-	private boolean fieldsEmpty(Pos[] fields) {
-		for (Pos pos : fields)
+	private List<Pos> getFieldsForPanel(char loCode, char hiCode, Pos pos,
+			int width, int height, Character code) {
+
+		int cornerRow = pos.getRow();
+		int cornerCol = pos.getCol();
+		List<Pos> fields = null;
+
+		for (char ch = loCode; ch <= hiCode; ch++)
+			if (!panelPlaced(ch)) {
+				code = ch;
+				// is space left for the panel
+				if (cornerCol <= 10 - width && cornerRow <= height) {
+					fields = new ArrayList<>();
+					for (int row = cornerRow; row < cornerRow + height; row++)
+						for (int col = cornerCol; col < cornerCol + width; col++)
+							fields.add(Pos.getPos(row, col));
+				} else {
+					// TODO throw
+					return null;
+				}
+			}
+		return fields;
+
+	}
+
+	private boolean fieldsEmpty(List<Pos> positions) {
+		for (Pos pos : positions)
 			if (getField(pos).getPanel().getName() != 'a')
 				return false;
 		return true;
@@ -337,17 +346,24 @@ public class GameMap {
 	private boolean panelPlaced(char name) {
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++)
-				if (getField(new Pos(row, col)).getPanel().getName() == name)
+				if (getField(Pos.getPos(row, col)).getPanel().getName() == name)
 					return true;
 		return false;
 
 	}
 
-	private void putPanelOnFields(Panel panel, Pos[] fields) {
-		for (Pos pos : fields) {
-			logger.finer(String.format("Putting panel on %s", pos));
-			getField(pos).setPanel(panel);
-		}
+	private GameMap putPanelOnFields(Panel panel, List<Pos> positions) {
+		Field[][] newFields = new Field[10][10];
+		for (int row = 0; row < 10; row++)
+			for (int col = 0; col < 10; col++) {
+				Pos pos = Pos.getPos(row, col);
+				if (positions.contains(pos)) {
+					Field field = fields[row][col];
+					newFields[row][col] = new Field(panel, field.getOwner(),
+							field.getPos());
+				}
+			}
+		return new GameMap(panels, newFields, history);
 	}
 
 	private void parseMapCode(String mapCode) {
@@ -365,42 +381,13 @@ public class GameMap {
 					else
 						owner = Owner.Red;
 					Panel panel = panels.get(boardIndex);
-					Field field = new Field(panel, owner);
-					panel.addField(field);
-					fieldMatrix[row][col] = field;
+					Field field = new Field(panel, owner, Pos.getPos(row, col));
+					fields[row][col] = field;
 				} else {
 					// TODO throw exception: mapCode does not contain 100 fields
 				}
 			}
 		}
-
-	}
-
-	/*
-	 * The internal representation of panels is a list of 18 Boards (including
-	 * one for fields without panels).
-	 */
-	private void initializeBoards() {
-		panels = new HashMap<>();
-		panels.put('a', new Panel(36, 'a', Owner.None)); // for fields without
-															// panels
-		panels.put('b', new Panel(6, 'b', Owner.None));
-		panels.put('c', new Panel(6, 'c', Owner.None));
-		panels.put('d', new Panel(6, 'd', Owner.None));
-		panels.put('e', new Panel(6, 'e', Owner.None));
-		panels.put('f', new Panel(4, 'f', Owner.None));
-		panels.put('g', new Panel(4, 'g', Owner.None));
-		panels.put('h', new Panel(4, 'h', Owner.None));
-		panels.put('i', new Panel(4, 'i', Owner.None));
-		panels.put('j', new Panel(4, 'j', Owner.None));
-		panels.put('k', new Panel(3, 'k', Owner.None));
-		panels.put('l', new Panel(3, 'l', Owner.None));
-		panels.put('m', new Panel(3, 'm', Owner.None));
-		panels.put('n', new Panel(3, 'n', Owner.None));
-		panels.put('o', new Panel(2, 'o', Owner.None));
-		panels.put('p', new Panel(2, 'p', Owner.None));
-		panels.put('q', new Panel(2, 'q', Owner.None));
-		panels.put('r', new Panel(2, 'r', Owner.None));
 
 	}
 
@@ -436,8 +423,8 @@ public class GameMap {
 		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red));
 		System.out.printf("Schwarz: %d Punkte\n",
 				gameMap.getPoints(Owner.Black));
-		gameMap.setOwner(new Pos(1, 3), Owner.Black);
-		gameMap.setOwner(new Pos(5, 3), Owner.Red);
+		gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
+		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
 		System.out.println(gameMap);
 		ArrayList<Pos> legalFields = gameMap.getLegalFields();
 		for (Pos pos : legalFields)
