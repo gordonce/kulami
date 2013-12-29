@@ -10,7 +10,7 @@ package kulami.game;
  * @author gordon
  * 
  */
-public class Field {
+class Field {
 	private Panel panel;
 	private Owner owner;
 

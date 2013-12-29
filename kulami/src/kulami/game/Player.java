@@ -11,7 +11,7 @@ package kulami.game;
 public abstract class Player {
 
 	private String name;
-	private Owner colour;
+	private char colour;
 	private int marbles;
 
 	public Player() {
@@ -22,7 +22,7 @@ public abstract class Player {
 	 * @param colour
 	 * @param marbles
 	 */
-	public Player(String name, Owner colour) {
+	public Player(String name, char colour) {
 		this.name = name;
 		this.colour = colour;
 		marbles = 20;
@@ -32,7 +32,7 @@ public abstract class Player {
 		return name;
 	}
 	
-	public Owner getCoulour() {
+	public char getCoulour() {
 		return colour;
 	}
 

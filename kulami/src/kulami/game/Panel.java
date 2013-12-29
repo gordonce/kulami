@@ -10,7 +10,7 @@ import java.util.List;
  * @author gordon
  *
  */
-public class Panel {
+class Panel {
 	private int size;
 	private char name;
 	private Owner owner;

@@ -36,7 +36,7 @@ public class Game implements GameObservable {
 	
 	public void placeMarble(Pos pos) {
 		logger.fine(String.format("%s placed marble at %s.", player, pos));
-		gameMap.setOwner(pos, player.getCoulour());
+		gameMap.setOwner(pos, player.getCoulour() == 'r' ? Owner.Red : Owner.Black);
 		informObservers();
 	}
 	

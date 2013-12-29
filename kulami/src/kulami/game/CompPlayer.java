@@ -22,7 +22,7 @@ public class CompPlayer extends Player {
 	 * @param playerName
 	 * @param owner
 	 */
-	public CompPlayer(String playerName, Owner owner) {
+	public CompPlayer(String playerName, char owner) {
 		super(playerName, owner);
 		strategy = new RandomStrategy();
 	}

@@ -13,9 +13,9 @@ import kulami.game.CompPlayer;
 import kulami.game.Game;
 import kulami.game.GameMap;
 import kulami.game.HumanPlayer;
-import kulami.game.Owner;
 import kulami.game.Player;
 import kulami.game.Pos;
+import kulami.game.Owner;
 import kulami.gui.ChooseBoardDialog;
 import kulami.gui.ChooseBoardDialogAdapter;
 import kulami.gui.GameDisplay;
@@ -469,15 +469,10 @@ public class GameController {
 	}
 
 	private Player createPlayer() {
-		Owner owner;
-		if (playerColour == 'r')
-			owner = Owner.Red;
-		else
-			owner = Owner.Black;
 		if (playerHuman)
-			return new HumanPlayer(playerName, owner);
+			return new HumanPlayer(playerName, playerColour);
 		else
-			return new CompPlayer(playerName, owner);
+			return new CompPlayer(playerName, playerColour);
 	}
 
 }
