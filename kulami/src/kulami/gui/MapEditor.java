@@ -232,7 +232,34 @@ public class MapEditor extends JFrame {
 				else
 					return;
 				mapEditorAdapter.tileClicked(tile.getPos());
+			}
 
+			/* (non-Javadoc)
+			 * @see java.awt.event.MouseAdapter#mouseEntered(java.awt.event.MouseEvent)
+			 */
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				Object source = e.getSource();
+				TileComponent tile;
+				if (source instanceof TileComponent)
+					tile = (TileComponent) e.getSource();
+				else
+					return;
+				mapEditorAdapter.tileEntered(tile.getPos());
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent)
+			 */
+			@Override
+			public void mouseExited(MouseEvent e) {
+				Object source = e.getSource();
+				TileComponent tile;
+				if (source instanceof TileComponent)
+					tile = (TileComponent) e.getSource();
+				else
+					return;
+				mapEditorAdapter.tileExited(tile.getPos());
 			}
 		});
 	}

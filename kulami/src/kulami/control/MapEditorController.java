@@ -105,6 +105,25 @@ public class MapEditorController implements MapEditorAdapter {
 		mapEditor.drawMap(gameMap);
 		// TODO catch misplaced exception
 	}
+
+	/* (non-Javadoc)
+	 * @see kulami.gui.MapEditorAdapter#tileEntered(kulami.game.Pos)
+	 */
+	@Override
+	public void tileEntered(Pos pos) {
+		// TODO Auto-generated method stub
+		// Can the Panel be placed here?
+		// Show preview
+	}
+
+	/* (non-Javadoc)
+	 * @see kulami.gui.MapEditorAdapter#tileExited(kulami.game.Pos)
+	 */
+	@Override
+	public void tileExited(Pos pos) {
+		// TODO Auto-generated method stub
+		// hide preview
+	}
 	
 
 

@@ -23,5 +23,15 @@ public interface MapEditorAdapter {
 	 * @param pos
 	 */
 	public void tileClicked(Pos pos);
+
+	/**
+	 * @param pos
+	 */
+	public void tileEntered(Pos pos);
+
+	/**
+	 * @param pos
+	 */
+	public void tileExited(Pos pos);
 	
 }
