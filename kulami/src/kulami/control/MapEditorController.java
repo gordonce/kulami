@@ -111,8 +111,7 @@ public class MapEditorController implements MapEditorAdapter {
 	 */
 	@Override
 	public void tileEntered(Pos pos) {
-		// TODO Auto-generated method stub
-		// Can the Panel be placed here?
+		// TODO Can the Panel be placed here?
 		// Show preview
 	}
 
@@ -121,8 +120,7 @@ public class MapEditorController implements MapEditorAdapter {
 	 */
 	@Override
 	public void tileExited(Pos pos) {
-		// TODO Auto-generated method stub
-		// hide preview
+		// TODO hide preview
 	}
 	
 
