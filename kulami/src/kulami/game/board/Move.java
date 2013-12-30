@@ -1,10 +1,8 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.board;
 
-import kulami.game.board.Owner;
-import kulami.game.board.Pos;
 
 public class Move {
 	private Pos pos;

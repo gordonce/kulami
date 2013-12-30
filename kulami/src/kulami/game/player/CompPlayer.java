@@ -3,7 +3,6 @@
  */
 package kulami.game.player;
 
-import kulami.game.RandomStrategy;
 import kulami.game.board.GameMap;
 import kulami.game.board.Pos;
 

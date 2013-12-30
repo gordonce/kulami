@@ -1,14 +1,13 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.player;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import kulami.game.board.GameMap;
 import kulami.game.board.Pos;
-import kulami.game.player.KulamiStrategy;
 
 /**
  * @author gordon

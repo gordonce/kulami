@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import kulami.game.Move;
 import kulami.gui.Orientation;
 
 /**
