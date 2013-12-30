@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.player;
 
 import kulami.game.board.GameMap;
 import kulami.game.board.Pos;

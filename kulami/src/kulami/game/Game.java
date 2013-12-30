@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import kulami.game.board.GameMap;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
+import kulami.game.player.Player;
 import kulami.gui.GameObserver;
 
 /**
