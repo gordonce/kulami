@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.gui;
+package kulami.game.board;
 
 /**
  * @author gordon

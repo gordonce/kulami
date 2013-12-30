@@ -32,6 +32,7 @@ import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
 import kulami.game.board.GameMap;
+import kulami.game.board.Orientation;
 
 /**
  * @author gordon

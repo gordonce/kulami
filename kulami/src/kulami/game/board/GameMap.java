@@ -11,8 +11,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import kulami.gui.Orientation;
-
 /**
  * GameMap represents a map of 17 panels together with its current
  * configuration. A GameMap is immutable so that it is easy to try different

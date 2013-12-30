@@ -6,10 +6,10 @@ package kulami.control;
 import java.util.logging.Logger;
 
 import kulami.game.board.GameMap;
+import kulami.game.board.Orientation;
 import kulami.game.board.Pos;
 import kulami.gui.MapEditor;
 import kulami.gui.MapEditorAdapter;
-import kulami.gui.Orientation;
 
 /**
  * A MapEditor frame needs a MapEditorController object to handle user input

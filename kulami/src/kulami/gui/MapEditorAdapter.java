@@ -3,6 +3,7 @@
  */
 package kulami.gui;
 
+import kulami.game.board.Orientation;
 import kulami.game.board.Pos;
 
 /**
