@@ -3,8 +3,13 @@
  */
 package kulami.game.board;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import kulami.game.board.Panel.PanelNotPlacedException;
+import kulami.game.board.Panel.PanelOutOfBoundsException;
 
 /**
  * A Board is a representation of the positions of up to 17 panels on a 10 by 10
@@ -15,50 +20,101 @@ import java.util.Map;
  */
 public class Board {
 
-	static final char LoCodeSix = 'b';
-	static final char HiCodeSix = 'e';
+	private static final Map<Integer, Character> loCodes = new HashMap<>(4);
+	private static final Map<Integer, Character> hiCodes = new HashMap<>(4);
+	private static final List<Integer> Sizes = new ArrayList<>(4);
 
-	static final char LoCodeFour = 'f';
-	static final char HiCodeFour = 'j';
+	static {
+		Sizes.add(6);
+		Sizes.add(4);
+		Sizes.add(3);
+		Sizes.add(2);
 
-	static final char LoCodeThree = 'k';
-	static final char HiCodeThree = 'n';
+		loCodes.put(6, 'b');
+		loCodes.put(4, 'f');
+		loCodes.put(3, 'k');
+		loCodes.put(2, 'o');
 
-	static final char LoCodeTwo = 'o';
-	static final char HiCodeTwo = 'r';
-
-	static final int NumSix = 4;
-	static final int NumFour = 5;
-	static final int NumThree = 4;
-	static final int NumTwo = 4;
+		hiCodes.put(6, 'e');
+		hiCodes.put(4, 'j');
+		hiCodes.put(3, 'n');
+		hiCodes.put(2, 'r');
+	}
 
 	private Map<Integer, Character> panelCodes = new HashMap<>(4);
 	private Map<Character, Panel> panels = new HashMap<>(17);
-	
+	private Panel[] fields = new Panel[100];
+
 	/**
 	 * 
 	 */
 	public Board() {
-		panelCodes.put(6, LoCodeSix);
-		panelCodes.put(4, LoCodeFour);
-		panelCodes.put(3, LoCodeThree);
-		panelCodes.put(2, LoCodeTwo);
-		
-		for (char ch = LoCodeSix; ch <= HiCodeSix; ch++)
-			panels.put(ch, new PanelSix(ch));
-		
-		for (char ch = LoCodeFour; ch <= HiCodeFour; ch++)
-			panels.put(ch, new PanelFour(ch));
-		
-		for (char ch = LoCodeThree; ch <= HiCodeThree; ch++)
-			panels.put(ch, new PanelThree(ch));
-		
-		for (char ch = LoCodeTwo; ch <= HiCodeTwo; ch++)
-			panels.put(ch, new PanelTwo(ch));
+		for (int size : Sizes) {
+			panelCodes.put(size, loCodes.get(size));
+
+			for (char code = loCodes.get(size); code <= hiCodes.get(size); code++)
+				panels.put(code, Panel.getPanel(size, code));
+		}
+
 	}
-	
-	public void putPanel(int size, Pos pos, Orientation orientation) {
-		
+
+	public char putPanel(int size, Pos corner, Orientation orientation)
+			throws PanelOutOfBoundsException, PanelNotPlacedException,
+			FieldsNotEmptyException {
+		assert Sizes.contains(size);
+		char code = panelCodes.get(size);
+		if (code <= hiCodes.get(size)) {
+			Panel panel = panels.get(code);
+			Pos[] positions = panel.getPositions(corner, orientation);
+			for (Pos pos : positions)
+				if (fields[pos.getIdx()] != null)
+					throw new FieldsNotEmptyException();
+			panel.placePanel(corner, orientation);
+			panelCodes.put(size, ++code);
+			for (Pos pos : positions)
+				fields[pos.getIdx()] = panel;
+		}
+		return code;
 	}
-		
+
+	public void removePanel(char code) throws PanelNotPlacedException,
+			PanelOutOfBoundsException {
+		assert code >= loCodes.get(6) && code <= hiCodes.get(2);
+		Panel panel = panels.get(code);
+		Pos[] positions = panel.getPositions();
+		for (Pos pos : positions)
+			fields[pos.getIdx()] = null;
+		panel.removePanel();
+	}
+
+	/**
+	 * Get the panel at a particular position.
+	 * 
+	 * @param pos
+	 *            a position
+	 * @return null if there is no panel at pos
+	 */
+	public Panel getPanel(Pos pos) {
+		return fields[pos.getIdx()];
+	}
+
+	/**
+	 * Get an iterator over all panels on the board.
+	 * 
+	 * @return an iterator
+	 */
+	public 	Map<Character, Panel> getPanels() {
+		return panels;
+	}
+
+	public static int getSize(char code) {
+		for (int size : Sizes) {
+			if (code >= loCodes.get(size) && code <= hiCodes.get(size))
+				return size;
+		}
+		return 0;
+	}
+
+	public class FieldsNotEmptyException extends Exception {
+	}
 }

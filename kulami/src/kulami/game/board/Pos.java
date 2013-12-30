@@ -22,8 +22,6 @@ public class Pos {
 	}
 
 	private Pos(int row, int col) {
-		assert row >= 0 && row < 10;
-		assert col >= 0 && col < 10;
 		this.row = row;
 		this.col = col;
 	}
@@ -38,7 +36,14 @@ public class Pos {
 	 *            Column between 0 and 9
 	 */
 	public static Pos getPos(int row, int col) {
+		assert row >= 0 && row < 10;
+		assert col >= 0 && col < 10;
 		return positions[row][col];
+	}
+	
+	public static Pos getPos(int index) {
+		assert index >= 0 && index < 100;
+		return positions[index / 10][index % 10];
 	}
 
 	/**
@@ -57,6 +62,10 @@ public class Pos {
 	 */
 	public int getCol() {
 		return col;
+	}
+	
+	public int getIdx() {
+		return row *10 + col;
 	}
 
 	/*
@@ -83,4 +92,10 @@ public class Pos {
 			return false;
 	}
 
+	public static void main(String[] args) {
+		System.out.println(getPos(11));
+		System.out.println(getPos(29));
+		System.out.println(getPos(99));
+		
+	}
 }

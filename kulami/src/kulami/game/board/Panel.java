@@ -31,6 +31,27 @@ public abstract class Panel {
 		this.code = code;
 		isPlaced = false;
 	}
+	
+	public static Panel getPanel(int size, char code) {
+		switch (size) {
+		case 6:
+			return new PanelSix(code);
+		case 4:
+			return new PanelFour(code);
+		case 3:
+			return new PanelThree(code);
+		case 2:
+			return new PanelTwo(code);
+		default:
+			return null;
+		}
+	}
+
+	public char getName() {
+		return code;
+	}
+
+	abstract public int getSize();
 
 	/**
 	 * Place the panel on a board with its upper left corner at Pos corner and
@@ -55,14 +76,14 @@ public abstract class Panel {
 			throw new PanelOutOfBoundsException();
 		}
 	}
-
-	private boolean canBePlaced(Pos corner, Orientation orientation) {
-		try {
-			getPositions(corner, orientation);
-			return true;
-		} catch (PanelOutOfBoundsException e) {
-			return false;
+	
+	public void removePanel() {
+		if (isPlaced) {
+			corner = null;
+			orientation = null;
+			isPlaced = false;
 		}
+			
 	}
 
 	/**
@@ -117,11 +138,14 @@ public abstract class Panel {
 			return Owner.None;
 	}
 
-	public char getName() {
-		return code;
+	private boolean canBePlaced(Pos corner, Orientation orientation) {
+		try {
+			getPositions(corner, orientation);
+			return true;
+		} catch (PanelOutOfBoundsException e) {
+			return false;
+		}
 	}
-
-	abstract public int getSize();
 
 	/**
 	 * Information about a Panel that has not been placed yet was requested.

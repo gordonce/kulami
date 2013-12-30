@@ -40,8 +40,13 @@ public class Marbles {
 	 * @param pos
 	 * @param owner
 	 */
-	public void setMarble(Pos pos, Owner owner) {
-		marbles[pos.getRow()][pos.getCol()] = owner;
+	public boolean setMarble(Pos pos, Owner owner) {
+		if (marbles[pos.getRow()][pos.getCol()] != owner) {
+			marbles[pos.getRow()][pos.getCol()] = owner;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	/**

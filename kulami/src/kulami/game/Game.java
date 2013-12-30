@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import kulami.game.board.Board;
 import kulami.game.board.GameMap;
+import kulami.game.board.Marbles;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 import kulami.game.player.Player;
@@ -19,7 +21,8 @@ import kulami.gui.GameObserver;
  */
 public class Game implements GameObservable {
 
-	private GameMap gameMap;
+	private Board board;
+	private Marbles marbles;
 	private Player player;
 	private int level;
 	
@@ -31,21 +34,27 @@ public class Game implements GameObservable {
 	 * @param board
 	 * @param player
 	 */
-	public Game(GameMap gameMap, Player player, int level) {
-		this.gameMap = gameMap;
+	public Game(Board board, Player player, int level) {
+		this.board = board;
 		this.player = player;
 		this.level = level;
 		gameObservers = new ArrayList<>();
+		marbles = new Marbles();
 	}
 	
 	public void placeMarble(Pos pos) {
 		logger.fine(String.format("%s placed marble at %s.", player, pos));
-		gameMap.setOwner(pos, player.getCoulour() == 'r' ? Owner.Red : Owner.Black);
+		marbles.setMarble(pos, player.getCoulour() == 'r' ? Owner.Red : Owner.Black);
 		informObservers();
 	}
 	
+	/**
+	 * Given a map code update the marbles.
+	 * 
+	 * @param mapCode
+	 */
 	public void updateGame(String mapCode) {
-		gameMap.updateGameMap(mapCode);
+		// TODO BoardParser...
 		informObservers();
 	}
 	

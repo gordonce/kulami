@@ -4,12 +4,12 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import kulami.game.board.Panel.PanelNotPlacedException;
+import kulami.game.board.Panel.PanelOutOfBoundsException;
 
 /**
  * GameMap represents a map of 17 panels together with its current
@@ -21,14 +21,21 @@ import java.util.regex.Pattern;
  */
 public class GameMap {
 
-	private Map<Character, Panel> panels;
-	private Field[][] fields = new Field[10][10];
-	private Pattern fieldPattern = Pattern.compile("([a-r])([0-2])");
 	private List<Move> history;
-	private Map<Integer, Character> panelCodes;
+	private Board board;
+	private Marbles marbles;
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.GameMap");
+
+	/**
+	 * Construct an empty GameMap
+	 */
+	public GameMap() {
+		history = new ArrayList<>();
+		board = new Board();
+		marbles = new Marbles();
+	}
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -42,55 +49,28 @@ public class GameMap {
 	 * TODO needs to throw an exception if mapCode is not correctly formatted
 	 * 
 	 * @param mapCode
+	 * @throws IllegalBoardCode
 	 */
-	public GameMap(String mapCode) {
-		history = new ArrayList<>();
-		initPanelCodes();
-		// TODO throw exception if mapCode is not properly formatted
-		parseMapCode(mapCode);
-	}
-
-	private void initPanelCodes() {
-		panelCodes = new HashMap<>();
-		panelCodes.put(6, 'b');
-		panelCodes.put(4, 'f');
-		panelCodes.put(3, 'k');
-		panelCodes.put(2, 'o');
-		
-	}
-
-	private GameMap(Map<Character, Panel> panels, Field[][] fields,
-			List<Move> history) {
-		this.panels = panels;
-		this.fields = fields;
-		this.history = history;
-	}
-
-	/**
-	 * A factory method to construct an empty GameMap.
-	 * 
-	 * @return
-	 */
-	public static GameMap getEmpyMap() {
-		String emptyCode = new String(new char[100]).replace("\0", "a0");
-		return new GameMap(emptyCode);
+	public GameMap(String boardCode) throws IllegalBoardCode {
+		this();
+		BoardParser.getBoard(boardCode, board);
+		BoardParser.getMarbles(boardCode, marbles);
 	}
 
 	/**
 	 * Set the owner of all fields to None and erase the history.
 	 */
-	public GameMap clearOwners() {
-		Field[][] newFields = new Field[10][10];
-		for (int row = 0; row < 10; row++)
-			for (int col = 0; col < 10; col++) {
-				Field field = fields[row][col];
-				Panel panel = field.getPanel();
-				Pos pos = field.getPos();
-				newFields[row][col] = new Field(panel, Owner.None, pos);
-			}
-		return new GameMap(panels, newFields, new ArrayList<Move>());
+	public void clearOwners() {
+		marbles.setAllNone();
+		history.clear();
 	}
 
+	/**
+	 * Get all the positions where it is legal to place a marble in the next
+	 * move.
+	 * 
+	 * @return a list of positions.
+	 */
 	public ArrayList<Pos> getLegalFields() {
 		int size = history.size();
 		Pos lastMove = null;
@@ -111,33 +91,28 @@ public class GameMap {
 	}
 
 	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
-		Field thisField = getField(pos);
-		Panel thisPanel = thisField.getPanel();
+		Panel thisPanel = board.getPanel(pos);
 		// Is there a panel on the field?
-		if (thisPanel.getName() == 'a') {
+		if (thisPanel == null) {
 			return false;
 		}
 		// Is the field empty?
-		if (thisField.getOwner() != Owner.None)
+		if (marbles.getMarble(pos) != Owner.None)
 			return false;
 		// Same row or column but not on same panel as last move?
 		if (lastMove != null) {
-			Panel lastPanel = getField(lastMove).getPanel();
+			Panel lastPanel = board.getPanel(lastMove);
 			if ((pos.getCol() != lastMove.getCol() && pos.getRow() != lastMove
 					.getRow()) || thisPanel == lastPanel)
 				return false;
 		}
 		// Not on next to last panel?
 		if (nextToLastMove != null) {
-			Panel nextToLastPanel = getField(nextToLastMove).getPanel();
+			Panel nextToLastPanel = board.getPanel(pos);
 			if (thisPanel == nextToLastPanel)
 				return false;
 		}
 		return true;
-	}
-
-	public Field getField(Pos pos) {
-		return fields[pos.getRow()][pos.getCol()];
 	}
 
 	/**
@@ -149,11 +124,19 @@ public class GameMap {
 	 */
 	public String getMapCode() {
 		StringBuilder mapCode = new StringBuilder();
-		for (Field[] row : fields)
-			for (Field field : row) {
-				mapCode.append(field.getPanel().getName());
-				mapCode.append(field.getOwner().getIdx());
-			}
+		for (int i = 0; i < 100; i++) {
+			Pos pos = Pos.getPos(i);
+			Panel panel = board.getPanel(pos);
+			char panelCode;
+			if (panel == null)
+				panelCode = 'a';
+			else
+				panelCode = panel.getName();
+			mapCode.append(panelCode);
+			
+			int ownerIndex = marbles.getMarble(pos).getIdx();
+			mapCode.append(ownerIndex);
+		}
 		return mapCode.toString();
 	}
 
@@ -165,28 +148,10 @@ public class GameMap {
 	 * @param col
 	 * @param owner
 	 */
-	public GameMap setOwner(Pos pos, Owner owner) {
-		Field[][] newFields = new Field[10][10];
-		List<Move> newHistory = history;
-		for (int row = 0; row < 10; row++)
-			for (int col = 0; col < 10; col++) {
-				Field field = fields[row][col];
-				Panel panel = field.getPanel();
-				if (row == pos.getRow() && col == pos.getCol()) {
-					newFields[row][col] = new Field(panel, owner, pos);
-					if (owner != field.getOwner())
-						newHistory = append(history, new Move(pos, owner));
-				} else
-					newFields[row][col] = field;
-			}
-		return new GameMap(panels, newFields, newHistory);
-	}
-
-	private <T> ArrayList<T> append(List<T> list, T el) {
-		ArrayList<T> newList = new ArrayList<T>();
-		newList.addAll(list);
-		newList.add(el);
-		return newList;
+	public void setOwner(Pos pos, Owner owner) {
+		boolean changed =marbles.setMarble(pos, owner);
+		if (changed)
+			history.add(new Move(pos, owner));
 	}
 
 	/**
@@ -195,40 +160,10 @@ public class GameMap {
 	 * // TODO must throw if the positions of the panels has changed.
 	 * 
 	 * @param mapCode
+	 * @throws IllegalBoardCode 
 	 */
-	public GameMap updateGameMap(String mapCode) {
-		// TODO remove code duplication with parseMapCode
-		/*
-		 * TODO command pattern? create parse-method that takes an object //
-		 * like a higher order function that tells it what to do with // each
-		 * field
-		 */
-		GameMap newGameMap = this;
-		Matcher mapMatcher = fieldPattern.matcher(mapCode);
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 10; col++) {
-				if (mapMatcher.find()) {
-					int ownerIndex = Integer.parseInt(mapMatcher.group(2));
-					Owner owner;
-					if (ownerIndex == 0)
-						owner = Owner.None;
-					else if (ownerIndex == 1)
-						owner = Owner.Black;
-					else
-						owner = Owner.Red;
-					if (fields[row][col].getOwner() != owner) {
-						newGameMap = setOwner(Pos.getPos(row, col), owner);
-						logger.fine(String.format(
-								"Updated field at %s. New owner: %s", Pos.getPos(
-										row, col), owner));
-					}
-				} else {
-					// TODO throw exception: mapCode does not contain 100 fields
-				}
-			}
-		}
-
-		return newGameMap;
+	public void updateGameMap(String boardCode) throws IllegalBoardCode {
+		BoardParser.getMarbles(boardCode, marbles);
 	}
 
 	/**
@@ -239,166 +174,20 @@ public class GameMap {
 	 */
 	public int getPoints(Owner owner) {
 		int points = 0;
-		for (Panel panel : panels.values())
-			if (panel.getOwner() == owner)
-				points += panel.getSize();
+		Map<Character, Panel> panels = board.getPanels();
+		for (char name: panels.keySet()) {
+			Panel panel = panels.get(name);
+			try {
+				if (panel.getOwner(marbles) == owner)
+					points += panel.getSize();
+			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
+				logger.warning("could not get points for panel " + name);
+				e.printStackTrace();
+			}
+		}
 		return points;
 	}
 
-	/**
-	 * @param size
-	 *            Panel of size 6, 4, 3, or 2
-	 * @param orientation
-	 *            Horizontal or vertical
-	 * @param pos
-	 *            Position of the upper left corner
-	 */
-	public GameMap insertPanel(int size, Orientation orientation, Pos pos) {
-		logger.finer(String.format(
-				"Trying to insert panel of size %d at position %s", size, pos));
-		// is a slot for the size left?
-
-		int width = 0, height = 0;
-		char loCode = '\0', hiCode = '\0';
-
-		switch (size) {
-		case 6:
-			loCode = 'b';
-			hiCode = 'e';
-			if (orientation == Orientation.Horizontal) {
-				width = 3;
-				height = 2;
-			} else {
-				width = 2;
-				height = 3;
-			}
-			break;
-
-		case 4:
-			loCode = 'f';
-			hiCode = 'j';
-			width = 2;
-			height = 2;
-			break;
-
-		case 3:
-			loCode = 'k';
-			hiCode = 'n';
-			if (orientation == Orientation.Horizontal) {
-				width = 3;
-				height = 1;
-			} else {
-				width = 1;
-				height = 3;
-			}
-			break;
-
-		case 2:
-			loCode = 'o';
-			hiCode = 'r';
-			if (orientation == Orientation.Horizontal) {
-				width = 2;
-				height = 1;
-			} else {
-				width = 1;
-				height = 2;
-			}
-			break;
-
-		}
-
-		List<Pos> positions = getFieldsForPanel(loCode, hiCode, pos, width,
-				height);
-		if (fieldsEmpty(positions)) {
-			logger.finer(String.format("Inserting panel at %s", pos));
-
-			return putPanelOnFields(panels.get(code), positions);
-		} else {
-			// TODO throw
-			return null;
-		}
-
-	}
-
-	private List<Pos> getFieldsForPanel(char loCode, char hiCode, Pos pos,
-			int width, int height) {
-
-		int cornerRow = pos.getRow();
-		int cornerCol = pos.getCol();
-		List<Pos> fields = null;
-
-		for (char ch = loCode; ch <= hiCode; ch++)
-			if (!panelPlaced(ch)) {
-				code = ch;
-				// is space left for the panel
-				if (cornerCol <= 10 - width && cornerRow <= height) {
-					fields = new ArrayList<>();
-					for (int row = cornerRow; row < cornerRow + height; row++)
-						for (int col = cornerCol; col < cornerCol + width; col++)
-							fields.add(Pos.getPos(row, col));
-				} else {
-					// TODO throw
-					return null;
-				}
-			}
-		return fields;
-
-	}
-
-	private boolean fieldsEmpty(List<Pos> positions) {
-		for (Pos pos : positions)
-			if (getField(pos).getPanel().getName() != 'a')
-				return false;
-		return true;
-	}
-
-	private boolean panelPlaced(char name) {
-		for (int row = 0; row < 10; row++)
-			for (int col = 0; col < 10; col++)
-				if (getField(Pos.getPos(row, col)).getPanel().getName() == name)
-					return true;
-		return false;
-
-	}
-
-	private GameMap putPanelOnFields(Panel panel, List<Pos> positions) {
-		Field[][] newFields = new Field[10][10];
-		for (int row = 0; row < 10; row++)
-			for (int col = 0; col < 10; col++) {
-				Pos pos = Pos.getPos(row, col);
-				if (positions.contains(pos)) {
-					Field field = fields[row][col];
-					newFields[row][col] = new Field(panel, field.getOwner(),
-							field.getPos());
-				}
-			}
-		return new GameMap(panels, newFields, history);
-	}
-
-	private void parseMapCode(String mapCode) {
-		Matcher mapMatcher = fieldPattern.matcher(mapCode);
-		for (int row = 0; row < 10; row++) {
-			for (int col = 0; col < 10; col++) {
-				if (mapMatcher.find()) {
-					char boardIndex = mapMatcher.group(1).charAt(0);
-					int ownerIndex = Integer.parseInt(mapMatcher.group(2));
-					Owner owner;
-					if (ownerIndex == 0)
-						owner = Owner.None;
-					else if (ownerIndex == 1)
-						owner = Owner.Black;
-					else
-						owner = Owner.Red;
-					Panel panel = panels.get(boardIndex);
-					Field field = new Field(panel, owner, Pos.getPos(row, col));
-					fields[row][col] = field;
-				} else {
-					// TODO throw exception: mapCode does not contain 100 fields
-				}
-			}
-		}
-
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -421,7 +210,7 @@ public class GameMap {
 	 * 
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IllegalBoardCode {
 		GameMap gameMap = new GameMap("a0a0a0k0f0f0a0a0a0a0"
 				+ "a0a0o0k0f0f0p0p0a0a0" + "a0a0o0k0b1b0b0g2g0a0"
 				+ "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
