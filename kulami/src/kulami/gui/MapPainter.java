@@ -14,8 +14,8 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import kulami.game.GameMap;
-import kulami.game.Pos;
+import kulami.game.board.GameMap;
+import kulami.game.board.Pos;
 
 /**
  * @author gordon

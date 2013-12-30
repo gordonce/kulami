@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.board;
 
 import java.util.List;
 

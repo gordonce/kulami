@@ -3,6 +3,9 @@
  */
 package kulami.game;
 
+import kulami.game.board.Owner;
+import kulami.game.board.Pos;
+
 public class Move {
 	private Pos pos;
 	private Owner owner;

@@ -31,7 +31,7 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
-import kulami.game.GameMap;
+import kulami.game.board.GameMap;
 
 /**
  * @author gordon

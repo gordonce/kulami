@@ -1,15 +1,17 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.board;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import kulami.game.Move;
 import kulami.gui.Orientation;
 
 /**
@@ -26,6 +28,7 @@ public class GameMap {
 	private Field[][] fields = new Field[10][10];
 	private Pattern fieldPattern = Pattern.compile("([a-r])([0-2])");
 	private List<Move> history;
+	private Map<Integer, Character> panelCodes;
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.GameMap");
@@ -45,8 +48,18 @@ public class GameMap {
 	 */
 	public GameMap(String mapCode) {
 		history = new ArrayList<>();
-		// TODO catch exception if mapCode is not properly formatted
+		initPanelCodes();
+		// TODO throw exception if mapCode is not properly formatted
 		parseMapCode(mapCode);
+	}
+
+	private void initPanelCodes() {
+		panelCodes = new HashMap<>();
+		panelCodes.put(6, 'b');
+		panelCodes.put(4, 'f');
+		panelCodes.put(3, 'k');
+		panelCodes.put(2, 'o');
+		
 	}
 
 	private GameMap(Map<Character, Panel> panels, Field[][] fields,
@@ -297,13 +310,12 @@ public class GameMap {
 
 		}
 
-		Character ch = '\0'; 
 		List<Pos> positions = getFieldsForPanel(loCode, hiCode, pos, width,
-				height, ch);
+				height);
 		if (fieldsEmpty(positions)) {
 			logger.finer(String.format("Inserting panel at %s", pos));
 
-			return putPanelOnFields(panels.get(ch), positions);
+			return putPanelOnFields(panels.get(code), positions);
 		} else {
 			// TODO throw
 			return null;
@@ -312,7 +324,7 @@ public class GameMap {
 	}
 
 	private List<Pos> getFieldsForPanel(char loCode, char hiCode, Pos pos,
-			int width, int height, Character code) {
+			int width, int height) {
 
 		int cornerRow = pos.getRow();
 		int cornerCol = pos.getCol();

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.board;
 
 /**
  * A Field is a field on the Kulami game map. A Field belongs to a Panel and has

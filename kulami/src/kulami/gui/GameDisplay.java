@@ -9,8 +9,8 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
-import kulami.game.GameMap;
 import kulami.game.GameObservable;
+import kulami.game.board.GameMap;
 
 /**
  * @author gordon

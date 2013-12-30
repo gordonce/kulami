@@ -14,7 +14,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JComponent;
 
-import kulami.game.Pos;
+import kulami.game.board.Pos;
 
 class TileComponent extends JComponent implements MouseListener {
 	private Image tileImage;

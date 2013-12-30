@@ -3,6 +3,7 @@
  */
 package kulami.game;
 
+import kulami.game.board.GameMap;
 import kulami.gui.GameObserver;
 
 /**

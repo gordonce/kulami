@@ -3,7 +3,7 @@
  */
 package kulami.gui;
 
-import kulami.game.Pos;
+import kulami.game.board.Pos;
 
 /**
  * @author gordon

@@ -5,8 +5,8 @@ package kulami.control;
 
 import java.util.logging.Logger;
 
-import kulami.game.GameMap;
-import kulami.game.Pos;
+import kulami.game.board.GameMap;
+import kulami.game.board.Pos;
 import kulami.gui.MapEditor;
 import kulami.gui.MapEditorAdapter;
 import kulami.gui.Orientation;

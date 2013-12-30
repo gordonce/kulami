@@ -1,7 +1,7 @@
 /**
  * 
  */
-package kulami.game;
+package kulami.game.board;
 
 /**
  * Pos represents a position on a 10 by 10 Kulami board.
