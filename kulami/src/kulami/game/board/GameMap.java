@@ -248,4 +248,12 @@ public class GameMap {
 		for (Pos pos : legalFields)
 			System.out.println(pos);
 	}
+
+
+	/**
+	 * @return
+	 */
+	public Marbles copyMarbles() {
+		return new Marbles(marbles);
+	}
 }

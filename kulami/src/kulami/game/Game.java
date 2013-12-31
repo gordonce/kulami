@@ -87,6 +87,10 @@ public class Game implements GameObservable {
 		return gameMap.getMapCode();
 	}
 	
+	public Marbles copyMarbles() {
+		return gameMap.copyMarbles();
+	}
+	
 	@Override
 	public Board getBoard() {
 		return gameMap.getBoard();
@@ -96,6 +100,7 @@ public class Game implements GameObservable {
 	public Marbles getMarbles() {
 		return gameMap.getMarbles();
 	}
+	
 	/* (non-Javadoc)
 	 * @see kulami.game.GameObservable#registerObserver(kulami.gui.GameObserver)
 	 */
