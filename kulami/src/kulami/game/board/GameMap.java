@@ -4,7 +4,6 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -20,15 +19,16 @@ import kulami.game.board.Panel.PanelOutOfBoundsException;
  */
 public class GameMap {
 
-	private List<Move> history;
 	private Board board;
 	private Marbles marbles;
 
+	private Pos lastMove;
+	private Pos nextToLastMove;
+	
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
 
 	private GameMap() {
-		history = new ArrayList<>();
 		marbles = new Marbles();
 	}
 
@@ -67,7 +67,8 @@ public class GameMap {
 	 */
 	public void clearOwners() {
 		marbles.setAllNone();
-		history.clear();
+		lastMove = null;
+		nextToLastMove = null;
 	}
 
 	/**
@@ -77,25 +78,18 @@ public class GameMap {
 	 * @return a list of positions.
 	 */
 	public ArrayList<Pos> getLegalFields() {
-		int size = history.size();
-		Pos lastMove = null;
-		Pos nextToLastMove = null;
 		ArrayList<Pos> legalMoves = new ArrayList<>();
-		if (size > 0)
-			lastMove = history.get(size - 1).getPos();
-		if (size > 1)
-			nextToLastMove = history.get(size - 2).getPos();
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
 				Pos pos = Pos.getPos(row, col);
-				if (isLegal(pos, lastMove, nextToLastMove))
+				if (isLegal(pos))
 					legalMoves.add(pos);
 			}
 		return legalMoves;
 
 	}
 
-	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
+	private boolean isLegal(Pos pos) {
 		Panel thisPanel = board.getPanel(pos);
 		// Is there a panel on the field?
 		if (thisPanel == null) {
@@ -156,8 +150,11 @@ public class GameMap {
 	public void setOwner(Pos pos, Owner owner) {
 		boolean changed = marbles.setMarble(pos, owner);
 		if (changed) {
+			logger.fine("lastMove: " + lastMove);
+			logger.fine("nextToLastMove: " + nextToLastMove);
 			logger.info(String.format("Set owner of pos %s to %s.", pos, owner));
-			history.add(new Move(pos, owner));
+			nextToLastMove = lastMove;
+			lastMove = pos;
 		}
 	}
 
@@ -170,7 +167,9 @@ public class GameMap {
 	 * @throws IllegalBoardCode
 	 */
 	public void updateGameMap(String boardCode) throws IllegalBoardCode {
-		BoardParser.getMarbles(boardCode, marbles);
+		BoardParser.getMarbles(boardCode,  this);
+		logger.fine("lastMove: " + lastMove);
+		logger.fine("nextToLastMove: " + nextToLastMove);
 	}
 
 	/**
@@ -264,6 +263,8 @@ public class GameMap {
 	public GameMap getCopy() {
 		GameMap gameMap = new GameMap(board);
 		gameMap.marbles = copyMarbles();
+		gameMap.lastMove = lastMove;
+		gameMap.nextToLastMove = nextToLastMove;
 		return gameMap;
 	}
 }

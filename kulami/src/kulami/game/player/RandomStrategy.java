@@ -27,6 +27,7 @@ public class RandomStrategy implements KulamiStrategy {
 	@Override
 	public Pos choosePos(GameMap gameMap) {
 		ArrayList<Pos> candidates = gameMap.getLegalFields();
+		System.out.println(candidates);
 		int randomIdx = randomGen.nextInt(candidates.size());
 		return candidates.get(randomIdx);
 	}

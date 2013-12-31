@@ -126,6 +126,7 @@ public class Game implements GameObservable {
 	public String toString() {
 		return "Game with map: \n" + gameMap;
 	}
+	
 	/**
 	 * 
 	 */

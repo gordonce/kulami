@@ -40,7 +40,7 @@ class BoardParser {
 			throw new IllegalBoardCode();
 		char[] codes = boardCode.replaceAll("\\d", "").toCharArray();
 		Set<Character> seenCodes = new HashSet<>();
-		for (int i = 0; i< 100; i++) {
+		for (int i = 0; i < 100; i++) {
 			char code = codes[i];
 			if (code != 'a' && seenCodes.add(code)) {
 				int size = Board.getSize(code);
@@ -48,10 +48,12 @@ class BoardParser {
 				switch (size) {
 				case 6:
 				case 3:
-					orientation = (codes[i + 2] == code) ? Orientation.Horizontal : Orientation.Vertical;
+					orientation = (codes[i + 2] == code) ? Orientation.Horizontal
+							: Orientation.Vertical;
 					break;
 				case 2:
-					orientation = (codes[i + 1] == code) ? Orientation.Horizontal : Orientation.Vertical;
+					orientation = (codes[i + 1] == code) ? Orientation.Horizontal
+							: Orientation.Vertical;
 					break;
 				default:
 					orientation = Orientation.Horizontal;
@@ -66,7 +68,8 @@ class BoardParser {
 		}
 	}
 
-	static void getMarbles(String boardCode, Marbles marbles) throws IllegalBoardCode {
+	static void getMarbles(String boardCode, GameMap gameMap)
+			throws IllegalBoardCode {
 		if (!isCorrect(boardCode))
 			throw new IllegalBoardCode();
 		char[] codes = boardCode.replaceAll("\\D", "").toCharArray();
@@ -84,7 +87,8 @@ class BoardParser {
 				owner = Owner.None;
 				break;
 			}
-			marbles.setMarble(Pos.getPos(i), owner); 
+			Pos pos = Pos.getPos(i);
+			gameMap.setOwner(pos, owner);
 		}
 	}
 
