@@ -25,7 +25,7 @@ public class GameMap {
 	private Marbles marbles;
 
 	private static final Logger logger = Logger
-			.getLogger("kulami.game.GameMap");
+			.getLogger("kulami.game.board.GameMap");
 
 	/**
 	 * Construct an empty GameMap
@@ -107,7 +107,7 @@ public class GameMap {
 		}
 		// Not on next to last panel?
 		if (nextToLastMove != null) {
-			Panel nextToLastPanel = board.getPanel(pos);
+			Panel nextToLastPanel = board.getPanel(nextToLastMove);
 			if (thisPanel == nextToLastPanel)
 				return false;
 		}
@@ -132,7 +132,7 @@ public class GameMap {
 			else
 				panelCode = panel.getName();
 			mapCode.append(panelCode);
-			
+
 			int ownerIndex = marbles.getMarble(pos).getIdx();
 			mapCode.append(ownerIndex);
 		}
@@ -148,9 +148,11 @@ public class GameMap {
 	 * @param owner
 	 */
 	public void setOwner(Pos pos, Owner owner) {
-		boolean changed =marbles.setMarble(pos, owner);
-		if (changed)
+		boolean changed = marbles.setMarble(pos, owner);
+		if (changed) {
+			logger.info(String.format("Set owner of pos %s to %s.", pos, owner));
 			history.add(new Move(pos, owner));
+		}
 	}
 
 	/**
@@ -159,7 +161,7 @@ public class GameMap {
 	 * // TODO must throw if the positions of the panels has changed.
 	 * 
 	 * @param mapCode
-	 * @throws IllegalBoardCode 
+	 * @throws IllegalBoardCode
 	 */
 	public void updateGameMap(String boardCode) throws IllegalBoardCode {
 		BoardParser.getMarbles(boardCode, marbles);
@@ -174,7 +176,7 @@ public class GameMap {
 	public int getPoints(Owner owner) {
 		int points = 0;
 		Map<Character, Panel> panels = board.getPanels();
-		for (char name: panels.keySet()) {
+		for (char name : panels.keySet()) {
 			Panel panel = panels.get(name);
 			try {
 				if (panel.getOwner(marbles) == owner)
@@ -186,7 +188,6 @@ public class GameMap {
 		}
 		return points;
 	}
-
 
 	/*
 	 * (non-Javadoc)
