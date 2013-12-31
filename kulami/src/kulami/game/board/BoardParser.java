@@ -59,9 +59,8 @@ class BoardParser {
 					break;
 				}
 				try {
-					board.putPanel(size, Pos.getPos(i), orientation);
-				} catch (PanelOutOfBoundsException | PanelNotPlacedException
-						| FieldsNotEmptyException | TooManyPanelsException e) {
+					board.putPanel(code, Pos.getPos(i), orientation);
+				} catch (PanelOutOfBoundsException | FieldsNotEmptyException e) {
 					throw new IllegalBoardCode();
 				}
 			}

@@ -41,7 +41,7 @@ public class Board {
 		HiCodes.put(2, 'r');
 	}
 
-//	private Map<Integer, Character> panelCodes;
+	// private Map<Integer, Character> panelCodes;
 	private Map<Character, Boolean> codeTaken;
 	private Map<Character, Panel> panels;
 	private Panel[] fields = new Panel[100];
@@ -50,7 +50,7 @@ public class Board {
 	 * 
 	 */
 	public Board() {
-//		panelCodes = new HashMap<>(4);
+		// panelCodes = new HashMap<>(4);
 		codeTaken = new HashMap<>(17);
 		panels = new HashMap<>(17);
 		for (int size : Sizes) {
@@ -74,44 +74,50 @@ public class Board {
 	 * @throws PanelOutOfBoundsException
 	 * @throws PanelNotPlacedException
 	 * @throws FieldsNotEmptyException
-	 * @throws TooManyPanelsException 
+	 * @throws TooManyPanelsException
 	 */
 	public char putPanel(int size, Pos corner, Orientation orientation)
 			throws PanelOutOfBoundsException, PanelNotPlacedException,
 			FieldsNotEmptyException, TooManyPanelsException {
 		assert Sizes.contains(size);
 		char code = getAvailableCode(size);
-		if (code <= HiCodes.get(size)) {
-			Panel panel = panels.get(code);
-			Pos[] positions = panel.getPositions(corner, orientation);
-			for (Pos pos : positions)
-				if (fields[pos.getIdx()] != null)
-					throw new FieldsNotEmptyException();
-			panel.placePanel(corner, orientation);
-			for (Pos pos : positions)
-				fields[pos.getIdx()] = panel;
-			codeTaken.put(code, true);
-		}
+		putPanel(code, corner, orientation);
 		return code;
 	}
-	
+
 	private char getAvailableCode(int size) throws TooManyPanelsException {
-		for (char code = LoCodes.get(size); code  <= HiCodes.get(size); code++) {
+		for (char code = LoCodes.get(size); code <= HiCodes.get(size); code++) {
 			if (!codeTaken.get(code))
 				return code;
 		}
 		throw new TooManyPanelsException();
 	}
 
-	/** 
-	 * Place panel on board given a code, the upper left corner, and orientation.
+	/**
+	 * Place panel on board given a code, the upper left corner, and
+	 * orientation.
 	 * 
 	 * @param code
 	 * @param corner
 	 * @param orientation
+	 * @throws PanelOutOfBoundsException 
+	 * @throws FieldsNotEmptyException 
 	 */
-	public void putPanel(char code, Pos corner, Orientation orientation) {
-
+	public void putPanel(char code, Pos corner, Orientation orientation) throws PanelOutOfBoundsException, FieldsNotEmptyException {
+		assert panels.containsKey(code);
+		Panel panel = panels.get(code);
+		Pos[] positions = panel.getPositions(corner, orientation);
+		
+		for (Pos pos : positions)
+			if (fields[pos.getIdx()] != null)
+				throw new FieldsNotEmptyException();
+		
+		panel.placePanel(corner, orientation);
+		
+		for (Pos pos : positions)
+			fields[pos.getIdx()] = panel;
+		
+		codeTaken.put(code, true);
 	}
 
 	public void removePanel(char code) throws PanelNotPlacedException,
