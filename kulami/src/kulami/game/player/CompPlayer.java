@@ -30,8 +30,13 @@ public class CompPlayer extends Player {
 		strategy = new RandomStrategy();
 	}
 	
-	public Pos getMove(GameMap gameMap) {
+	/* (non-Javadoc)
+	 * @see kulami.game.player.Player#makeMove(kulami.game.board.GameMap)
+	 */
+	@Override
+	public Pos makeMove(GameMap gameMap) {
 		return strategy.choosePos(gameMap);
+
 	}
 
 }

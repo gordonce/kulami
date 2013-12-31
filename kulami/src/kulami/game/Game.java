@@ -126,6 +126,14 @@ public class Game implements GameObservable {
 	public String toString() {
 		return "Game with map: \n" + gameMap;
 	}
+	/**
+	 * 
+	 */
+	public void makeMove(CompPlayerAdapter adapter) {
+		Pos pos = player.makeMove(gameMap.getCopy());
+		placeMarble(pos);
+		adapter.madeMove(pos);
+	}
 	
 	
 	

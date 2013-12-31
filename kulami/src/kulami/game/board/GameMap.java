@@ -256,4 +256,14 @@ public class GameMap {
 	public Marbles copyMarbles() {
 		return new Marbles(marbles);
 	}
+
+
+	/**
+	 * @return
+	 */
+	public GameMap getCopy() {
+		GameMap gameMap = new GameMap(board);
+		gameMap.marbles = copyMarbles();
+		return gameMap;
+	}
 }

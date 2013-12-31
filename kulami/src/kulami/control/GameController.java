@@ -9,6 +9,7 @@ import kulami.connectivity.InProtocolObserver;
 import kulami.connectivity.MessageSender;
 import kulami.connectivity.ServerAdapter;
 import kulami.connectivity.ServerProxy;
+import kulami.game.CompPlayerAdapter;
 import kulami.game.Game;
 import kulami.game.board.IllegalBoardCode;
 import kulami.game.board.Pos;
@@ -376,9 +377,12 @@ public class GameController {
 			 */
 			@Override
 			public void spielstart(char colour) {
-				// TODO Display an appropriate message.
-				// TODO If this player begins, make move.
+				messagePager.display("Spiel beginnt");
 				statusDisplayer.setCurrentPlayer(colour);
+				// TODO If this player begins, make move.
+				if (!playerHuman && colour == playerColour) {
+					makeMove();
+				}
 			}
 
 			/**
@@ -410,7 +414,7 @@ public class GameController {
 			}
 
 			/**
-			 * Server sent opponents move.
+			 * Server sent opponent's move.
 			 * 
 			 * @param mapCode
 			 * 
@@ -422,9 +426,10 @@ public class GameController {
 				} catch (IllegalBoardCode e) {
 					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
 				}
-				// TODO display new board
-				// TODO Make move
 				statusDisplayer.setCurrentPlayer(playerColour);
+				// TODO Make move
+				if (!playerHuman)
+					makeMove();
 			}
 
 			/**
@@ -484,6 +489,16 @@ public class GameController {
 			return new HumanPlayer(playerName, playerColour);
 		else
 			return new CompPlayer(playerName, playerColour);
+	}
+	
+	private void makeMove() {
+		game.makeMove(new CompPlayerAdapter() {
+			
+			@Override
+			public void madeMove(Pos pos) {
+				messageSender.makeMove(pos.getCol(), pos.getRow());
+			}
+		});
 	}
 
 }

@@ -3,6 +3,9 @@
  */
 package kulami.game.player;
 
+import kulami.game.board.GameMap;
+import kulami.game.board.Pos;
+
 
 /**
  * @author gordon
@@ -44,6 +47,11 @@ public abstract class Player {
 	public String toString() {
 		return String.format("%s (%d marbles)", name, marbles);
 	}
+
+	/**
+	 * @return
+	 */
+	abstract public Pos makeMove(GameMap gameMap);
 	
 	
 
