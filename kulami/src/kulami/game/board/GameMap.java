@@ -27,14 +27,20 @@ public class GameMap {
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
 
+	private GameMap() {
+		history = new ArrayList<>();
+		marbles = new Marbles();
+	}
+
+
 	/**
 	 * Construct an empty GameMap
 	 */
-	public GameMap() {
-		history = new ArrayList<>();
-		board = new Board();
-		marbles = new Marbles();
+	public GameMap(Board board) {
+		this();
+		this.board = board;
 	}
+	
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -52,10 +58,10 @@ public class GameMap {
 	 */
 	public GameMap(String boardCode) throws IllegalBoardCode {
 		this();
+		board = new Board();
 		BoardParser.getBoard(boardCode, board);
-		BoardParser.getMarbles(boardCode, marbles);
 	}
-
+	
 	/**
 	 * Set the owner of all fields to None and erase the history.
 	 */
