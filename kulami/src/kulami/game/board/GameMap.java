@@ -179,7 +179,7 @@ public class GameMap {
 	 * @param owner
 	 * @return
 	 */
-	public int getPoints(Owner owner) {
+	public int getPoints(Owner owner, int level) {
 		int points = 0;
 		Map<Character, Panel> panels = board.getPanels();
 		for (char name : panels.keySet()) {
@@ -193,6 +193,11 @@ public class GameMap {
 			}
 		}
 		return points;
+	}
+	
+	public int getPoints(char playerColour, int level) {
+		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
+		return getPoints(owner, level);
 	}
 
 	/*
@@ -224,9 +229,9 @@ public class GameMap {
 				+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
 				+ "a0a0a0n0n1n0a0a0a0a0");
 		System.out.println(gameMap);
-		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red));
+		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 1));
 		System.out.printf("Schwarz: %d Punkte\n",
-				gameMap.getPoints(Owner.Black));
+				gameMap.getPoints(Owner.Black, 1));
 		gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
 		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
 		System.out.println(gameMap);

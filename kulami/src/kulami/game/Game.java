@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 import kulami.game.board.Board;
 import kulami.game.board.GameMap;
-import kulami.game.board.Marbles;
+import kulami.game.board.IllegalBoardCode;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 import kulami.game.player.Player;
@@ -21,8 +21,7 @@ import kulami.gui.GameObserver;
  */
 public class Game implements GameObservable {
 
-	private Board board;
-	private Marbles marbles;
+	private GameMap gameMap;
 	private Player player;
 	private int level;
 	
@@ -30,21 +29,28 @@ public class Game implements GameObservable {
 	
 	private static final Logger logger = Logger.getLogger("kulami.game.Game");
 	
+	private Game(Player player, int level) {
+		this.player = player;
+		this.level = level;
+		gameObservers = new ArrayList<>();
+	}
 	/**
 	 * @param board
 	 * @param player
 	 */
 	public Game(Board board, Player player, int level) {
-		this.board = board;
-		this.player = player;
-		this.level = level;
-		gameObservers = new ArrayList<>();
-		marbles = new Marbles();
+		this(player, level);
+		gameMap = new GameMap(board);
+	}
+	
+	public Game(String boardCode, Player player, int level) throws IllegalBoardCode {
+		this(player, level);
+		gameMap = new GameMap(boardCode);
 	}
 	
 	public void placeMarble(Pos pos) {
 		logger.fine(String.format("%s placed marble at %s.", player, pos));
-		marbles.setMarble(pos, player.getCoulour() == 'r' ? Owner.Red : Owner.Black);
+		gameMap.setOwner(pos, player.getCoulour() == 'r' ? Owner.Red : Owner.Black);
 		informObservers();
 	}
 	
@@ -52,10 +58,15 @@ public class Game implements GameObservable {
 	 * Given a map code update the marbles.
 	 * 
 	 * @param mapCode
+	 * @throws IllegalBoardCode 
 	 */
-	public void updateGame(String mapCode) {
-		// TODO BoardParser...
+	public void updateGame(String boardCode) throws IllegalBoardCode {
+		gameMap.updateGameMap(boardCode);
 		informObservers();
+	}
+	
+	public int getPoints(char playerColour) {
+		return gameMap.getPoints(playerColour, level);
 	}
 	
 	public void pushMap() {
