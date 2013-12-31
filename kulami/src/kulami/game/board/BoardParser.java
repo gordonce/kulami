@@ -61,7 +61,7 @@ class BoardParser {
 				try {
 					board.putPanel(size, Pos.getPos(i), orientation);
 				} catch (PanelOutOfBoundsException | PanelNotPlacedException
-						| FieldsNotEmptyException e) {
+						| FieldsNotEmptyException | TooManyPanelsException e) {
 					throw new IllegalBoardCode();
 				}
 			}

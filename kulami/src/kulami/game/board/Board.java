@@ -20,8 +20,8 @@ import kulami.game.board.Panel.PanelOutOfBoundsException;
  */
 public class Board {
 
-	private static final Map<Integer, Character> loCodes = new HashMap<>(4);
-	private static final Map<Integer, Character> hiCodes = new HashMap<>(4);
+	private static final Map<Integer, Character> LoCodes = new HashMap<>(4);
+	private static final Map<Integer, Character> HiCodes = new HashMap<>(4);
 	private static final List<Integer> Sizes = new ArrayList<>(4);
 
 	static {
@@ -30,61 +30,99 @@ public class Board {
 		Sizes.add(3);
 		Sizes.add(2);
 
-		loCodes.put(6, 'b');
-		loCodes.put(4, 'f');
-		loCodes.put(3, 'k');
-		loCodes.put(2, 'o');
+		LoCodes.put(6, 'b');
+		LoCodes.put(4, 'f');
+		LoCodes.put(3, 'k');
+		LoCodes.put(2, 'o');
 
-		hiCodes.put(6, 'e');
-		hiCodes.put(4, 'j');
-		hiCodes.put(3, 'n');
-		hiCodes.put(2, 'r');
+		HiCodes.put(6, 'e');
+		HiCodes.put(4, 'j');
+		HiCodes.put(3, 'n');
+		HiCodes.put(2, 'r');
 	}
 
-	private Map<Integer, Character> panelCodes = new HashMap<>(4);
-	private Map<Character, Panel> panels = new HashMap<>(17);
+//	private Map<Integer, Character> panelCodes;
+	private Map<Character, Boolean> codeTaken;
+	private Map<Character, Panel> panels;
 	private Panel[] fields = new Panel[100];
 
 	/**
 	 * 
 	 */
 	public Board() {
+//		panelCodes = new HashMap<>(4);
+		codeTaken = new HashMap<>(17);
+		panels = new HashMap<>(17);
 		for (int size : Sizes) {
-			panelCodes.put(size, loCodes.get(size));
-
-			for (char code = loCodes.get(size); code <= hiCodes.get(size); code++)
+			for (char code = LoCodes.get(size); code <= HiCodes.get(size); code++) {
+				codeTaken.put(code, false);
 				panels.put(code, Panel.getPanel(size, code));
+			}
 		}
 
 	}
 
+	/**
+	 * Place a panel on the board with its size, upper left corner, and
+	 * orientation specified. The method returns the assigned code if
+	 * successful.
+	 * 
+	 * @param size
+	 * @param corner
+	 * @param orientation
+	 * @return
+	 * @throws PanelOutOfBoundsException
+	 * @throws PanelNotPlacedException
+	 * @throws FieldsNotEmptyException
+	 * @throws TooManyPanelsException 
+	 */
 	public char putPanel(int size, Pos corner, Orientation orientation)
 			throws PanelOutOfBoundsException, PanelNotPlacedException,
-			FieldsNotEmptyException {
+			FieldsNotEmptyException, TooManyPanelsException {
 		assert Sizes.contains(size);
-		char code = panelCodes.get(size);
-		if (code <= hiCodes.get(size)) {
+		char code = getAvailableCode(size);
+		if (code <= HiCodes.get(size)) {
 			Panel panel = panels.get(code);
 			Pos[] positions = panel.getPositions(corner, orientation);
 			for (Pos pos : positions)
 				if (fields[pos.getIdx()] != null)
 					throw new FieldsNotEmptyException();
 			panel.placePanel(corner, orientation);
-			panelCodes.put(size, ++code);
 			for (Pos pos : positions)
 				fields[pos.getIdx()] = panel;
+			codeTaken.put(code, true);
 		}
 		return code;
+	}
+	
+	private char getAvailableCode(int size) throws TooManyPanelsException {
+		for (char code = LoCodes.get(size); code  <= HiCodes.get(size); code++) {
+			if (!codeTaken.get(code))
+				return code;
+		}
+		throw new TooManyPanelsException();
+	}
+
+	/** 
+	 * Place panel on board given a code, the upper left corner, and orientation.
+	 * 
+	 * @param code
+	 * @param corner
+	 * @param orientation
+	 */
+	public void putPanel(char code, Pos corner, Orientation orientation) {
+
 	}
 
 	public void removePanel(char code) throws PanelNotPlacedException,
 			PanelOutOfBoundsException {
-		assert code >= loCodes.get(6) && code <= hiCodes.get(2);
+		assert code >= LoCodes.get(6) && code <= HiCodes.get(2);
 		Panel panel = panels.get(code);
 		Pos[] positions = panel.getPositions();
 		for (Pos pos : positions)
 			fields[pos.getIdx()] = null;
 		panel.removePanel();
+		codeTaken.put(code, false);
 	}
 
 	/**
@@ -103,13 +141,13 @@ public class Board {
 	 * 
 	 * @return an iterator
 	 */
-	public 	Map<Character, Panel> getPanels() {
+	public Map<Character, Panel> getPanels() {
 		return panels;
 	}
 
 	public static int getSize(char code) {
 		for (int size : Sizes) {
-			if (code >= loCodes.get(size) && code <= hiCodes.get(size))
+			if (code >= LoCodes.get(size) && code <= HiCodes.get(size))
 				return size;
 		}
 		return 0;

@@ -12,9 +12,8 @@ import kulami.game.board.Panel.PanelNotPlacedException;
 import kulami.game.board.Panel.PanelOutOfBoundsException;
 
 /**
- * GameMap represents a map of 17 panels together with its current
- * configuration. A GameMap is immutable so that it is easy to try different
- * moves without changing the original GameMap.
+ * GameMap represents a board of 17 panels together with its current
+ * configuration of marbles.
  * 
  * @author gordon
  * 
@@ -225,6 +224,7 @@ public class GameMap {
 		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
 		System.out.println(gameMap);
 		ArrayList<Pos> legalFields = gameMap.getLegalFields();
+		System.out.println("legal fields:");
 		for (Pos pos : legalFields)
 			System.out.println(pos);
 	}
