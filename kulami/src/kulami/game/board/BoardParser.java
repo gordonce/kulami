@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import kulami.game.board.Board.FieldsNotEmptyException;
-import kulami.game.board.Panel.PanelNotPlacedException;
 import kulami.game.board.Panel.PanelOutOfBoundsException;
 
 /**
