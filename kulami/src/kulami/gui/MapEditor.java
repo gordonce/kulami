@@ -31,6 +31,7 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import kulami.game.board.Board;
 import kulami.game.board.GameMap;
 import kulami.game.board.Orientation;
 
@@ -52,23 +53,23 @@ public class MapEditor extends JFrame {
 		setVisible(true);
 	}
 
-	public void drawMap(GameMap gameMap) {
-		mapPainter.drawMap(gameMap);
+	public void drawBoard(Board board) {
+		mapPainter.drawBoard(board);
 		initTileListeners();
 	}
 
 	/**
-	 * @param gameMap
+	 * @param board
 	 */
-	public void saveMap(GameMap gameMap) {
-		String mapCode = gameMap.getMapCode();
+	public void saveMap(Board board) {
+		String mapCode = board.getBoardCode();
 		JFileChooser chooser = new JFileChooser();
 		int result = chooser.showSaveDialog(this);
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
 			try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
 				writer.println(mapCode);
-				logger.info(String.format("Board\n%s \n in Datei %s geschrieben.", gameMap.toString(), file.toString()));
+				logger.info(String.format("Board\n%s \n in Datei %s geschrieben.", board.toString(), file.toString()));
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, String.format(
 						"Fehler beim Schreiben in Datei %s : %s",

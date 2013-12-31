@@ -199,6 +199,14 @@ public class GameMap {
 		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
 		return getPoints(owner, level);
 	}
+	
+	public Board getBoard() {
+		return board;
+	}
+	
+	public Marbles getMarbles() {
+		return marbles;
+	}
 
 	/*
 	 * (non-Javadoc)

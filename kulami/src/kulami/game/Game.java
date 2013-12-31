@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import kulami.game.board.Board;
 import kulami.game.board.GameMap;
 import kulami.game.board.IllegalBoardCode;
+import kulami.game.board.Marbles;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 import kulami.game.player.Player;
@@ -87,10 +88,14 @@ public class Game implements GameObservable {
 	}
 	
 	@Override
-	public GameMap getGameMap() {
-		return gameMap;
+	public Board getBoard() {
+		return gameMap.getBoard();
 	}
 
+	@Override
+	public Marbles getMarbles() {
+		return gameMap.getMarbles();
+	}
 	/* (non-Javadoc)
 	 * @see kulami.game.GameObservable#registerObserver(kulami.gui.GameObserver)
 	 */

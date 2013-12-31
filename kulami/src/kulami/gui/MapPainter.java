@@ -9,12 +9,17 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
-import kulami.game.board.GameMap;
+import kulami.game.board.Board;
+import kulami.game.board.Marbles;
+import kulami.game.board.Orientation;
+import kulami.game.board.Panel;
+import kulami.game.board.Panel.PanelNotPlacedException;
+import kulami.game.board.Panel.PanelOutOfBoundsException;
 import kulami.game.board.Pos;
 
 /**
@@ -23,7 +28,7 @@ import kulami.game.board.Pos;
  */
 public class MapPainter {
 
-	private JPanel board;
+	private JPanel boardPanel;
 
 	private Image emptyTile;
 	private Image leftEnd;
@@ -47,10 +52,10 @@ public class MapPainter {
 			.getLogger("kulami.gui.MapPainter");
 
 	/**
-	 * @param board
+	 * @param boardPanel
 	 */
-	public MapPainter(JPanel board) {
-		this.board = board;
+	public MapPainter(JPanel boardPanel) {
+		this.boardPanel = boardPanel;
 		loadImages();
 
 		// board.repaint();
@@ -59,38 +64,33 @@ public class MapPainter {
 	/**
 	 * @param gameMap
 	 */
-	public void drawMap(GameMap gameMap) {
-		board.removeAll();
-		List<Image> tileImages = mapToImageList(gameMap);
+	public void drawBoard(Board board) {
+		boardPanel.removeAll();
+		List<Image> tileImages = mapToImageList(board);
 		tiles = new ArrayList<>(100);
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
 				Image tileImg = tileImages.get(row * 10 + col);
 				TileComponent tileComp = new TileComponent(tileImg, Pos.getPos(
 						row, col));
-				board.add(tileComp);
+				boardPanel.add(tileComp);
 				tiles.add(tileComp);
 			}
 		// board.repaint();
-		board.revalidate();
+		boardPanel.revalidate();
 	}
 
 	/**
-	 * @param gameMap
+	 * @param marbles
 	 */
-	public void drawMarbles(GameMap gameMap) {
-		String mapCode = gameMap.getMapCode();
-		for (int i = 0; i < 100; i++)
-			tiles.get(i).setMarble(
-					Integer.parseInt(mapCode
-							.substring((i * 2 + 1), (i * 2 + 2))));
-		SwingUtilities.invokeLater(new Runnable() {
+	public void drawMarbles(Marbles marbles) {
+		for (int i = 0; i < 100; i++) {
+			int colour = marbles.getMarble(Pos.getPos(i)).getIdx();
+			tiles.get(i).setMarble(colour);
+		}
 
-			@Override
-			public void run() {
-				board.repaint();
-			}
-		});
+		// boardPanel.repaint();
+		boardPanel.revalidate();
 	}
 
 	public void registerTileListeners(MouseListener tileListener) {
@@ -98,77 +98,60 @@ public class MapPainter {
 			tile.addMouseListener(tileListener);
 	}
 
-	private List<Image> mapToImageList(GameMap gameMap) {
+	private List<Image> mapToImageList(Board board) {
 		Image[] imageArray = new Image[100];
 		Arrays.fill(imageArray, emptyTile);
-		String mapCode = gameMap.getMapCode();
-		// 6er
-		for (char ch = 'b'; ch <= 'e'; ch++) {
-			int first = mapCode.indexOf(ch);
-			if (first >= 0) {
-				first = first / 2;
-				logger.finest(String.format("6er: %s at %d", ch, first));
-				boolean horizontal = (mapCode.charAt(first * 2 + 4) == ch);
-				imageArray[first] = upperLeft;
-				if (horizontal) {
-					imageArray[first + 1] = upperSide;
-					imageArray[first + 2] = upperRight;
-					imageArray[first + 10] = lowerLeft;
-					imageArray[first + 11] = lowerSide;
-					imageArray[first + 12] = lowerRight;
-				} else {
+		Map<Character, Panel> panelMap = board.getPanels();
+		for (Panel panel : panelMap.values()) {
+			int size = panel.getSize();
+			Orientation orientation = panel.getOrientation();
+			Pos[] positions;
+			try {
+				positions = panel.getPositions();
+				int first = positions[0].getIdx();
+				if (size == 6) {
+					imageArray[first] = upperLeft;
+					if (orientation == Orientation.Horizontal) {
+						imageArray[first + 1] = upperSide;
+						imageArray[first + 2] = upperRight;
+						imageArray[first + 10] = lowerLeft;
+						imageArray[first + 11] = lowerSide;
+						imageArray[first + 12] = lowerRight;
+					} else {
+						imageArray[first + 1] = upperRight;
+						imageArray[first + 10] = leftSide;
+						imageArray[first + 11] = rightSide;
+						imageArray[first + 20] = lowerLeft;
+						imageArray[first + 21] = lowerRight;
+					}
+
+				} else if (size == 4) {
+					imageArray[first] = upperLeft;
 					imageArray[first + 1] = upperRight;
-					imageArray[first + 10] = leftSide;
-					imageArray[first + 11] = rightSide;
-					imageArray[first + 20] = lowerLeft;
-					imageArray[first + 21] = lowerRight;
-				}
-			}
-		}
-		// 4er
-		for (char ch = 'f'; ch <= 'j'; ch++) {
-			int first = mapCode.indexOf(ch);
-			if (first >= 0) {
-				first = first / 2;
-				logger.finest(String.format("4er: %s at %d", ch, first));
-				imageArray[first] = upperLeft;
-				imageArray[first + 1] = upperRight;
-				imageArray[first + 10] = lowerLeft;
-				imageArray[first + 11] = lowerRight;
-			}
-		}
-		// 3er
-		for (char ch = 'k'; ch <= 'n'; ch++) {
-			int first = mapCode.indexOf(ch);
-			if (first >= 0) {
-				first = first / 2;
-				logger.finest(String.format("3er: %s at %d", ch, first));
-				boolean horizontal = (mapCode.charAt(first * 2 + 2) == ch);
-				if (horizontal) {
-					imageArray[first] = leftEnd;
-					imageArray[first + 1] = middleH;
-					imageArray[first + 2] = rightEnd;
+					imageArray[first + 10] = lowerLeft;
+					imageArray[first + 11] = lowerRight;
+				} else if (size == 3) {
+					if (orientation == Orientation.Horizontal) {
+						imageArray[first] = leftEnd;
+						imageArray[first + 1] = middleH;
+						imageArray[first + 2] = rightEnd;
+					} else {
+						imageArray[first] = upperEnd;
+						imageArray[first + 10] = middleV;
+						imageArray[first + 20] = lowerEnd;
+					}
+
 				} else {
-					imageArray[first] = upperEnd;
-					imageArray[first + 10] = middleV;
-					imageArray[first + 20] = lowerEnd;
+					if (orientation == Orientation.Horizontal) {
+						imageArray[first] = leftEnd;
+						imageArray[first + 1] = rightEnd;
+					} else {
+						imageArray[first] = upperEnd;
+						imageArray[first + 10] = lowerEnd;
+					}
 				}
-			}
-		}
-		// 2er
-		for (char ch = 'o'; ch <= 'r'; ch++) {
-			int first = mapCode.indexOf(ch);
-			if (first >= 0) {
-				first = first / 2;
-				logger.finest(String.format("2er: %s at %d", ch, first));
-				boolean horizontal = (mapCode.charAt(first * 2 + 2) == ch);
-				if (horizontal) {
-					imageArray[first] = leftEnd;
-					imageArray[first + 1] = rightEnd;
-				} else {
-					imageArray[first] = upperEnd;
-					imageArray[first + 10] = lowerEnd;
-				}
+			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
+				// ignore unplaced panels
 			}
 		}
 		return Arrays.asList(imageArray);

@@ -50,6 +50,14 @@ public abstract class Panel {
 	public char getName() {
 		return code;
 	}
+	
+	public boolean isPlaced() {
+		return isPlaced;
+	}
+	
+	public Orientation getOrientation() {
+		return orientation;
+	}
 
 	abstract public int getSize();
 
