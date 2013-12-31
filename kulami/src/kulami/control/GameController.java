@@ -10,8 +10,7 @@ import kulami.connectivity.MessageSender;
 import kulami.connectivity.ServerAdapter;
 import kulami.connectivity.ServerProxy;
 import kulami.game.Game;
-import kulami.game.board.GameMap;
-import kulami.game.board.Owner;
+import kulami.game.board.IllegalBoardCode;
 import kulami.game.board.Pos;
 import kulami.game.player.CompPlayer;
 import kulami.game.player.HumanPlayer;
@@ -252,15 +251,21 @@ public class GameController {
 						String boardCode = chooseBoardDialog.getBoardCode();
 						int level = chooseBoardDialog.getLevel();
 
-						GameMap board = new GameMap(boardCode);
-						board.clearOwners();
-
-						messageSender.sendParameters(board.getMapCode(), level);
+						// GameMap board = new GameMap(boardCode);
+						// board.clearOwners();
 
 						chooseBoardDialog.clearAndHide();
 
-						game = new Game(board, createPlayer(), level);
-						startGameDisplay();
+						try {
+							game = new Game(boardCode, createPlayer(), level);
+							messageSender.sendParameters(game.getBoardCode(),
+									level);
+							startGameDisplay();
+						} catch (IllegalBoardCode e) {
+							mainframe.displayWarning("Die Datei enthält kein"
+									+ "gültiges Spielfeld");
+							showChooseBoardDialog();
+						}
 					}
 
 					@Override
@@ -318,15 +323,17 @@ public class GameController {
 			@Override
 			public void spielparameter(String boardCode, int level,
 					char colour, String opponentName) {
-				GameMap gameMap = new GameMap(boardCode);
-				gameMap.clearOwners();
 				playerColour = colour;
-				game = new Game(gameMap, createPlayer(), level);
-				GameController.this.opponentName = opponentName;
-				statusDisplayer.setVillainName(opponentName);
-				statusDisplayer.setHeroColour(colour);
-				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-				startGameDisplay();
+				try {
+					game = new Game(boardCode, createPlayer(), level);
+					GameController.this.opponentName = opponentName;
+					statusDisplayer.setVillainName(opponentName);
+					statusDisplayer.setHeroColour(colour);
+					statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+					startGameDisplay();
+				} catch (IllegalBoardCode e) {
+					mainframe.displayWarning("Ungültiges Spielfeld erhalten.");
+				}
 			}
 
 			/**
@@ -410,7 +417,11 @@ public class GameController {
 			 */
 			@Override
 			public void zug(final String boardCode) {
-				game.updateGame(boardCode);
+				try {
+					game.updateGame(boardCode);
+				} catch (IllegalBoardCode e) {
+					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
+				}
 				// TODO display new board
 				// TODO Make move
 				statusDisplayer.setCurrentPlayer(playerColour);

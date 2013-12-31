@@ -82,6 +82,10 @@ public class Game implements GameObservable {
 		return legalFields.contains(pos);
 	}
 	
+	public String getBoardCode() {
+		return gameMap.getMapCode();
+	}
+	
 	@Override
 	public GameMap getGameMap() {
 		return gameMap;
