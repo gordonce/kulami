@@ -17,10 +17,6 @@ public class CompPlayer extends Player {
 
 	private KulamiStrategy strategy;
 	
-	public CompPlayer() {
-		super();
-	}
-	
 	/**
 	 * @param playerName
 	 * @param owner
