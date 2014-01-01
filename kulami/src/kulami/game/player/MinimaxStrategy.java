@@ -28,6 +28,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	private int level;
 	private Pos savedMove;
 	private Game game;
+	private char thisColour;
 
 	public MinimaxStrategy(int level) {
 		this.level = level;
@@ -42,6 +43,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	@Override
 	public Pos choosePos(Game game) {
 		this.game = game;
+		thisColour = game.getPlayer().getCoulour();
 		savedMove = null;
 		max(1, level, game.getGameMap().getCopy());
 		return savedMove;
@@ -62,6 +64,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 		for (Pos move : possibleMoves) {
 			GameMap nextGameMap = performMove(player, move, gameMap);
 			int value = min(-player, depth - 1, nextGameMap);
+			System.out.println(String.format("Pos: %s Value: %d ", move, value));
 			if (value > maxVal) {
 				maxVal = value;
 				if (depth == level)
@@ -88,8 +91,6 @@ public class MinimaxStrategy implements KulamiStrategy {
 			int value = max(-player, depth - 1, nextGameMap);
 			if (value < minVal) {
 				minVal = value;
-				if (depth == level)
-					savedMove = move;
 			}
 		}
 		return minVal;
@@ -118,9 +119,11 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 */
 	private Owner getOwner(int player) {
 		if (player == 1)
-			return game.getPlayer().getCoulour() == 'r' ? Owner.Red : Owner.Black;
+			return game.getPlayer().getCoulour() == 'r' ? Owner.Red
+					: Owner.Black;
 		else
-			return game.getPlayer().getCoulour() == 'r' ? Owner.Black : Owner.Red;
+			return game.getPlayer().getCoulour() == 'r' ? Owner.Black
+					: Owner.Red;
 	}
 
 	/**
@@ -137,8 +140,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * @return
 	 */
 	private int evaluate(int player, GameMap gameMap) {
-		gameMap.getPoints(getOwner(player), game.getLevel());
-		return 0;
+		return gameMap.getPoints(getOwner(1), game.getLevel());
 	}
 
 	/**
