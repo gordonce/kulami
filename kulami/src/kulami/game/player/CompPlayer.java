@@ -3,7 +3,7 @@
  */
 package kulami.game.player;
 
-import kulami.game.board.GameMap;
+import kulami.game.Game;
 import kulami.game.board.Pos;
 
 /**
@@ -18,10 +18,11 @@ public class CompPlayer extends Player {
 	 * @param playerName
 	 * @param colour
 	 *            'r' for red or 'b' for black.
+	 * @param level
 	 */
 	public CompPlayer(String playerName, char colour, int level) {
 		super(playerName, colour);
-		strategy = new RandomStrategy(level);
+		strategy = new MinimaxStrategy(level);
 	}
 
 	/*
@@ -30,8 +31,8 @@ public class CompPlayer extends Player {
 	 * @see kulami.game.player.Player#makeMove(kulami.game.board.GameMap)
 	 */
 	@Override
-	public Pos makeMove(GameMap gameMap) {
-		return strategy.choosePos(gameMap);
+	public Pos makeMove(Game game) {
+		return strategy.choosePos(game);
 
 	}
 

@@ -3,7 +3,7 @@
  */
 package kulami.game.player;
 
-import kulami.game.board.GameMap;
+import kulami.game.Game;
 import kulami.game.board.Pos;
 
 
@@ -51,7 +51,7 @@ public abstract class Player {
 	/**
 	 * @return
 	 */
-	abstract public Pos makeMove(GameMap gameMap);
+	abstract public Pos makeMove(Game game);
 	
 	
 

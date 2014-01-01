@@ -25,11 +25,16 @@ public class GameMap {
 	private Pos lastMove;
 	private Pos nextToLastMove;
 	
+	private int redMarbles;
+	private int blackMarbles;
+	
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
 
 	private GameMap() {
 		marbles = new Marbles();
+		redMarbles = 28;
+		blackMarbles = 28;
 	}
 
 
@@ -69,6 +74,8 @@ public class GameMap {
 		marbles.setAllNone();
 		lastMove = null;
 		nextToLastMove = null;
+		blackMarbles = 0;
+		redMarbles = 0;
 	}
 
 	/**
@@ -155,6 +162,10 @@ public class GameMap {
 			logger.info(String.format("Set owner of pos %s to %s.", pos, owner));
 			nextToLastMove = lastMove;
 			lastMove = pos;
+			if (owner == Owner.Black)
+				blackMarbles--;
+			else
+				redMarbles--;
 		}
 	}
 
@@ -197,6 +208,13 @@ public class GameMap {
 	public int getPoints(char playerColour, int level) {
 		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
 		return getPoints(owner, level);
+	}
+	
+	public int getMarblesLeft(Owner owner) {
+		if (owner == Owner.Black)
+			return blackMarbles;
+		else
+			return redMarbles;
 	}
 	
 	public Board getBoard() {
@@ -265,6 +283,8 @@ public class GameMap {
 		gameMap.marbles = copyMarbles();
 		gameMap.lastMove = lastMove;
 		gameMap.nextToLastMove = nextToLastMove;
+		gameMap.blackMarbles = blackMarbles;
+		gameMap.redMarbles = redMarbles;
 		return gameMap;
 	}
 }

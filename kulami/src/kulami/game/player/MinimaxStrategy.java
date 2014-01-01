@@ -5,7 +5,9 @@ package kulami.game.player;
 
 import java.util.List;
 
+import kulami.game.Game;
 import kulami.game.board.GameMap;
+import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 
 /**
@@ -25,6 +27,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	private static final int NEGATIVE_INFINITY = -65;
 	private int level;
 	private Pos savedMove;
+	private Game game;
 
 	public MinimaxStrategy(int level) {
 		this.level = level;
@@ -37,21 +40,28 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * kulami.game.player.KulamiStrategy#choosePos(kulami.game.board.GameMap)
 	 */
 	@Override
-	public Pos choosePos(GameMap gameMap) {
+	public Pos choosePos(Game game) {
+		this.game = game;
 		savedMove = null;
-		int eval = max(1, level, gameMap);
+		max(1, level, game.getGameMap().getCopy());
 		return savedMove;
 	}
 
+	/**
+	 * @param player
+	 * @param depth
+	 * @param gameMap
+	 * @return
+	 */
 	private int max(int player, int depth, GameMap gameMap) {
-		if (depth == 0 || !hasMarbles(player)) {
-			return evaluate(gameMap);
+		if (depth == 0 || !hasMarbles(player, gameMap)) {
+			return evaluate(player, gameMap);
 		}
 		int maxVal = NEGATIVE_INFINITY;
 		List<Pos> possibleMoves = generatePossibleMoves(player, gameMap);
-		for (Pos move: possibleMoves) {
+		for (Pos move : possibleMoves) {
 			GameMap nextGameMap = performMove(player, move, gameMap);
-			int value = min(-player, depth-1, nextGameMap);
+			int value = min(-player, depth - 1, nextGameMap);
 			if (value > maxVal) {
 				maxVal = value;
 				if (depth == level)
@@ -61,32 +71,56 @@ public class MinimaxStrategy implements KulamiStrategy {
 		return maxVal;
 	}
 
+	/**
+	 * @param player
+	 * @param depth
+	 * @param gameMap
+	 * @return
+	 */
 	private int min(int player, int depth, GameMap gameMap) {
-		if (depth == 0 || !hasMarbles(player)) {
-			return evaluate(gameMap);
+		if (depth == 0 || !hasMarbles(player, gameMap)) {
+			return evaluate(player, gameMap);
 		}
 		int minVal = POSITIVE_INFINITY;
 		List<Pos> possibleMoves = generatePossibleMoves(player, gameMap);
-		for (Pos move: possibleMoves) {
+		for (Pos move : possibleMoves) {
 			GameMap nextGameMap = performMove(player, move, gameMap);
-			int value = max(-player, depth-1, nextGameMap);
+			int value = max(-player, depth - 1, nextGameMap);
 			if (value < minVal) {
 				minVal = value;
 				if (depth == level)
 					savedMove = move;
 			}
-		}		return minVal;
+		}
+		return minVal;
 	}
 
 	/**
-	 * @param move 
-	 * @param player 
+	 * Copy the GameMap an perform the move.
+	 * 
+	 * @param move
+	 *            position where to place the marble
+	 * @param player
+	 *            1 for this player, -1 for opponent
 	 * @param gameMap
-	 * @return
+	 *            old GameMap
+	 * @return new GameMap
 	 */
 	private GameMap performMove(int player, Pos move, GameMap gameMap) {
-		// TODO Auto-generated method stub
-		return null;
+		GameMap newGameMap = gameMap.getCopy();
+		newGameMap.setOwner(move, getOwner(player));
+		return newGameMap;
+	}
+
+	/**
+	 * @param player
+	 * @return
+	 */
+	private Owner getOwner(int player) {
+		if (player == 1)
+			return game.getPlayer().getCoulour() == 'r' ? Owner.Red : Owner.Black;
+		else
+			return game.getPlayer().getCoulour() == 'r' ? Owner.Black : Owner.Red;
 	}
 
 	/**
@@ -95,16 +129,15 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * @return
 	 */
 	private List<Pos> generatePossibleMoves(int player, GameMap gameMap) {
-		// TODO Auto-generated method stub
-		return null;
+		return gameMap.getLegalFields();
 	}
 
 	/**
 	 * @param gameMap
 	 * @return
 	 */
-	private int evaluate(GameMap gameMap) {
-		// TODO Auto-generated method stub
+	private int evaluate(int player, GameMap gameMap) {
+		gameMap.getPoints(getOwner(player), game.getLevel());
 		return 0;
 	}
 
@@ -112,8 +145,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * @param player
 	 * @return
 	 */
-	private boolean hasMarbles(int player) {
-		// TODO Auto-generated method stub
-		return false;
+	private boolean hasMarbles(int player, GameMap gameMap) {
+		return gameMap.getMarblesLeft(getOwner(player)) > 0;
 	}
 }

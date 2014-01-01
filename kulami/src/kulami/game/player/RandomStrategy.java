@@ -6,6 +6,7 @@ package kulami.game.player;
 import java.util.ArrayList;
 import java.util.Random;
 
+import kulami.game.Game;
 import kulami.game.board.GameMap;
 import kulami.game.board.Pos;
 
@@ -25,7 +26,8 @@ public class RandomStrategy implements KulamiStrategy {
 	 * @see kulami.game.KulamiStrategy#choosePos(kulami.game.GameMap, kulami.game.Player)
 	 */
 	@Override
-	public Pos choosePos(GameMap gameMap) {
+	public Pos choosePos(Game game) {
+		GameMap gameMap = game.getGameMap();
 		ArrayList<Pos> candidates = gameMap.getLegalFields();
 		System.out.println(candidates);
 		int randomIdx = randomGen.nextInt(candidates.size());

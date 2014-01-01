@@ -3,7 +3,7 @@
  */
 package kulami.game.player;
 
-import kulami.game.board.GameMap;
+import kulami.game.Game;
 import kulami.game.board.Pos;
 
 /**
@@ -24,7 +24,7 @@ public class HumanPlayer extends Player {
 	 * @see kulami.game.player.Player#makeMove(kulami.game.board.GameMap)
 	 */
 	@Override
-	public Pos makeMove(GameMap gameMap) {
+	public Pos makeMove(Game game) {
 		// TODO Auto-generated method stub
 		return null;
 	}

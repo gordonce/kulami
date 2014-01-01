@@ -24,7 +24,7 @@ public class Game implements GameObservable {
 
 	private GameMap gameMap;
 	private Player player;
-	private int level;
+	private int gameLevel;
 	
 	private List<GameObserver> gameObservers;
 	
@@ -32,7 +32,7 @@ public class Game implements GameObservable {
 	
 	private Game(Player player, int level) {
 		this.player = player;
-		this.level = level;
+		this.gameLevel = level;
 		gameObservers = new ArrayList<>();
 	}
 	/**
@@ -67,7 +67,7 @@ public class Game implements GameObservable {
 	}
 	
 	public int getPoints(char playerColour) {
-		return gameMap.getPoints(playerColour, level);
+		return gameMap.getPoints(playerColour, gameLevel);
 	}
 	
 	public void pushMap() {
@@ -89,6 +89,18 @@ public class Game implements GameObservable {
 	
 	public Marbles copyMarbles() {
 		return gameMap.copyMarbles();
+	}
+	
+	public GameMap getGameMap() {
+		return gameMap;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+	
+	public int getLevel() {
+		return gameLevel;
 	}
 	
 	@Override
@@ -131,7 +143,7 @@ public class Game implements GameObservable {
 	 * 
 	 */
 	public void makeMove(CompPlayerAdapter adapter) {
-		Pos pos = player.makeMove(gameMap.getCopy());
+		Pos pos = player.makeMove(this);
 		placeMarble(pos);
 		adapter.madeMove(pos);
 	}
