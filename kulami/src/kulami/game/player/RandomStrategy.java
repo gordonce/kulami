@@ -17,7 +17,7 @@ public class RandomStrategy implements KulamiStrategy {
 
 	private Random randomGen;
 	
-	public RandomStrategy() {
+	public RandomStrategy(int level) {
 		randomGen = new Random();
 	}
 

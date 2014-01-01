@@ -25,9 +25,9 @@ public class CompPlayer extends Player {
 	 * @param playerName
 	 * @param owner
 	 */
-	public CompPlayer(String playerName, char owner) {
+	public CompPlayer(String playerName, char owner, int level) {
 		super(playerName, owner);
-		strategy = new RandomStrategy();
+		strategy = new RandomStrategy(level);
 	}
 	
 	/* (non-Javadoc)

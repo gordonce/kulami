@@ -488,7 +488,7 @@ public class GameController {
 		if (playerHuman)
 			return new HumanPlayer(playerName, playerColour);
 		else
-			return new CompPlayer(playerName, playerColour);
+			return new CompPlayer(playerName, playerColour, compPlayerLevel);
 	}
 	
 	private void makeMove() {
