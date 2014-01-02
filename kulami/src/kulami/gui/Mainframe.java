@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.border.TitledBorder;
 
 import kulami.control.MainframeAdapter;
 import kulami.game.GameObservable;
@@ -54,6 +55,14 @@ public class Mainframe extends JFrame {
 	private JPanel heroPanel;
 
 	private JPanel villainPanel;
+
+	private JPanel optionsPanel;
+
+	private JCheckBox previousMovesCheckBox;
+
+	private JCheckBox possibleMovesCheckBox;
+
+	private JCheckBox boardPossessionCheckBox;
 
 	/**
 	 * Construct a new Mainframe with a MainframeAdapter provided by a
@@ -99,6 +108,13 @@ public class Mainframe extends JFrame {
 		JOptionPane.showMessageDialog(this, message, "Kulami",
 				JOptionPane.WARNING_MESSAGE);
 	}
+	
+	public void enableOptions(boolean enabled) {
+		optionsPanel.setEnabled(enabled);
+		previousMovesCheckBox.setEnabled(enabled);
+		possibleMovesCheckBox.setEnabled(enabled);
+		boardPossessionCheckBox.setEnabled(enabled);
+	}
 
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
@@ -106,6 +122,7 @@ public class Mainframe extends JFrame {
 		JMenuBar mainMenu = initMainMenu();
 
 		JPanel leftPanel = initLeftPanel();
+		enableOptions(false);
 
 		board = initGameBoard();
 
@@ -143,10 +160,11 @@ public class Mainframe extends JFrame {
 		heroPanel = new JPanel();
 		villainPanel = new JPanel();
 		
-		JPanel optionsPanel = new JPanel();
+		optionsPanel = new JPanel();
+		optionsPanel.setBorder(new TitledBorder("Anzeigeoptionen"));
 		optionsPanel.setLayout(new GridLayout(3, 1, 5, 5));
-
-		JCheckBox previousMovesCheckBox = new JCheckBox("letzte Züge");
+		
+		previousMovesCheckBox = new JCheckBox("letzte Züge");
 		previousMovesCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -157,7 +175,7 @@ public class Mainframe extends JFrame {
 			}
 		});
 
-		JCheckBox possibleMovesCheckBox = new JCheckBox("mögliche Züge");
+		possibleMovesCheckBox = new JCheckBox("mögliche Züge");
 		possibleMovesCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -168,7 +186,7 @@ public class Mainframe extends JFrame {
 			}
 		});
 
-		JCheckBox boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
+		boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
 		boardPossessionCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
