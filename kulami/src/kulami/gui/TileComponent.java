@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import kulami.control.DisplayFlags;
+import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 
 class TileComponent extends JComponent implements MouseListener {
@@ -28,12 +29,17 @@ class TileComponent extends JComponent implements MouseListener {
 	private boolean lastMove;
 	private boolean nextToLastMove;
 	private DisplayFlags displayFlags;
-
+	
+	
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.MapPainter");
 
 	private Pos pos;
 	private boolean possibleMove;
+	private Owner panelOwner;
+
+	private static Color redTransparent = new Color(255, 0, 0, 128);
+	private static Color blackTransparent = new Color(0, 0, 0, 128);
 
 	static final int NONE = 0;
 	static final int BLACK = 1;
@@ -48,6 +54,7 @@ class TileComponent extends JComponent implements MouseListener {
 		lastMove = false;
 		nextToLastMove = false;
 		possibleMove = false;
+		panelOwner = Owner.None;
 		addMouseListener(this);
 	}
 
@@ -57,6 +64,10 @@ class TileComponent extends JComponent implements MouseListener {
 
 	public void setLastMove(boolean lastMove) {
 		this.lastMove = lastMove;
+	}
+	
+	public void setPanelOwner(Owner owner) {
+		this.panelOwner = owner;
 	}
 
 	public void setNextToLastMove(boolean nextToLastMove) {
@@ -118,6 +129,15 @@ class TileComponent extends JComponent implements MouseListener {
 				g2.setStroke(new BasicStroke(3));
 				g2.draw(new Rectangle2D.Float(6, 6, 48, 48));
 			}			
+		}
+		if (displayFlags.isPanelPossession()) {
+			if (panelOwner == Owner.Black) {
+				g2.setColor(blackTransparent);
+				g2.fillRect(0, 0, 60, 60);
+			} else if (panelOwner == Owner.Red) {
+				g2.setColor(redTransparent);
+				g2.fillRect(0, 0, 60, 60);
+			}
 		}
 
 	}

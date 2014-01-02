@@ -18,6 +18,7 @@ import kulami.control.DisplayFlags;
 import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 import kulami.game.board.Orientation;
+import kulami.game.board.Owner;
 import kulami.game.board.Panel;
 import kulami.game.board.Panel.PanelNotPlacedException;
 import kulami.game.board.Panel.PanelOutOfBoundsException;
@@ -122,6 +123,13 @@ public class MapPainter {
 			tile.setPossibleMove(false);
 	}
 	
+	public void setPanelOwners(List<Owner> owners) {
+		for (int i = 0; i < 100; i++) {
+			Owner owner = owners.get(i);
+			tiles.get(i).setPanelOwner(owner);
+		}
+			
+	}
 	public void registerTileListeners(MouseListener tileListener) {
 		for (TileComponent tile : tiles)
 			tile.addMouseListener(tileListener);

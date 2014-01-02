@@ -120,6 +120,15 @@ public class Game implements GameObservable {
 	public List<Pos> getLegalMoves() {
 		return gameMap.getLegalFields();
 	}
+
+	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getPanelOwners()
+	 */
+	@Override
+	public List<Owner> getPanelOwners() {
+		return gameMap.getPanelOwners();
+	}
+
 	/* (non-Javadoc)
 	 * @see kulami.game.GameObservable#registerObserver(kulami.gui.GameObserver)
 	 */
