@@ -31,8 +31,8 @@ import javax.swing.JRadioButton;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
+import kulami.control.DisplayFlags;
 import kulami.game.board.Board;
-import kulami.game.board.GameMap;
 import kulami.game.board.Orientation;
 
 /**
@@ -54,7 +54,7 @@ public class MapEditor extends JFrame {
 	}
 
 	public void drawBoard(Board board) {
-		mapPainter.drawBoard(board);
+		mapPainter.drawBoard(board, new DisplayFlags(false, false, false));
 		initTileListeners();
 	}
 

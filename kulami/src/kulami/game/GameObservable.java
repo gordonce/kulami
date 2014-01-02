@@ -3,8 +3,10 @@
  */
 package kulami.game;
 
+import kulami.control.DisplayFlags;
 import kulami.game.board.Board;
 import kulami.game.board.Marbles;
+import kulami.game.board.Pos;
 import kulami.gui.GameObserver;
 
 /**
@@ -17,4 +19,7 @@ public interface GameObservable {
 	public void removeObserver(GameObserver observer);
 	public Board getBoard();
 	public Marbles getMarbles();
+	public Pos getLastMove();
+	
+	public DisplayFlags getDisplayFlags();
 }

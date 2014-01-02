@@ -43,6 +43,7 @@ public class GameDisplay implements GameObserver {
 	 */
 	@Override
 	public void gameChanged(GameObservable game) {
+		mapPainter.setLastMove(game.getLastMove());
 		Marbles marbles = game.getMarbles();
 		mapPainter.drawMarbles(marbles);
 	}
@@ -56,8 +57,16 @@ public class GameDisplay implements GameObserver {
 	public void boardChanged(GameObservable game) {
 		Board board= game.getBoard();
 		logger.finer("Drawing map: " + board);
-		mapPainter.drawBoard(board);
+		mapPainter.drawBoard(board, game.getDisplayFlags());
 		initTileListeners();
+	}
+	
+	/* (non-Javadoc)
+	 * @see kulami.gui.GameObserver#flagsChanged(kulami.control.DisplayFlags)
+	 */
+	@Override
+	public void flagsChanged(GameObservable game) {
+		mapPainter.flagsChanged();
 	}
 
 	private void initTileListeners() {
@@ -84,4 +93,6 @@ public class GameDisplay implements GameObserver {
 
 		});
 	}
+
+
 }

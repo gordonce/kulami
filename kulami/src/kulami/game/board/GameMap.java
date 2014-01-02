@@ -287,4 +287,12 @@ public class GameMap {
 		gameMap.redMarbles = redMarbles;
 		return gameMap;
 	}
+
+
+	/**
+	 * @return
+	 */
+	public Pos getLastMove() {
+		return lastMove;
+	}
 }
