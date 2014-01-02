@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import kulami.control.DisplayFlags;
 import kulami.game.board.Board;
 import kulami.game.board.GameMap;
 import kulami.game.board.IllegalBoardCode;
@@ -27,25 +28,27 @@ public class Game implements GameObservable {
 	private int gameLevel;
 	
 	private List<GameObserver> gameObservers;
+	private DisplayFlags displayFlags;
 	
 	private static final Logger logger = Logger.getLogger("kulami.game.Game");
 	
-	private Game(Player player, int level) {
+	private Game(Player player, int level, DisplayFlags displayFlags) {
 		this.player = player;
 		this.gameLevel = level;
+		this.displayFlags = displayFlags;
 		gameObservers = new ArrayList<>();
 	}
 	/**
 	 * @param board
 	 * @param player
 	 */
-	public Game(Board board, Player player, int level) {
-		this(player, level);
+	public Game(Board board, Player player, int level, DisplayFlags displayFlags) {
+		this(player, level, displayFlags);
 		gameMap = new GameMap(board);
 	}
 	
-	public Game(String boardCode, Player player, int level) throws IllegalBoardCode {
-		this(player, level);
+	public Game(String boardCode, Player player, int level, DisplayFlags displayFlags) throws IllegalBoardCode {
+		this(player, level, displayFlags);
 		gameMap = new GameMap(boardCode);
 	}
 	
@@ -77,9 +80,6 @@ public class Game implements GameObservable {
 	
 	public boolean isLegalMove(Pos pos) {
 		List<Pos> legalFields = gameMap.getLegalFields();
-		logger.finest("legal fields:");
-		for (Pos p: legalFields)
-			logger.finest(p.toString());
 		return legalFields.contains(pos);
 	}
 	
@@ -114,6 +114,22 @@ public class Game implements GameObservable {
 	}
 	
 	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getLegalMoves()
+	 */
+	@Override
+	public List<Pos> getLegalMoves() {
+		return gameMap.getLegalFields();
+	}
+
+	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getPanelOwners()
+	 */
+	@Override
+	public List<Owner> getPanelOwners() {
+		return gameMap.getPanelOwners();
+	}
+
+	/* (non-Javadoc)
 	 * @see kulami.game.GameObservable#registerObserver(kulami.gui.GameObserver)
 	 */
 	@Override
@@ -146,6 +162,29 @@ public class Game implements GameObservable {
 		Pos pos = player.makeMove(this);
 		placeMarble(pos);
 		adapter.madeMove(pos);
+	}
+	/**
+	 * @param displayFlags
+	 */
+	public void flagsChanged(DisplayFlags displayFlags) {
+		this.displayFlags = displayFlags;
+		for (GameObserver observer: gameObservers)
+			observer.flagsChanged(this);
+		
+	}
+	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getDisplayFlags()
+	 */
+	@Override
+	public DisplayFlags getDisplayFlags() {
+		return displayFlags;
+	}
+	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getLastMove()
+	 */
+	@Override
+	public Pos getLastMove() {
+		return gameMap.getLastMove();
 	}
 	
 	

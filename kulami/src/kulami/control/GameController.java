@@ -66,6 +66,8 @@ public class GameController {
 
 	private MapEditor mapEditor;
 
+	private DisplayFlags displayFlags;
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.control.GameController");
 
@@ -76,6 +78,7 @@ public class GameController {
 	 */
 	public GameController() {
 		initMainframe();
+		displayFlags = new DisplayFlags(false, false, false);
 		messagePager = mainframe.getMessageDisplay();
 		statusDisplayer = mainframe.getStatusDisplay();
 		mainframe.setVisible(true);
@@ -94,26 +97,26 @@ public class GameController {
 
 			@Override
 			public void previousMovesDeactivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPreviousMoves(false);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
 			public void previousMovesActivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPreviousMoves(true);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
 			public void possibleMovesDeactivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPossibleMoves(false);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
 			public void possibleMovesActivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPossibleMoves(true);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
@@ -146,14 +149,14 @@ public class GameController {
 
 			@Override
 			public void boardPossessionDeactivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPanelPossession(false);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
 			public void boardPossessionActivated() {
-				// TODO Auto-generated method stub
-
+				displayFlags.setPanelPossession(true);
+				game.flagsChanged(displayFlags);
 			}
 
 			@Override
@@ -258,7 +261,7 @@ public class GameController {
 						chooseBoardDialog.clearAndHide();
 
 						try {
-							game = new Game(boardCode, createPlayer(), level);
+							game = new Game(boardCode, createPlayer(), level, displayFlags);
 							messageSender.sendParameters(game.getBoardCode(),
 									level);
 							startGameDisplay();
@@ -326,7 +329,7 @@ public class GameController {
 					char colour, String opponentName) {
 				playerColour = colour;
 				try {
-					game = new Game(boardCode, createPlayer(), level);
+					game = new Game(boardCode, createPlayer(), level, displayFlags);
 					GameController.this.opponentName = opponentName;
 					statusDisplayer.setVillainName(opponentName);
 					statusDisplayer.setHeroColour(colour);

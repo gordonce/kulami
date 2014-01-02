@@ -4,6 +4,7 @@
 package kulami.gui;
 
 import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -11,27 +12,49 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
+import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
+import kulami.control.DisplayFlags;
+import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 
 class TileComponent extends JComponent implements MouseListener {
 	private Image tileImage;
 	private int marble;
 	private boolean active;
+	private boolean lastMove;
+	private boolean nextToLastMove;
+	private DisplayFlags displayFlags;
+	
+	
+	private static final Logger logger = Logger
+			.getLogger("kulami.gui.MapPainter");
 
 	private Pos pos;
+	private boolean possibleMove;
+	private Owner panelOwner;
+
+	private static Color redTransparent = new Color(255, 0, 0, 128);
+	private static Color blackTransparent = new Color(0, 0, 0, 128);
 
 	static final int NONE = 0;
 	static final int BLACK = 1;
 	static final int RED = 2;
 
-	public TileComponent(Image tileImage, Pos pos) {
+	public TileComponent(Image tileImage, Pos pos, DisplayFlags displayFlags) {
 		this.tileImage = tileImage;
 		this.pos = pos;
+		this.displayFlags = displayFlags;
 		marble = 0;
 		active = false;
+		lastMove = false;
+		nextToLastMove = false;
+		possibleMove = false;
+		panelOwner = Owner.None;
 		addMouseListener(this);
 	}
 
@@ -39,9 +62,29 @@ class TileComponent extends JComponent implements MouseListener {
 		this.marble = marble;
 	}
 
+	public void setLastMove(boolean lastMove) {
+		this.lastMove = lastMove;
+	}
+	
+	public void setPanelOwner(Owner owner) {
+		this.panelOwner = owner;
+	}
+
+	public void setNextToLastMove(boolean nextToLastMove) {
+		this.nextToLastMove = nextToLastMove;
+	}
+
+	/**
+	 * @param b
+	 */
+	public void setPossibleMove(boolean possibleMove) {
+		this.possibleMove = possibleMove;
+	}
+	
 	public Pos getPos() {
 		return pos;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -63,18 +106,46 @@ class TileComponent extends JComponent implements MouseListener {
 			g2.fillOval(10, 10, 40, 40);
 		}
 		if (marble == NONE && active) {
-			g2.setComposite(AlphaComposite.getInstance(
-					AlphaComposite.SRC_OVER, (float) .6));
+			g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER,
+					(float) .6));
 			g2.setColor(Color.GRAY);
 			g2.fillOval(10, 10, 40, 40);
 		}
+		if (displayFlags.isPreviousMoves()) {
+			if (lastMove) {
+				g2.setColor(Color.DARK_GRAY);
+				g2.setStroke(new BasicStroke(3));
+				g2.draw(new Ellipse2D.Float(6, 6, 48, 48));
+			}
+			if (nextToLastMove) {
+				g2.setColor(Color.LIGHT_GRAY);
+				g2.setStroke(new BasicStroke(3));
+				g2.draw(new Ellipse2D.Float(6, 6, 48, 48));
+			}
+		}
+		if (displayFlags.isPossibleMoves()) {
+			if (possibleMove) {
+				g2.setColor(Color.GREEN);
+				g2.setStroke(new BasicStroke(3));
+				g2.draw(new Rectangle2D.Float(6, 6, 48, 48));
+			}			
+		}
+		if (displayFlags.isPanelPossession()) {
+			if (panelOwner == Owner.Black) {
+				g2.setColor(blackTransparent);
+				g2.fillRect(0, 0, 60, 60);
+			} else if (panelOwner == Owner.Red) {
+				g2.setColor(redTransparent);
+				g2.fillRect(0, 0, 60, 60);
+			}
+		}
+
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseClicked(MouseEvent e) {
@@ -83,8 +154,7 @@ class TileComponent extends JComponent implements MouseListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mousePressed(MouseEvent e) {
@@ -103,8 +173,7 @@ class TileComponent extends JComponent implements MouseListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
+	 * @see java.awt.event.MouseListener#mouseEntered(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseEntered(MouseEvent e) {
@@ -115,8 +184,7 @@ class TileComponent extends JComponent implements MouseListener {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
+	 * @see java.awt.event.MouseListener#mouseExited(java.awt.event.MouseEvent)
 	 */
 	@Override
 	public void mouseExited(MouseEvent e) {
@@ -124,7 +192,9 @@ class TileComponent extends JComponent implements MouseListener {
 		repaint();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -132,4 +202,5 @@ class TileComponent extends JComponent implements MouseListener {
 		return "TileComponent [tileImage=" + tileImage + ", marble=" + marble
 				+ ", active=" + active + ", pos=" + pos + "]";
 	}
+
 }

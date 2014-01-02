@@ -12,4 +12,5 @@ import kulami.game.GameObservable;
 public interface GameObserver {
 	public void gameChanged(GameObservable game);
 	public void boardChanged(GameObservable game);
+	public void flagsChanged(GameObservable game);
 }

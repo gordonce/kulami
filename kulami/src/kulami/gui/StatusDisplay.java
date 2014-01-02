@@ -233,4 +233,13 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		villainPanel.repaint();
 		logger.fine("Updated hero stats");
 	}
+
+	/* (non-Javadoc)
+	 * @see kulami.gui.GameObserver#flagsChanged(kulami.game.GameObservable)
+	 */
+	@Override
+	public void flagsChanged(GameObservable game) {
+		// TODO Auto-generated method stub
+		// TODO display/don't display points
+	}
 }

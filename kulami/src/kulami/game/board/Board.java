@@ -151,6 +151,10 @@ public class Board {
 		return panels;
 	}
 	
+	public Panel[] getFields() {
+		return fields;
+	}
+	
 	public String getBoardCode() {
 		StringBuilder boardCode = new StringBuilder();
 		for (int i = 0; i < fields.length; i++) {

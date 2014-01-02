@@ -4,6 +4,7 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -286,5 +287,34 @@ public class GameMap {
 		gameMap.blackMarbles = blackMarbles;
 		gameMap.redMarbles = redMarbles;
 		return gameMap;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public Pos getLastMove() {
+		return lastMove;
+	}
+
+
+	/**
+	 * @return
+	 */
+	public List<Owner> getPanelOwners() {
+		Panel[] fields = board.getFields();
+		List<Owner> owners = new ArrayList<>(100);
+		for (Panel field: fields)
+			try {
+				if (field == null)
+					owners.add(Owner.None);
+				else
+					owners.add(field.getOwner(marbles));
+			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return owners;
+			
 	}
 }

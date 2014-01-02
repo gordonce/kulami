@@ -14,9 +14,11 @@ import java.util.logging.Logger;
 
 import javax.swing.JPanel;
 
+import kulami.control.DisplayFlags;
 import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 import kulami.game.board.Orientation;
+import kulami.game.board.Owner;
 import kulami.game.board.Panel;
 import kulami.game.board.Panel.PanelNotPlacedException;
 import kulami.game.board.Panel.PanelOutOfBoundsException;
@@ -48,6 +50,9 @@ public class MapPainter {
 
 	private List<TileComponent> tiles;
 
+	private TileComponent lastMoveTile;
+	private TileComponent nextToLastMoveTile;
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.MapPainter");
 
@@ -64,7 +69,7 @@ public class MapPainter {
 	/**
 	 * @param gameMap
 	 */
-	public void drawBoard(Board board) {
+	public void drawBoard(Board board, DisplayFlags displayFlags) {
 		boardPanel.removeAll();
 		List<Image> tileImages = mapToImageList(board);
 		tiles = new ArrayList<>(100);
@@ -72,7 +77,7 @@ public class MapPainter {
 			for (int col = 0; col < 10; col++) {
 				Image tileImg = tileImages.get(row * 10 + col);
 				TileComponent tileComp = new TileComponent(tileImg, Pos.getPos(
-						row, col));
+						row, col), displayFlags);
 				boardPanel.add(tileComp);
 				tiles.add(tileComp);
 			}
@@ -87,10 +92,44 @@ public class MapPainter {
 			int colour = marbles.getMarble(Pos.getPos(i)).getIdx();
 			tiles.get(i).setMarble(colour);
 		}
-
 		boardPanel.repaint();
 	}
+	
+	public void setLastMove(Pos pos) {
+		// Reset next to last tile
+		if (nextToLastMoveTile != null) {
+			nextToLastMoveTile.setNextToLastMove(false);
+		}
+		// last tile becomes next to last tile
+		if (lastMoveTile != null) {
+			nextToLastMoveTile = lastMoveTile;
+			nextToLastMoveTile.setLastMove(false);
+			nextToLastMoveTile.setNextToLastMove(true);
+		}
+		// set last tile
+		lastMoveTile = tiles.get(pos.getIdx());
+		lastMoveTile.setLastMove(true);
+		logger.fine("lastMoveTile set to: " + lastMoveTile);
+	}
+	
+	public void setPossibleMoves(List<Pos> positions) {
+		clearPossibleMoves();
+		for (Pos pos: positions)
+			tiles.get(pos.getIdx()).setPossibleMove(true);
+	}
 
+	public void clearPossibleMoves() {
+		for (TileComponent tile: tiles)
+			tile.setPossibleMove(false);
+	}
+	
+	public void setPanelOwners(List<Owner> owners) {
+		for (int i = 0; i < 100; i++) {
+			Owner owner = owners.get(i);
+			tiles.get(i).setPanelOwner(owner);
+		}
+			
+	}
 	public void registerTileListeners(MouseListener tileListener) {
 		for (TileComponent tile : tiles)
 			tile.addMouseListener(tileListener);
@@ -188,6 +227,13 @@ public class MapPainter {
 				.getResource(path + "middle_v.png"));
 		middleH = toolkit.getImage(getClass()
 				.getResource(path + "middle_h.png"));
+	}
+
+	/**
+	 * 
+	 */
+	public void flagsChanged() {
+		boardPanel.repaint();
 	}
 
 }
