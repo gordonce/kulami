@@ -4,7 +4,6 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -20,21 +19,33 @@ import kulami.game.board.Panel.PanelOutOfBoundsException;
  */
 public class GameMap {
 
-	private List<Move> history;
 	private Board board;
 	private Marbles marbles;
 
+	private Pos lastMove;
+	private Pos nextToLastMove;
+	
+	private int redMarbles;
+	private int blackMarbles;
+	
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
+
+	private GameMap() {
+		marbles = new Marbles();
+		redMarbles = 28;
+		blackMarbles = 28;
+	}
+
 
 	/**
 	 * Construct an empty GameMap
 	 */
-	public GameMap() {
-		history = new ArrayList<>();
-		board = new Board();
-		marbles = new Marbles();
+	public GameMap(Board board) {
+		this();
+		this.board = board;
 	}
+	
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -52,16 +63,19 @@ public class GameMap {
 	 */
 	public GameMap(String boardCode) throws IllegalBoardCode {
 		this();
+		board = new Board();
 		BoardParser.getBoard(boardCode, board);
-		BoardParser.getMarbles(boardCode, marbles);
 	}
-
+	
 	/**
 	 * Set the owner of all fields to None and erase the history.
 	 */
 	public void clearOwners() {
 		marbles.setAllNone();
-		history.clear();
+		lastMove = null;
+		nextToLastMove = null;
+		blackMarbles = 0;
+		redMarbles = 0;
 	}
 
 	/**
@@ -71,25 +85,18 @@ public class GameMap {
 	 * @return a list of positions.
 	 */
 	public ArrayList<Pos> getLegalFields() {
-		int size = history.size();
-		Pos lastMove = null;
-		Pos nextToLastMove = null;
 		ArrayList<Pos> legalMoves = new ArrayList<>();
-		if (size > 0)
-			lastMove = history.get(size - 1).getPos();
-		if (size > 1)
-			nextToLastMove = history.get(size - 2).getPos();
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++) {
 				Pos pos = Pos.getPos(row, col);
-				if (isLegal(pos, lastMove, nextToLastMove))
+				if (isLegal(pos))
 					legalMoves.add(pos);
 			}
 		return legalMoves;
 
 	}
 
-	private boolean isLegal(Pos pos, Pos lastMove, Pos nextToLastMove) {
+	private boolean isLegal(Pos pos) {
 		Panel thisPanel = board.getPanel(pos);
 		// Is there a panel on the field?
 		if (thisPanel == null) {
@@ -150,8 +157,15 @@ public class GameMap {
 	public void setOwner(Pos pos, Owner owner) {
 		boolean changed = marbles.setMarble(pos, owner);
 		if (changed) {
+			logger.fine("lastMove: " + lastMove);
+			logger.fine("nextToLastMove: " + nextToLastMove);
 			logger.info(String.format("Set owner of pos %s to %s.", pos, owner));
-			history.add(new Move(pos, owner));
+			nextToLastMove = lastMove;
+			lastMove = pos;
+			if (owner == Owner.Black)
+				blackMarbles--;
+			else
+				redMarbles--;
 		}
 	}
 
@@ -164,7 +178,9 @@ public class GameMap {
 	 * @throws IllegalBoardCode
 	 */
 	public void updateGameMap(String boardCode) throws IllegalBoardCode {
-		BoardParser.getMarbles(boardCode, marbles);
+		BoardParser.getMarbles(boardCode,  this);
+		logger.fine("lastMove: " + lastMove);
+		logger.fine("nextToLastMove: " + nextToLastMove);
 	}
 
 	/**
@@ -173,7 +189,7 @@ public class GameMap {
 	 * @param owner
 	 * @return
 	 */
-	public int getPoints(Owner owner) {
+	public int getPoints(Owner owner, int level) {
 		int points = 0;
 		Map<Character, Panel> panels = board.getPanels();
 		for (char name : panels.keySet()) {
@@ -187,6 +203,26 @@ public class GameMap {
 			}
 		}
 		return points;
+	}
+	
+	public int getPoints(char playerColour, int level) {
+		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
+		return getPoints(owner, level);
+	}
+	
+	public int getMarblesLeft(Owner owner) {
+		if (owner == Owner.Black)
+			return blackMarbles;
+		else
+			return redMarbles;
+	}
+	
+	public Board getBoard() {
+		return board;
+	}
+	
+	public Marbles getMarbles() {
+		return marbles;
 	}
 
 	/*
@@ -218,9 +254,9 @@ public class GameMap {
 				+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
 				+ "a0a0a0n0n1n0a0a0a0a0");
 		System.out.println(gameMap);
-		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red));
+		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 1));
 		System.out.printf("Schwarz: %d Punkte\n",
-				gameMap.getPoints(Owner.Black));
+				gameMap.getPoints(Owner.Black, 1));
 		gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
 		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
 		System.out.println(gameMap);
@@ -228,5 +264,27 @@ public class GameMap {
 		System.out.println("legal fields:");
 		for (Pos pos : legalFields)
 			System.out.println(pos);
+	}
+
+
+	/**
+	 * @return
+	 */
+	public Marbles copyMarbles() {
+		return new Marbles(marbles);
+	}
+
+
+	/**
+	 * @return
+	 */
+	public GameMap getCopy() {
+		GameMap gameMap = new GameMap(board);
+		gameMap.marbles = copyMarbles();
+		gameMap.lastMove = lastMove;
+		gameMap.nextToLastMove = nextToLastMove;
+		gameMap.blackMarbles = blackMarbles;
+		gameMap.redMarbles = redMarbles;
+		return gameMap;
 	}
 }

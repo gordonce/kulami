@@ -3,35 +3,37 @@
  */
 package kulami.game.player;
 
-import kulami.game.board.GameMap;
+import kulami.game.Game;
 import kulami.game.board.Pos;
-
-
-
 
 /**
  * @author gordon
- *
+ * 
  */
 public class CompPlayer extends Player {
 
 	private KulamiStrategy strategy;
-	
-	public CompPlayer() {
-		super();
-	}
-	
+
 	/**
 	 * @param playerName
-	 * @param owner
+	 * @param colour
+	 *            'r' for red or 'b' for black.
+	 * @param level
 	 */
-	public CompPlayer(String playerName, char owner) {
-		super(playerName, owner);
-		strategy = new RandomStrategy();
+	public CompPlayer(String playerName, char colour, int level) {
+		super(playerName, colour);
+		strategy = new MinimaxStrategy(level);
 	}
-	
-	public Pos getMove(GameMap gameMap) {
-		return strategy.choosePos(gameMap);
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see kulami.game.player.Player#makeMove(kulami.game.board.GameMap)
+	 */
+	@Override
+	public Pos makeMove(Game game) {
+		return strategy.choosePos(game);
+
 	}
 
 }

@@ -150,6 +150,18 @@ public class Board {
 	public Map<Character, Panel> getPanels() {
 		return panels;
 	}
+	
+	public String getBoardCode() {
+		StringBuilder boardCode = new StringBuilder();
+		for (int i = 0; i < fields.length; i++) {
+			if (fields[i] == null)
+				boardCode.append('a');
+			else
+				boardCode.append(fields[i].getName());
+			boardCode.append('0');
+		}
+		return boardCode.toString();
+	}
 
 	public static int getSize(char code) {
 		for (int size : Sizes) {

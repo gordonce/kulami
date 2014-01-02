@@ -5,9 +5,13 @@ package kulami.control;
 
 import java.util.logging.Logger;
 
-import kulami.game.board.GameMap;
+import kulami.game.board.Board;
+import kulami.game.board.Board.FieldsNotEmptyException;
 import kulami.game.board.Orientation;
+import kulami.game.board.Panel.PanelNotPlacedException;
+import kulami.game.board.Panel.PanelOutOfBoundsException;
 import kulami.game.board.Pos;
+import kulami.game.board.TooManyPanelsException;
 import kulami.gui.MapEditor;
 import kulami.gui.MapEditorAdapter;
 
@@ -20,7 +24,7 @@ import kulami.gui.MapEditorAdapter;
  */
 public class MapEditorController implements MapEditorAdapter {
 	private MapEditor mapEditor;
-	private GameMap gameMap;
+	private Board board;
 
 	// Currently selected panel type
 	private int size;
@@ -40,9 +44,9 @@ public class MapEditorController implements MapEditorAdapter {
 	public MapEditorController() {
 		mapEditor = new MapEditor(this);
 		insertingPanel = false;
-		gameMap = GameMap.getEmpyMap();
-		mapEditor.drawMap(gameMap);
-		logger.finer("Displaying board: \n" + gameMap);
+		board = new Board();
+		mapEditor.drawBoard(board);
+		logger.finer("Displaying board: \n" + board);
 	}
 
 	/*
@@ -68,7 +72,7 @@ public class MapEditorController implements MapEditorAdapter {
 	 */
 	@Override
 	public void saveMap() {
-		mapEditor.saveMap(gameMap);
+		mapEditor.saveMap(board);
 	}
 
 	/*
@@ -101,9 +105,13 @@ public class MapEditorController implements MapEditorAdapter {
 		logger.fine(String.format("Tile at %s clicked.", pos));
 		if (!insertingPanel)
 			return;
-		gameMap.insertPanel(size, orientation, pos);
-		mapEditor.drawMap(gameMap);
-		// TODO catch misplaced exception
+		try {
+			board.putPanel(size, pos, orientation);
+			mapEditor.drawBoard(board);
+		} catch (PanelOutOfBoundsException | PanelNotPlacedException
+				| FieldsNotEmptyException | TooManyPanelsException e) {
+			// ignore
+		}
 	}
 
 	/* (non-Javadoc)

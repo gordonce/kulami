@@ -9,9 +9,9 @@ import kulami.connectivity.InProtocolObserver;
 import kulami.connectivity.MessageSender;
 import kulami.connectivity.ServerAdapter;
 import kulami.connectivity.ServerProxy;
+import kulami.game.CompPlayerAdapter;
 import kulami.game.Game;
-import kulami.game.board.GameMap;
-import kulami.game.board.Owner;
+import kulami.game.board.IllegalBoardCode;
 import kulami.game.board.Pos;
 import kulami.game.player.CompPlayer;
 import kulami.game.player.HumanPlayer;
@@ -252,15 +252,21 @@ public class GameController {
 						String boardCode = chooseBoardDialog.getBoardCode();
 						int level = chooseBoardDialog.getLevel();
 
-						GameMap board = new GameMap(boardCode);
-						board.clearOwners();
-
-						messageSender.sendParameters(board.getMapCode(), level);
+						// GameMap board = new GameMap(boardCode);
+						// board.clearOwners();
 
 						chooseBoardDialog.clearAndHide();
 
-						game = new Game(board, createPlayer(), level);
-						startGameDisplay();
+						try {
+							game = new Game(boardCode, createPlayer(), level);
+							messageSender.sendParameters(game.getBoardCode(),
+									level);
+							startGameDisplay();
+						} catch (IllegalBoardCode e) {
+							mainframe.displayWarning("Die Datei enthält kein"
+									+ "gültiges Spielfeld");
+							showChooseBoardDialog();
+						}
 					}
 
 					@Override
@@ -318,15 +324,17 @@ public class GameController {
 			@Override
 			public void spielparameter(String boardCode, int level,
 					char colour, String opponentName) {
-				GameMap gameMap = new GameMap(boardCode);
-				gameMap.clearOwners();
 				playerColour = colour;
-				game = new Game(gameMap, createPlayer(), level);
-				GameController.this.opponentName = opponentName;
-				statusDisplayer.setVillainName(opponentName);
-				statusDisplayer.setHeroColour(colour);
-				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-				startGameDisplay();
+				try {
+					game = new Game(boardCode, createPlayer(), level);
+					GameController.this.opponentName = opponentName;
+					statusDisplayer.setVillainName(opponentName);
+					statusDisplayer.setHeroColour(colour);
+					statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+					startGameDisplay();
+				} catch (IllegalBoardCode e) {
+					mainframe.displayWarning("Ungültiges Spielfeld erhalten.");
+				}
 			}
 
 			/**
@@ -369,9 +377,12 @@ public class GameController {
 			 */
 			@Override
 			public void spielstart(char colour) {
-				// TODO Display an appropriate message.
-				// TODO If this player begins, make move.
+				messagePager.display("Spiel beginnt");
 				statusDisplayer.setCurrentPlayer(colour);
+				// TODO If this player begins, make move.
+				if (!playerHuman && colour == playerColour) {
+					makeMove();
+				}
 			}
 
 			/**
@@ -403,17 +414,22 @@ public class GameController {
 			}
 
 			/**
-			 * Server sent opponents move.
+			 * Server sent opponent's move.
 			 * 
 			 * @param mapCode
 			 * 
 			 */
 			@Override
 			public void zug(final String boardCode) {
-				game.updateGame(boardCode);
-				// TODO display new board
-				// TODO Make move
+				try {
+					game.updateGame(boardCode);
+				} catch (IllegalBoardCode e) {
+					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
+				}
 				statusDisplayer.setCurrentPlayer(playerColour);
+				// TODO Make move
+				if (!playerHuman)
+					makeMove();
 			}
 
 			/**
@@ -472,7 +488,17 @@ public class GameController {
 		if (playerHuman)
 			return new HumanPlayer(playerName, playerColour);
 		else
-			return new CompPlayer(playerName, playerColour);
+			return new CompPlayer(playerName, playerColour, compPlayerLevel);
+	}
+	
+	private void makeMove() {
+		game.makeMove(new CompPlayerAdapter() {
+			
+			@Override
+			public void madeMove(Pos pos) {
+				messageSender.makeMove(pos.getCol(), pos.getRow());
+			}
+		});
 	}
 
 }

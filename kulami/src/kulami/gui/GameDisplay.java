@@ -10,7 +10,8 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import kulami.game.GameObservable;
-import kulami.game.board.GameMap;
+import kulami.game.board.Board;
+import kulami.game.board.Marbles;
 
 /**
  * @author gordon
@@ -42,8 +43,8 @@ public class GameDisplay implements GameObserver {
 	 */
 	@Override
 	public void gameChanged(GameObservable game) {
-		GameMap gameMap = game.getGameMap();
-		mapPainter.drawMarbles(gameMap);
+		Marbles marbles = game.getMarbles();
+		mapPainter.drawMarbles(marbles);
 	}
 
 	/*
@@ -53,9 +54,9 @@ public class GameDisplay implements GameObserver {
 	 */
 	@Override
 	public void boardChanged(GameObservable game) {
-		GameMap gameMap = game.getGameMap();
-		logger.finer("Drawing map: " + gameMap);
-		mapPainter.drawMap(gameMap);
+		Board board= game.getBoard();
+		logger.finer("Drawing map: " + board);
+		mapPainter.drawBoard(board);
 		initTileListeners();
 	}
 

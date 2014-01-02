@@ -3,7 +3,8 @@
  */
 package kulami.game;
 
-import kulami.game.board.GameMap;
+import kulami.game.board.Board;
+import kulami.game.board.Marbles;
 import kulami.gui.GameObserver;
 
 /**
@@ -14,5 +15,6 @@ public interface GameObservable {
 
 	public void registerObserver(GameObserver observer);
 	public void removeObserver(GameObserver observer);
-	public GameMap getGameMap();
+	public Board getBoard();
+	public Marbles getMarbles();
 }

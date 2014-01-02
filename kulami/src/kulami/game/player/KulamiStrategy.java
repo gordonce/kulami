@@ -3,7 +3,7 @@
  */
 package kulami.game.player;
 
-import kulami.game.board.GameMap;
+import kulami.game.Game;
 import kulami.game.board.Pos;
 
 
@@ -12,5 +12,5 @@ import kulami.game.board.Pos;
  *
  */
 public interface KulamiStrategy {
-	public Pos choosePos(GameMap gameMap);
+	public Pos choosePos(Game game);
 }
