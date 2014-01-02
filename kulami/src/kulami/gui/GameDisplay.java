@@ -44,6 +44,7 @@ public class GameDisplay implements GameObserver {
 	@Override
 	public void gameChanged(GameObservable game) {
 		mapPainter.setLastMove(game.getLastMove());
+		mapPainter.setPossibleMoves(game.getLegalMoves());
 		Marbles marbles = game.getMarbles();
 		mapPainter.drawMarbles(marbles);
 	}

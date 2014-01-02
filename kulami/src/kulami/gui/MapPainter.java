@@ -112,6 +112,7 @@ public class MapPainter {
 	}
 	
 	public void setPossibleMoves(List<Pos> positions) {
+		clearPossibleMoves();
 		for (Pos pos: positions)
 			tiles.get(pos.getIdx()).setPossibleMove(true);
 	}

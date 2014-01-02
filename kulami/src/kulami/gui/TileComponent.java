@@ -114,7 +114,7 @@ class TileComponent extends JComponent implements MouseListener {
 		}
 		if (displayFlags.isPossibleMoves()) {
 			if (possibleMove) {
-				g2.setColor(Color.green);
+				g2.setColor(Color.GREEN);
 				g2.setStroke(new BasicStroke(3));
 				g2.draw(new Rectangle2D.Float(6, 6, 48, 48));
 			}			

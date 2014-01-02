@@ -80,9 +80,6 @@ public class Game implements GameObservable {
 	
 	public boolean isLegalMove(Pos pos) {
 		List<Pos> legalFields = gameMap.getLegalFields();
-		logger.finest("legal fields:");
-		for (Pos p: legalFields)
-			logger.finest(p.toString());
 		return legalFields.contains(pos);
 	}
 	
@@ -116,7 +113,13 @@ public class Game implements GameObservable {
 		return gameMap.getMarbles();
 	}
 	
-	
+	/* (non-Javadoc)
+	 * @see kulami.game.GameObservable#getLegalMoves()
+	 */
+	@Override
+	public List<Pos> getLegalMoves() {
+		return gameMap.getLegalFields();
+	}
 	/* (non-Javadoc)
 	 * @see kulami.game.GameObservable#registerObserver(kulami.gui.GameObserver)
 	 */
