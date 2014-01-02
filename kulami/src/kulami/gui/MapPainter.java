@@ -76,7 +76,6 @@ public class MapPainter {
 				boardPanel.add(tileComp);
 				tiles.add(tileComp);
 			}
-//		boardPanel.revalidate();
 		boardPanel.repaint();
 	}
 
@@ -89,7 +88,6 @@ public class MapPainter {
 			tiles.get(i).setMarble(colour);
 		}
 
-//		boardPanel.revalidate();
 		boardPanel.repaint();
 	}
 
