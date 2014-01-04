@@ -4,6 +4,7 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,11 +85,13 @@ public class Marbles {
 		List<Pos> positions = getMarbles(owner);
 		int[] id = getAreaIDs(positions);
 		Map<Integer, Integer> areas = areaSizes(id);
+		System.out.println("areas: " + areas);
 		
 		int maxsize = 0;
 		for (int size: areas.values())
 			if (size > maxsize)
 				maxsize = size;
+		System.out.println("areas.values:" + areas.values());
 		return maxsize;
 	}
 
@@ -111,7 +114,7 @@ public class Marbles {
 				Pos pos1 = positions.get(i);
 				Pos pos2 = positions.get(j);
 				if (neighbouring(pos1, pos2))
-					id[pos2.getIdx()] = id[pos1.getIdx()];
+					id[j] = id[i];
 			}
 		return id;
 	}
@@ -134,6 +137,8 @@ public class Marbles {
 		for (int i : id)
 			if (areas.containsKey(i))
 				areas.put(i, areas.get(i) + 1);
+			else
+				areas.put(i, 1);
 		return areas;
 	}
 
