@@ -5,6 +5,7 @@ package kulami.gui;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.GridLayout;
@@ -25,6 +26,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 /**
  * @author gordon
@@ -36,7 +39,7 @@ public class ChooseBoardDialog extends JDialog {
 
 	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
 	private ButtonGroup levelGroup;
-	private JLabel fileLabel;
+	private JTextField fileLabel;
 
 	public ChooseBoardDialog(Frame mainframe,
 			ChooseBoardDialogAdapter chooseBoardDialogAdapter) {
@@ -49,8 +52,6 @@ public class ChooseBoardDialog extends JDialog {
 
 		add(initGUI(), BorderLayout.CENTER);
 		add(initButtons(), BorderLayout.SOUTH);
-
-		initListeners();
 
 		pack();
 		setLocationRelativeTo(mainframe);
@@ -102,12 +103,6 @@ public class ChooseBoardDialog extends JDialog {
 				"Fehler", JOptionPane.ERROR_MESSAGE);
 	}
 
-	private void initListeners() {
-
-
-
-
-	}
 
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -137,9 +132,31 @@ public class ChooseBoardDialog extends JDialog {
 
 	private Component initGUI() {
 		JPanel mainPanel = new JPanel();
+		int width = 400;
+		mainPanel.setPreferredSize(new Dimension(width, 130));
 
-		mainPanel.setLayout(new GridLayout(0, 2, 10, 5));
+		JPanel boardPanel = new JPanel();
+		boardPanel.setPreferredSize(new Dimension(width, 58));
+		boardPanel.setBorder(new TitledBorder("Spielfeld"));
+		
+		fileLabel = new JTextField(20);
+		fileLabel.setEditable(false);
+		boardPanel.add(fileLabel);
+		
+		JButton fileButton = new JButton("Datei auswählen");
+		fileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showFileChooser();
+			}
+		});
+		boardPanel.add(fileButton);
 
+		mainPanel.add(boardPanel);
+
+		JPanel levelPanel = new JPanel();
+		levelPanel.setPreferredSize(new Dimension(width, 58));
+		levelPanel.setBorder(new TitledBorder("Level für die Punktezählung"));
 		
 		JRadioButton level0Button = new JRadioButton("0");
 		level0Button.setActionCommand("0");
@@ -149,32 +166,17 @@ public class ChooseBoardDialog extends JDialog {
 		JRadioButton level2Button = new JRadioButton("2");
 		level2Button.setActionCommand("2");
 
-		JPanel levelPanel = new JPanel();
-		levelPanel.add(level0Button);
-		levelPanel.add(level1Button);
-		levelPanel.add(level2Button);
-
 		levelGroup = new ButtonGroup();
 		levelGroup.add(level0Button);
 		levelGroup.add(level1Button);
 		levelGroup.add(level2Button);
-
-		JPanel boardPanel = new JPanel();
-		fileLabel = new JLabel();
-		JButton fileButton = new JButton("Datei auswählen");
-		fileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showFileChooser();
-			}
-		});
-		boardPanel.add(fileLabel);
-		boardPanel.add(fileButton);
-
-		mainPanel.add(new JLabel("Spielfeld", JLabel.RIGHT));
-		mainPanel.add(boardPanel);
-		mainPanel.add(new JLabel("Level", JLabel.RIGHT));
+		
+		levelPanel.add(level0Button);
+		levelPanel.add(level1Button);
+		levelPanel.add(level2Button);
+		
 		mainPanel.add(levelPanel);
+		
 		return mainPanel;
 	}
 
@@ -190,5 +192,9 @@ public class ChooseBoardDialog extends JDialog {
 			JOptionPane.showMessageDialog(this, "Konnte Datei nicht laden: "
 					+ e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
+	}
+	
+	public static void main(String[] args) {
+		new ChooseBoardDialog(new javax.swing.JFrame(), null).setVisible(true);;
 	}
 }
