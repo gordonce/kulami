@@ -14,7 +14,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
@@ -31,8 +30,8 @@ class TileComponent extends JComponent implements MouseListener {
 	private DisplayFlags displayFlags;
 	
 	
-	private static final Logger logger = Logger
-			.getLogger("kulami.gui.MapPainter");
+//	private static final Logger logger = Logger
+//			.getLogger("kulami.gui.MapPainter");
 
 	private Pos pos;
 	private boolean possibleMove;

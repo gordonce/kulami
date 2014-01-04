@@ -55,8 +55,6 @@ public class GameMap {
 	 * The constructor initializes the Boards and creates a matrix of 10 by 10
 	 * Fields .
 	 * 
-	 * TODO needs to throw an exception if mapCode is not correctly formatted
-	 * 
 	 * @param mapCode
 	 * @throws IllegalBoardCode
 	 */
@@ -171,8 +169,6 @@ public class GameMap {
 
 	/**
 	 * Given a map code, update the Owners of the Fields.
-	 * 
-	 * // TODO must throw if the positions of the panels has changed.
 	 * 
 	 * @param mapCode
 	 * @throws IllegalBoardCode
@@ -326,7 +322,6 @@ public class GameMap {
 				else
 					owners.add(field.getOwner(marbles));
 			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		return owners;
@@ -340,12 +335,12 @@ public class GameMap {
 		 * @param args
 		 */
 		public static void main(String[] args) throws IllegalBoardCode {
-			String mapCode1 = "a0a0a0k0f0f0a0a0a0a0"
-					+ "a0a0p0k0f0f0o0o0a0a0" + "a0a0p0k0b1b0b0g2g0a0"
-					+ "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
-					+ "h0h0i0i0l2d1d0d0m0a0" + "h0h0i0i0l2q2j0j1m0a0"
-					+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
-					+ "a0a0a0n1n1n1a0a0a0a0";
+//			String mapCode1 = "a0a0a0k0f0f0a0a0a0a0"
+//					+ "a0a0p0k0f0f0o0o0a0a0" + "a0a0p0k0b1b0b0g2g0a0"
+//					+ "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
+//					+ "h0h0i0i0l2d1d0d0m0a0" + "h0h0i0i0l2q2j0j1m0a0"
+//					+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
+//					+ "a0a0a0n1n1n1a0a0a0a0";
 			String mapCode2 = 	"a0a0a0f2f1o1o0a0a0a0" 
 					          + "a0b0b1f2f1l1l1l2a0a0"
 					          + "a0b0b1g1g1h2h2e1e2a0"

@@ -28,7 +28,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	private int level;
 	private Pos savedMove;
 	private Game game;
-	private char thisColour;
+//	private char thisColour;
 
 	public MinimaxStrategy(int level) {
 		this.level = level;
@@ -43,7 +43,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	@Override
 	public Pos choosePos(Game game) {
 		this.game = game;
-		thisColour = game.getPlayer().getCoulour();
+//		thisColour = game.getPlayer().getCoulour();
 		savedMove = null;
 		max(1, level, game.getGameMap().getCopy());
 		return savedMove;
