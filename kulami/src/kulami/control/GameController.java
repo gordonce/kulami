@@ -350,10 +350,9 @@ public class GameController {
 					game = new Game(boardCode, createPlayer(), level,
 							displayFlags);
 					GameController.this.opponentName = opponentName;
-					statusDisplayer.setVillainName(opponentName);
-					statusDisplayer.setHeroColour(colour);
-					statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+
 					startGameDisplay();
+					initStatusDisplay();
 				} catch (IllegalBoardCode e) {
 					mainframe.displayWarning("Ungültiges Spielfeld erhalten.");
 				}
@@ -398,6 +397,7 @@ public class GameController {
 			 */
 			@Override
 			public void spielstart(char colour) {
+				initStatusDisplay();
 				messagePager.display("Spiel beginnt");
 				statusDisplayer.setCurrentPlayer(colour);
 				if (!playerHuman && colour == playerColour) {
@@ -432,6 +432,7 @@ public class GameController {
 				// TODO Verify the new board.
 				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b'
 						: 'r');
+				statusDisplayer.setHeroMarbles(game.remainingMarbles(playerColour));
 			}
 
 			/**
@@ -445,6 +446,7 @@ public class GameController {
 				try {
 					game.updateGame(boardCode);
 					statusDisplayer.setCurrentPlayer(playerColour);
+					statusDisplayer.setVillainMarbles(game.remainingMarbles(playerColour == 'r' ? 'b' : 'r'));
 					if (!playerHuman)
 						makeMove();
 				} catch (IllegalBoardCode e) {
@@ -501,7 +503,6 @@ public class GameController {
 	}
 
 	private void startGameDisplay() {
-		logger.finer("Initializing game display for game: " + game);
 		mainframe.initGameDisplay(game, new GameDisplayAdapter() {
 
 			@Override
@@ -518,6 +519,14 @@ public class GameController {
 		});
 		game.pushMap();
 		mainframe.enableOptions(true);
+	}
+	
+	private void initStatusDisplay() {
+		statusDisplayer.setVillainName(opponentName);
+		statusDisplayer.setHeroColour(playerColour);
+		statusDisplayer.setVillainColour(playerColour == 'b' ? 'r' : 'b');
+		statusDisplayer.setHeroMarbles(28);
+		statusDisplayer.setVillainMarbles(28);
 	}
 
 	private Player createPlayer() {

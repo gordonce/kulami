@@ -148,6 +148,6 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * @return
 	 */
 	private boolean hasMarbles(int player, GameMap gameMap) {
-		return gameMap.getMarblesLeft(getOwner(player)) > 0;
+		return gameMap.remainingMarbles(getOwner(player)) > 0;
 	}
 }

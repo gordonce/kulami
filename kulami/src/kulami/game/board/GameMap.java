@@ -168,6 +168,7 @@ public class GameMap {
 		}
 	}
 
+
 	/**
 	 * Given a map code, update the Owners of the Fields.
 	 * 
@@ -258,7 +259,7 @@ public class GameMap {
 		return getPoints(owner, level);
 	}
 
-	public int getMarblesLeft(Owner owner) {
+	public int remainingMarbles(Owner owner) {
 		if (owner == Owner.Black)
 			return blackMarbles;
 		else

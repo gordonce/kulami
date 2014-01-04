@@ -186,6 +186,16 @@ public class Game implements GameObservable {
 	public Pos getLastMove() {
 		return gameMap.getLastMove();
 	}
+	/**
+	 * @param playerColour
+	 * @return
+	 */
+	public int remainingMarbles(char playerColour) {
+		if (playerColour == 'r')
+			return gameMap.remainingMarbles(Owner.Red);
+		else
+			return gameMap.remainingMarbles(Owner.Black);
+	}
 	
 	
 	
