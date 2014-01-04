@@ -250,7 +250,7 @@ public class GameMap {
 	 * @return Number of points
 	 */
 	private int chainPoints(Owner owner) {
-		return marbles.getLongestChain(owner);
+		return marbles.getChainLength(owner);
 	}
 
 	public int getPoints(char playerColour, int level) {
@@ -295,20 +295,29 @@ public class GameMap {
 	 * @param args
 	 */
 	public static void main(String[] args) throws IllegalBoardCode {
-		String mapCode = "a0a0a0k0f0f0a0a0a0a0"
+		String mapCode1 = "a0a0a0k0f0f0a0a0a0a0"
 				+ "a0a0p0k0f0f0o0o0a0a0" + "a0a0p0k0b1b0b0g2g0a0"
 				+ "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
 				+ "h0h0i0i0l2d1d0d0m0a0" + "h0h0i0i0l2q2j0j1m0a0"
 				+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
 				+ "a0a0a0n1n1n1a0a0a0a0";
-		GameMap gameMap = new GameMap(mapCode);
-		gameMap.updateGameMap(mapCode);
-//		GameMap gameMap = new GameMap(
-//				"a0a0a0f0f0o0o0a0a0a0a0b0b0f0f0l0l0l0a0a0a0b0b0g0g0h0h0e0e0a0k0b0b0g0g0h0h0e0e0a0k0c0c0c0m0m0m0e0e0a0k0c0c0c0d0d0d0p0a0a0a0n0n0n0d0d0d0p0a0a0a0q0q0i0i0j0j0r0r0a0a0a0a0i0i0j0j0a0a0a0a0a0a0a0a0a0a0a0a0a0");
+		String mapCode2 = 	"a0a0a0f2f1o1o0a0a0a0" 
+				          + "a0b0b1f2f1l1l1l2a0a0"
+				          + "a0b0b1g1g1h2h2e1e2a0"
+				          + "k2b2b1g1g1h2h2e2e1a0"
+				          + "k0c0c1c1m2m1m2e2e0a0"
+				          + "k2c1c1c2d2d2d1p1a0a0"
+				          + "a0n1n2n2d2d2d1p0a0a0"
+				          + "a0q2q2i1i2j2j1r2r1a0"
+				          + "a0a0a0i1i0j0j2a0a0a0"
+				          + "a0a0a0a0a0a0a0a0a0a0";
+		GameMap gameMap = new GameMap(mapCode2);
+		gameMap.updateGameMap(mapCode2);
+			
 		System.out.println(gameMap);
-		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 1));
+		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 3));
 		System.out.printf("Schwarz: %d Punkte\n",
-				gameMap.getPoints(Owner.Black, 1));
+				gameMap.getPoints(Owner.Black, 3));
 //		gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
 //		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
 //		System.out.println(gameMap);

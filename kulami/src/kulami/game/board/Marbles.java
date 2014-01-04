@@ -4,7 +4,6 @@
 package kulami.game.board;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,9 +85,9 @@ public class Marbles {
 		int[] id = getAreaIDs(positions);
 		Map<Integer, Integer> areas = areaSizes(id);
 		System.out.println("areas: " + areas);
-		
+
 		int maxsize = 0;
-		for (int size: areas.values())
+		for (int size : areas.values())
 			if (size > maxsize)
 				maxsize = size;
 		System.out.println("areas.values:" + areas.values());
@@ -104,6 +103,14 @@ public class Marbles {
 		return positions;
 	}
 
+	/**
+	 * Produce an array of sizes of adjacent marbles of the same colour using
+	 * the union-find algorithm.
+	 * 
+	 * @param positions
+	 *            A list of positions of marbles of the same colour
+	 * @return An array of sizes of areas of the same colour
+	 */
 	private int[] getAreaIDs(List<Pos> positions) {
 		int n = positions.size();
 		int[] id = new int[n];
@@ -114,9 +121,19 @@ public class Marbles {
 				Pos pos1 = positions.get(i);
 				Pos pos2 = positions.get(j);
 				if (neighbouring(pos1, pos2))
-					id[j] = id[i];
+					union(i, j, id);
 			}
 		return id;
+	}
+
+	private void union(int p, int q, int[] id) {
+		int pID = id[p];
+		int qID = id[q];
+
+		if (pID != qID)
+			for (int i = 0; i < id.length; i++)
+				if (id[i] == pID)
+					id[i] = qID;
 	}
 
 	private boolean neighbouring(Pos pos1, Pos pos2) {
@@ -142,18 +159,91 @@ public class Marbles {
 		return areas;
 	}
 
-
-	
 	/**
-	 * Calculate the length of the longest longest chain with 5 or more marbles.
+	 * Calculate the length of the chains with 5 or more marbles.
 	 * 
 	 * @param owner
 	 *            The Owner
-	 * @return Number of marbles in longest chain (>= 5) or zero
+	 * @return Number of marbles in long chains (>= 5) or zero
 	 */
-	public int getLongestChain(Owner owner) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int getChainLength(Owner owner) {
+		int bonus = 0;
+		List<Pos> positions = new ArrayList<>();
+
+		// rows
+		for (int row = 0; row < 10; row++) {
+			for (int col = 0; col < 10; col++) {
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+
+		// columns
+		for (int col = 0; col < 10; col++) {
+			for (int row = 0; row < 10; row++) {
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+
+		// left to right diagonals
+		// longest diagonal starts at (0,0) and has 10 fields
+		// shortest diagonals start at (0,5) and (5,0) and have 5 fields
+		for (int i = 0; i < 6; i++) {
+			for (int row = 0; row < 10 - i; row++) {
+				int col = row + i;
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+
+		for (int i = 1; i < 6; i++) {
+			for (int col = 0; col < 10 - i; col++) {
+				int row = col + i;
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+
+		// right to left diagonals
+		for (int i = 0; i < 6; i++) {
+			for (int row = 9; row > 0 + i; row--) {
+				int col = i + (9 - row);
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+
+		for (int i = 1; i < 6; i++) {
+			for (int col = 0; col < 10 - i; col++) {
+				int row = 10 - (i + col);
+				positions.add(Pos.getPos(row, col));
+			}
+			bonus += chainBonus(positions, owner);
+			positions.clear();
+		}
+		return bonus;
 	}
 
+	private int chainBonus(List<Pos> positions, Owner owner) {
+		int maxChain = 0;
+		int chain = 0;
+		for (Pos pos : positions) {
+			if (getMarble(pos) == owner) {
+				chain++;
+				if (chain > maxChain)
+					maxChain = chain;
+			} else {
+				if (chain > maxChain)
+					maxChain = chain;
+				chain = 0;
+			}
+		}
+		return (maxChain >= 5) ? maxChain : 0;
+	}
 }
