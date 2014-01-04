@@ -432,7 +432,8 @@ public class GameController {
 				// TODO Verify the new board.
 				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b'
 						: 'r');
-				statusDisplayer.setHeroMarbles(game.remainingMarbles(playerColour));
+				updateStatusDisplay();
+
 			}
 
 			/**
@@ -446,7 +447,7 @@ public class GameController {
 				try {
 					game.updateGame(boardCode);
 					statusDisplayer.setCurrentPlayer(playerColour);
-					statusDisplayer.setVillainMarbles(game.remainingMarbles(playerColour == 'r' ? 'b' : 'r'));
+					updateStatusDisplay();
 					if (!playerHuman)
 						makeMove();
 				} catch (IllegalBoardCode e) {
@@ -527,6 +528,14 @@ public class GameController {
 		statusDisplayer.setVillainColour(playerColour == 'b' ? 'r' : 'b');
 		statusDisplayer.setHeroMarbles(28);
 		statusDisplayer.setVillainMarbles(28);
+	}
+	
+	private void updateStatusDisplay() {
+		char villainColour = playerColour == 'r' ? 'b' : 'r';
+		statusDisplayer.setHeroMarbles(game.remainingMarbles(playerColour));
+		statusDisplayer.setVillainMarbles(game.remainingMarbles(villainColour));
+		statusDisplayer.setHeroPoints(game.getPoints(playerColour));
+		statusDisplayer.setVillainPoints(game.getPoints(villainColour));
 	}
 
 	private Player createPlayer() {
