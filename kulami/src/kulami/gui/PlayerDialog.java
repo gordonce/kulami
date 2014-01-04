@@ -4,9 +4,9 @@
 package kulami.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -17,12 +17,12 @@ import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.border.TitledBorder;
 
 /**
  * @author gordon
@@ -37,19 +37,9 @@ public class PlayerDialog extends JDialog {
 	private SpinnerNumberModel levelModel;
 	private final static String humanCommand = "human";
 	private final static String compCommand = "comp";
-	private boolean human;
-
-	private JButton okButton;
-
-	private JButton cancelButton;
-
-	private JRadioButton humanButton;
-
-	private JRadioButton compButton;
 
 	private JSpinner levelSpinner;
-
-	private JLabel levelLabel;
+	private JPanel levelPanel;
 
 	public PlayerDialog(Frame mainframe,
 			PlayerDialogAdapter playerDialogAdapter) {
@@ -63,7 +53,12 @@ public class PlayerDialog extends JDialog {
 		add(initGUI(), BorderLayout.CENTER);
 		add(initButtons(), BorderLayout.SOUTH);
 		
-		initListeners();
+		addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentShown(ComponentEvent e) {
+				nameField.requestFocusInWindow();
+			}
+		});
 
 		pack();
 		setLocationRelativeTo(mainframe);
@@ -74,7 +69,7 @@ public class PlayerDialog extends JDialog {
 	}
 	
 	public boolean getHuman() {
-		return human;
+		return typeButtonGroup.getSelection().getActionCommand().equals(humanCommand);
 	}
 	
 	public int getCompLevel() {
@@ -83,33 +78,14 @@ public class PlayerDialog extends JDialog {
 	
 	public void clearAndHide() {
 		nameField.setText(null);
-		// TODO clear other components
 		setVisible(false);
 	}
 	
-	private void initListeners() {
-		addComponentListener(new ComponentAdapter() {
-			@Override
-			public void componentShown(ComponentEvent e) {
-				nameField.requestFocusInWindow();
-			}
-		});
-
-		compButton.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				int event = e.getStateChange();
-				if (event == ItemEvent.SELECTED) {
-					enableLevelSelection(true);
-					human = false;
-				}
-				else if (event == ItemEvent.DESELECTED) {
-					enableLevelSelection(false);
-					human = true;
-				}
-			}
-		});
+	private JPanel initButtons() {
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
+		JButton okButton = new JButton("OK");
+		getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -117,20 +93,13 @@ public class PlayerDialog extends JDialog {
 			}
 		});
 		
+		JButton cancelButton = new JButton("Abbrechen");
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				playerDialogAdapter.cancelPressed();
 			}
 		});
-	}
-	
-	private JPanel initButtons() {
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		
-		okButton = new JButton("OK");
-		getRootPane().setDefaultButton(okButton);
-		cancelButton = new JButton("Abbrechen");
 		
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
@@ -139,37 +108,58 @@ public class PlayerDialog extends JDialog {
 	}
 
 	private JPanel initGUI() {
+		int width = 250;
 		
-		JPanel mainPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+		JPanel mainPanel = new JPanel();
+		mainPanel.setPreferredSize(new Dimension(width, 190));
 		
-		nameField = new JTextField(12);
+		JPanel namePanel = new JPanel();
+		namePanel.setPreferredSize(new Dimension(width, 57));
+		namePanel.setBorder(new TitledBorder("Name"));
+		nameField = new JTextField(20);
+		namePanel.add(nameField);
+		
+		JPanel typePanel = new JPanel();
+		typePanel.setPreferredSize(new Dimension(width, 57));
+		typePanel.setBorder(new TitledBorder("Modus"));
 		
 		typeButtonGroup = new ButtonGroup();
-		humanButton = new JRadioButton("Mensch");
+		
+		JRadioButton humanButton = new JRadioButton("Mensch");
 		humanButton.setActionCommand(humanCommand);
-		humanButton.setSelected(true);
-		human = true;
-		
-		compButton = new JRadioButton("Computer");
-		compButton.setActionCommand(compCommand);
-		
 		typeButtonGroup.add(humanButton);
+		humanButton.setSelected(true);
+		
+		JRadioButton compButton = new JRadioButton("Computer");
+		compButton.setActionCommand(compCommand);
+		compButton.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				int event = e.getStateChange();
+				if (event == ItemEvent.SELECTED) {
+					enableLevelSelection(true);
+				}
+				else if (event == ItemEvent.DESELECTED) {
+					enableLevelSelection(false);
+				}
+			}
+		});
 		typeButtonGroup.add(compButton);
 
-		JPanel radioPanel = new JPanel();
-		radioPanel.add(humanButton);
-		radioPanel.add(compButton);
+		typePanel.add(humanButton);
+		typePanel.add(compButton);
+
+		levelPanel = new JPanel();
+		levelPanel.setPreferredSize(new Dimension(width, 57));
+		levelPanel.setBorder(new TitledBorder("Schwierigkeitsstufe"));
 		
 		levelModel = new SpinnerNumberModel(1, 1, 10, 1);
 		levelSpinner = new JSpinner(levelModel);
+		levelPanel.add(levelSpinner);
 		
-		mainPanel.add(new JLabel("Name:"));
-		mainPanel.add(nameField);
-		mainPanel.add(new JLabel("Modus:"));
-		mainPanel.add(radioPanel);
-		levelLabel = new JLabel("Schwierigkeitsstufe:");
-		mainPanel.add(levelLabel);
-		mainPanel.add(levelSpinner);
+		mainPanel.add(namePanel);
+		mainPanel.add(typePanel);
+		mainPanel.add(levelPanel);
 		
 		enableLevelSelection(false);
 		
@@ -177,8 +167,12 @@ public class PlayerDialog extends JDialog {
 	}
 
 	private void enableLevelSelection(boolean b) {
-		levelLabel.setEnabled(b);
+		levelPanel.setEnabled(b);
 		levelSpinner.setEnabled(b);
+	}
+	
+	public static void main(String[] args) {
+		new PlayerDialog(new javax.swing.JFrame(), null).setVisible(true);;
 	}
 	
 }
