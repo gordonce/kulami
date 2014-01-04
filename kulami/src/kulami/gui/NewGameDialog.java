@@ -24,8 +24,6 @@ import javax.swing.JTextField;
 public class NewGameDialog extends JDialog {
 
 	private NewGameDialogAdapter newGameDialogAdapter;
-	private JButton connectButton;
-	private JButton cancelButton;
 	private JTextField hostField;
 	private JTextField portField;
 	private JDialog loadingDialog;
@@ -43,8 +41,6 @@ public class NewGameDialog extends JDialog {
 		
 		add(initGUI(), BorderLayout.CENTER);
 		add(initButtons(), BorderLayout.SOUTH);
-		
-		initListeners();
 		
 		pack();
 		setLocationRelativeTo(mainframe);
@@ -74,7 +70,11 @@ public class NewGameDialog extends JDialog {
 		JOptionPane.showMessageDialog(this, message, title, JOptionPane.WARNING_MESSAGE);
 	}
 	
-	private void initListeners() {
+	private Component initButtons() {
+		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		
+		JButton connectButton = new JButton("Verbinden");
+		getRootPane().setDefaultButton(connectButton);
 		connectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -82,19 +82,13 @@ public class NewGameDialog extends JDialog {
 			}
 		});
 		
+		JButton cancelButton = new JButton("Abbrechen");
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				newGameDialogAdapter.cancelClicked();
 			}
 		});
-	}
-	private Component initButtons() {
-		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		
-		connectButton = new JButton("Verbinden");
-		getRootPane().setDefaultButton(connectButton);
-		cancelButton = new JButton("Abbrechen");
 		
 		buttonPanel.add(connectButton);
 		buttonPanel.add(cancelButton);
