@@ -28,7 +28,6 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.border.TitledBorder;
 
-import kulami.control.MainframeAdapter;
 import kulami.game.GameObservable;
 
 /**

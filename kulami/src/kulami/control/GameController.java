@@ -21,6 +21,7 @@ import kulami.gui.ChooseBoardDialogAdapter;
 import kulami.gui.GameDisplay;
 import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
+import kulami.gui.MainframeAdapter;
 import kulami.gui.MapEditor;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
