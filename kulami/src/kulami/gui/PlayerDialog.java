@@ -17,6 +17,7 @@ import java.awt.event.ItemListener;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
@@ -40,6 +41,8 @@ public class PlayerDialog extends JDialog {
 
 	private JSpinner levelSpinner;
 	private JPanel levelPanel;
+
+	private JLabel levelLabel;
 
 	public PlayerDialog(Frame mainframe,
 			PlayerDialogAdapter playerDialogAdapter) {
@@ -120,7 +123,7 @@ public class PlayerDialog extends JDialog {
 		namePanel.add(nameField);
 		
 		JPanel typePanel = new JPanel();
-		typePanel.setPreferredSize(new Dimension(width, 57));
+		typePanel.setPreferredSize(new Dimension(width, 78));
 		typePanel.setBorder(new TitledBorder("Modus"));
 		
 		typeButtonGroup = new ButtonGroup();
@@ -128,6 +131,7 @@ public class PlayerDialog extends JDialog {
 		JRadioButton humanButton = new JRadioButton("Mensch");
 		humanButton.setActionCommand(humanCommand);
 		typeButtonGroup.add(humanButton);
+		typePanel.add(humanButton);
 		humanButton.setSelected(true);
 		
 		JRadioButton compButton = new JRadioButton("Computer");
@@ -145,21 +149,17 @@ public class PlayerDialog extends JDialog {
 			}
 		});
 		typeButtonGroup.add(compButton);
-
-		typePanel.add(humanButton);
 		typePanel.add(compButton);
 
-		levelPanel = new JPanel();
-		levelPanel.setPreferredSize(new Dimension(width, 57));
-		levelPanel.setBorder(new TitledBorder("Schwierigkeitsstufe"));
-		
+
 		levelModel = new SpinnerNumberModel(1, 1, 10, 1);
 		levelSpinner = new JSpinner(levelModel);
-		levelPanel.add(levelSpinner);
+		levelLabel = new JLabel("Spielstärke: ");
+		typePanel.add(levelLabel);
+		typePanel.add(levelSpinner);
 		
 		mainPanel.add(namePanel);
 		mainPanel.add(typePanel);
-		mainPanel.add(levelPanel);
 		
 		enableLevelSelection(false);
 		
@@ -167,12 +167,12 @@ public class PlayerDialog extends JDialog {
 	}
 
 	private void enableLevelSelection(boolean b) {
-		levelPanel.setEnabled(b);
+		levelLabel.setEnabled(b);
 		levelSpinner.setEnabled(b);
 	}
 	
 	public static void main(String[] args) {
-		new PlayerDialog(new javax.swing.JFrame(), null).setVisible(true);;
+		new PlayerDialog(new javax.swing.JFrame(), null).setVisible(true);
 	}
 	
 }
