@@ -10,8 +10,6 @@ import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,17 +33,10 @@ import javax.swing.JRadioButton;
 public class ChooseBoardDialog extends JDialog {
 
 	private File boardFile;
-	private int level;
 
 	private ChooseBoardDialogAdapter chooseBoardDialogAdapter;
-	private JButton okButton;
-	private JButton cancelButton;
-	private JRadioButton level1Button;
-	private JRadioButton level2Button;
-	private JRadioButton level3Button;
 	private ButtonGroup levelGroup;
 	private JLabel fileLabel;
-	private JButton fileButton;
 
 	public ChooseBoardDialog(Frame mainframe,
 			ChooseBoardDialogAdapter chooseBoardDialogAdapter) {
@@ -102,7 +93,7 @@ public class ChooseBoardDialog extends JDialog {
 	 * @return The level.
 	 */
 	public int getLevel() {
-		return level;
+		return Integer.parseInt(levelGroup.getSelection().getActionCommand());
 	}
 
 	public void invalidBoardCode() {
@@ -112,64 +103,30 @@ public class ChooseBoardDialog extends JDialog {
 	}
 
 	private void initListeners() {
-		okButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				chooseBoardDialogAdapter.okClicked();
-			}
-		});
 
-		cancelButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				chooseBoardDialogAdapter.cancelClicked();
-			}
-		});
 
-		fileButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				showFileChooser();
-			}
-		});
 
-		level1Button.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				int event = e.getStateChange();
-				if (event == ItemEvent.SELECTED)
-					level = 1;
-			}
-		});
-		;
-
-		level2Button.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				int event = e.getStateChange();
-				if (event == ItemEvent.SELECTED)
-					level = 2;
-			}
-		});
-		;
-
-		level3Button.addItemListener(new ItemListener() {
-			@Override
-			public void itemStateChanged(ItemEvent e) {
-				int event = e.getStateChange();
-				if (event == ItemEvent.SELECTED)
-					level = 3;
-			}
-		});
-		;
 
 	}
 
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-		okButton = new JButton("OK");
-		cancelButton = new JButton("Abbrechen");
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chooseBoardDialogAdapter.okClicked();
+			}
+		});
+		
+		JButton cancelButton = new JButton("Abbrechen");
+		cancelButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				chooseBoardDialogAdapter.cancelClicked();
+			}
+		});
 
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
@@ -182,25 +139,34 @@ public class ChooseBoardDialog extends JDialog {
 
 		mainPanel.setLayout(new GridLayout(0, 2, 10, 5));
 
-		level1Button = new JRadioButton("1");
-		level1Button.setSelected(true);
-		level = 1;
-		level2Button = new JRadioButton("2");
-		level3Button = new JRadioButton("3");
+		
+		JRadioButton level0Button = new JRadioButton("0");
+		level0Button.setActionCommand("0");
+		level0Button.setSelected(true);
+		JRadioButton level1Button = new JRadioButton("1");
+		level1Button.setActionCommand("1");
+		JRadioButton level2Button = new JRadioButton("2");
+		level2Button.setActionCommand("2");
 
 		JPanel levelPanel = new JPanel();
+		levelPanel.add(level0Button);
 		levelPanel.add(level1Button);
 		levelPanel.add(level2Button);
-		levelPanel.add(level3Button);
 
 		levelGroup = new ButtonGroup();
+		levelGroup.add(level0Button);
 		levelGroup.add(level1Button);
 		levelGroup.add(level2Button);
-		levelGroup.add(level3Button);
 
 		JPanel boardPanel = new JPanel();
 		fileLabel = new JLabel();
-		fileButton = new JButton("Datei auswählen");
+		JButton fileButton = new JButton("Datei auswählen");
+		fileButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showFileChooser();
+			}
+		});
 		boardPanel.add(fileLabel);
 		boardPanel.add(fileButton);
 

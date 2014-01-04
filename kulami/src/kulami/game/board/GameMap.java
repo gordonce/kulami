@@ -197,9 +197,6 @@ public class GameMap {
 			points += areaPoints(owner);
 			break;
 		case 2:
-			points += chainPoints(owner);
-			break;
-		case 3:
 			points += areaPoints(owner) + chainPoints(owner);
 		default:
 			break;
@@ -231,7 +228,7 @@ public class GameMap {
 	}
 
 	/**
-	 * Calculate bonus points for level 1 and 3 based on largest interconnecting
+	 * Calculate bonus points for level 1 and 2 based on largest interconnecting
 	 * area.
 	 * 
 	 * @param owner
@@ -244,7 +241,7 @@ public class GameMap {
 	}
 
 	/**
-	 * Calculate bonus points for level 2 and 3 based on longest chain.
+	 * Calculate bonus points for level 2 based on longest chain.
 	 * 
 	 * @param owner
 	 *            The Owner
