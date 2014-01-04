@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -32,8 +33,9 @@ public class ServerProxy {
 	private boolean listening;
 	private Queue<String> sendBuffer;
 	private Socket kulamiSocket;
-	
-	private static final Logger logger = Logger.getLogger("kulami.control.ServerProxy");
+
+	private static final Logger logger = Logger
+			.getLogger("kulami.control.ServerProxy");
 
 	/**
 	 * Create a ServerProxy object that can be used to connect to a Kulami
@@ -55,35 +57,35 @@ public class ServerProxy {
 	 * new thread that runs an infinite loop that listens for Kulami server
 	 * messages and distributes them to all registered MessageObservers.
 	 * 
+	 * @throws IOException
+	 * @throws UnknownHostException
+	 * 
 	 */
 	// TODO needs to throw if connection fails
-	public void connectAndListen() {
-		// TODO establish connection to server
-		try {
-			kulamiSocket = new Socket(host, port);
-			
-			logger.info(String.format("Established connectin with %s:%d.", host, port));
-			
-			Thread listenThread = new Thread(new Runnable() {
+	public void connectAndListen() throws UnknownHostException, IOException {
+		kulamiSocket = new Socket(host, port);
 
-				@Override
-				public void run() {
-					listen();
-				}
-			});
-			Thread sendThread = new Thread(new Runnable() {
-				
-				@Override
-				public void run() {
-					send();
-				}
-			});
-			listening = true;
-			listenThread.start();
-			sendThread.start();
-		} catch (IOException e) {
-			logger.warning(String.format("Couldn't connect to %s:%d.", host, port));
-		}
+		logger.info(String.format("Established connectin with %s:%d.", host,
+				port));
+
+		Thread listenThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				listen();
+			}
+		});
+		Thread sendThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				send();
+			}
+		});
+		listening = true;
+		listenThread.start();
+		sendThread.start();
+
 	}
 
 	/**
@@ -99,7 +101,14 @@ public class ServerProxy {
 	 * Stop the thread listening to a Kulami server.
 	 */
 	public void disconnect() {
-		listening = false;
+		try {
+			if (kulamiSocket != null)
+				kulamiSocket.close();
+			listening = false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private void listen() {
@@ -110,7 +119,8 @@ public class ServerProxy {
 			while (listening) {
 				inMessage = socketReader.readLine();
 				if (inMessage != null) {
-					logger.fine(String.format("Received message: %s", inMessage));
+					logger.fine(String
+							.format("Received message: %s", inMessage));
 					informObservers(inMessage);
 				}
 				inMessage = null;
@@ -119,7 +129,7 @@ public class ServerProxy {
 			logger.severe("Exception listening to server: " + e.getMessage());
 		}
 	}
-	
+
 	private void send() {
 		// TODO try with resources
 		try {
@@ -132,7 +142,7 @@ public class ServerProxy {
 				if (outMessage != null) {
 					socketWriter.write(outMessage + '\n');
 					socketWriter.flush();
-					logger.fine(String.format("Sent message: %s",outMessage));
+					logger.fine(String.format("Sent message: %s", outMessage));
 					outMessage = null;
 				}
 				Thread.sleep(1000);

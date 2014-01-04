@@ -3,6 +3,8 @@
  */
 package kulami.control;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import kulami.connectivity.InProtocolObserver;
@@ -127,8 +129,7 @@ public class GameController {
 
 			@Override
 			public void messageEntered(String message) {
-				// TODO Auto-generated method stub
-
+				messageSender.sendMessage(message);
 			}
 
 			@Override
@@ -164,7 +165,8 @@ public class GameController {
 			@Override
 			public void exitClicked() {
 				// TODO Auto-generated method stub
-				boolean reallyExit = mainframe.yesNoQuestion("Kulami beenden?", "Kulami");
+				boolean reallyExit = mainframe.yesNoQuestion("Kulami beenden?",
+						"Kulami");
 				if (reallyExit)
 					System.exit(0);
 			}
@@ -195,7 +197,7 @@ public class GameController {
 				playerDialog.clearAndHide();
 
 				statusDisplayer.setHeroName(playerName);
-				
+
 				showNewGameDialog();
 			}
 
@@ -237,11 +239,20 @@ public class GameController {
 
 						serverProxy.addObserver(serverAdapter);
 
-						serverProxy.connectAndListen();
-
-						messageSender = new MessageSender(serverProxy);
-
-						// TODO display error message if connection fails
+						try {
+							serverProxy.connectAndListen();
+							messageSender = new MessageSender(serverProxy);
+						} catch (UnknownHostException e) {
+							newGameDialog
+									.displayWarning(
+											"Unbekannter Server. Bitte Verbindungsdaten überprüfen.",
+											"Fehler beim Verbinden");
+							serverProxy.disconnect();
+						} catch (IOException e) {
+							newGameDialog.displayWarning("Fehler beim Verbinden mit dem Server: " + e.getMessage(),
+									"Fehler beim Verbinden");
+							serverProxy.disconnect();
+						}
 					}
 
 					@Override
@@ -267,7 +278,8 @@ public class GameController {
 						chooseBoardDialog.clearAndHide();
 
 						try {
-							game = new Game(boardCode, createPlayer(), level, displayFlags);
+							game = new Game(boardCode, createPlayer(), level,
+									displayFlags);
 							messageSender.sendParameters(game.getBoardCode(),
 									level);
 							startGameDisplay();
@@ -335,7 +347,8 @@ public class GameController {
 					char colour, String opponentName) {
 				playerColour = colour;
 				try {
-					game = new Game(boardCode, createPlayer(), level, displayFlags);
+					game = new Game(boardCode, createPlayer(), level,
+							displayFlags);
 					GameController.this.opponentName = opponentName;
 					statusDisplayer.setVillainName(opponentName);
 					statusDisplayer.setHeroColour(colour);
@@ -500,10 +513,10 @@ public class GameController {
 		else
 			return new CompPlayer(playerName, playerColour, compPlayerLevel);
 	}
-	
+
 	private void makeMove() {
 		game.makeMove(new CompPlayerAdapter() {
-			
+
 			@Override
 			public void madeMove(Pos pos) {
 				messageSender.makeMove(pos.getCol(), pos.getRow());

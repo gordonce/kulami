@@ -30,7 +30,7 @@ public class MessageDisplay implements MessagePager {
 	 * @see kulami.gui.MessagePager#display(java.lang.String)
 	 */
 	public void display(String message) {
-		textPager.append(textPager.getText() + "\n" + message);
+		textPager.append(message + '\n');
 		textPager.setCaretPosition(textPager.getDocument().getLength());
 	}
 

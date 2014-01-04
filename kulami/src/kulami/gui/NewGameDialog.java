@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -27,6 +28,7 @@ public class NewGameDialog extends JDialog {
 	private JButton cancelButton;
 	private JTextField hostField;
 	private JTextField portField;
+	private JDialog loadingDialog;
 
 	/**
 	 * @param newGameDialogAdapter
@@ -61,9 +63,15 @@ public class NewGameDialog extends JDialog {
 	 * 
 	 */
 	public void clearAndHide() {
+		if (loadingDialog != null)
+			loadingDialog.setVisible(false);
 		hostField.setText(null);
 		portField.setText(null);
 		setVisible(false);
+	}
+	
+	public void displayWarning(String message, String title) {
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.WARNING_MESSAGE);
 	}
 	
 	private void initListeners() {
@@ -105,6 +113,14 @@ public class NewGameDialog extends JDialog {
 		mainPanel.add(portField);
 		
 		return mainPanel;
+	}
+
+	public void displayLoading() {
+		loadingDialog = new JDialog(this, "Mit Server verbinden", ModalityType.DOCUMENT_MODAL);
+		loadingDialog.add(new JLabel("Verbinde...", JLabel.CENTER));
+		loadingDialog.setSize(250, 150);
+		loadingDialog.setLocationRelativeTo(this);
+		loadingDialog.setVisible(true);
 	}
 
 
