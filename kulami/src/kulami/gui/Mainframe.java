@@ -153,16 +153,17 @@ public class Mainframe extends JFrame {
 	}
 
 	private JPanel initLeftPanel() {
-		JPanel leftPanel = new JPanel();
-		leftPanel.setPreferredSize(new Dimension(200, 600));
-		leftPanel.setLayout(new GridLayout(0, 1, 5, 5));
+		JPanel leftPanel = new JPanel(new BorderLayout());
+		leftPanel.setPreferredSize(new Dimension(300, 600));
+		
+		JPanel statsPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+		statsPanel.setPreferredSize(new Dimension(300, 400));
 
 		heroPanel = new JPanel();
 		villainPanel = new JPanel();
 		
-		optionsPanel = new JPanel();
+		optionsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
 		optionsPanel.setBorder(new TitledBorder("Anzeigeoptionen"));
-		optionsPanel.setLayout(new GridLayout(3, 1, 5, 5));
 		
 		previousMovesCheckBox = new JCheckBox("letzte Züge");
 		previousMovesCheckBox.addItemListener(new ItemListener() {
@@ -201,8 +202,8 @@ public class Mainframe extends JFrame {
 		optionsPanel.add(possibleMovesCheckBox);
 		optionsPanel.add(boardPossessionCheckBox);
 
-		JPanel messagePanel = new JPanel();
-		messagePanel.setLayout(new BorderLayout(5, 5));
+		JPanel messagePanel = new JPanel(new BorderLayout(5, 5));
+		messagePanel.setPreferredSize(new Dimension(300, 200));
 
 		messageTextArea = new JTextArea();
 		messageTextArea.setEditable(false);
@@ -222,10 +223,12 @@ public class Mainframe extends JFrame {
 		messagePanel.add(messageScrollPane, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
 
-		leftPanel.add(heroPanel);
-		leftPanel.add(villainPanel);
-		leftPanel.add(optionsPanel);
-		leftPanel.add(messagePanel);
+		statsPanel.add(heroPanel);
+		statsPanel.add(villainPanel);
+		statsPanel.add(optionsPanel);
+		
+		leftPanel.add(statsPanel, BorderLayout.CENTER);
+		leftPanel.add(messagePanel, BorderLayout.SOUTH);
 		return leftPanel;
 	}
 
