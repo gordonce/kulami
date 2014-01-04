@@ -14,4 +14,9 @@ public interface MessageObserver {
 	 */
 	void inform(String message);
 
+	/**
+	 * 
+	 */
+	void connectionError();
+
 }

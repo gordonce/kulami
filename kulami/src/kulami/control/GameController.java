@@ -463,7 +463,7 @@ public class GameController {
 			 */
 			@Override
 			public void spielende(int pointsRed, int pointsBlack) {
-				// TODO Display points
+				// TODO Display points	
 				// TODO Prompt for rematch
 			}
 
@@ -482,6 +482,11 @@ public class GameController {
 			public void unknownMessage(String msg) {
 				mainframe.displayWarning("Unbekannte Nachricht empfangen:\n"
 						+ msg);
+			}
+
+			@Override
+			public void connectionError() {
+				mainframe.displayWarning("Es ist ein Fehler bei der Verbindung aufgetreten. Das Spiel wird beendet.");
 			}
 		});
 	}

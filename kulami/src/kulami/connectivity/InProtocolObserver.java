@@ -37,4 +37,9 @@ public interface InProtocolObserver {
 	public void playerMessage(String msg);
 
 	public void unknownMessage(String msg);
+
+	/**
+	 * 
+	 */
+	public void connectionError();
 }

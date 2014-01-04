@@ -141,4 +141,13 @@ public class ServerAdapter implements MessageObserver {
 		return matchers;
 	}
 
+	/* (non-Javadoc)
+	 * @see kulami.connectivity.MessageObserver#connectionError()
+	 */
+	@Override
+	public void connectionError() {
+		for (InProtocolObserver observer: observers)
+			observer.connectionError();
+	}
+
 }

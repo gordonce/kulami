@@ -61,7 +61,6 @@ public class ServerProxy {
 	 * @throws UnknownHostException
 	 * 
 	 */
-	// TODO needs to throw if connection fails
 	public void connectAndListen() throws UnknownHostException, IOException {
 		kulamiSocket = new Socket(host, port);
 
@@ -106,15 +105,13 @@ public class ServerProxy {
 				kulamiSocket.close();
 			listening = false;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			connectionError();
 		}
 	}
 
 	private void listen() {
-		try {
-			BufferedReader socketReader = new BufferedReader(
-					new InputStreamReader(kulamiSocket.getInputStream()));
+		try (BufferedReader socketReader = new BufferedReader(
+				new InputStreamReader(kulamiSocket.getInputStream()))) {
 			String inMessage;
 			while (listening) {
 				inMessage = socketReader.readLine();
@@ -127,15 +124,13 @@ public class ServerProxy {
 			}
 		} catch (IOException e) {
 			logger.severe("Exception listening to server: " + e.getMessage());
+			connectionError();
 		}
 	}
 
 	private void send() {
-		// TODO try with resources
-		try {
-
-			BufferedWriter socketWriter = new BufferedWriter(
-					new OutputStreamWriter(kulamiSocket.getOutputStream()));
+		try (BufferedWriter socketWriter = new BufferedWriter(
+				new OutputStreamWriter(kulamiSocket.getOutputStream()))) {
 			String outMessage;
 			while (listening) {
 				outMessage = sendBuffer.poll();
@@ -150,11 +145,8 @@ public class ServerProxy {
 			kulamiSocket.close();
 		} catch (IOException | InterruptedException e) {
 			logger.severe("Exception sending message: " + e.getMessage());
+			connectionError();
 		}
-	}
-
-	public void sendTestMessage() {
-		informObservers("hello observers :-)");
 	}
 
 	/**
@@ -178,6 +170,12 @@ public class ServerProxy {
 	private void informObservers(String message) {
 		for (MessageObserver observer : observers)
 			observer.inform(message);
+	}
+
+	private void connectionError() {
+		for (MessageObserver observer : observers)
+			observer.connectionError();
+
 	}
 
 }
