@@ -93,6 +93,7 @@ public class NewGameDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		
 		connectButton = new JButton("Verbinden");
+		getRootPane().setDefaultButton(connectButton);
 		cancelButton = new JButton("Abbrechen");
 		
 		buttonPanel.add(connectButton);

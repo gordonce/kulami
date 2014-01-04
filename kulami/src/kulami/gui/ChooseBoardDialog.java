@@ -113,6 +113,7 @@ public class ChooseBoardDialog extends JDialog {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
 		JButton okButton = new JButton("OK");
+		getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
