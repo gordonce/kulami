@@ -20,11 +20,9 @@ import kulami.game.player.HumanPlayer;
 import kulami.game.player.Player;
 import kulami.gui.ChooseBoardDialog;
 import kulami.gui.ChooseBoardDialogAdapter;
-import kulami.gui.GameDisplay;
 import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
 import kulami.gui.MainframeAdapter;
-import kulami.gui.MapEditor;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.NewGameDialogAdapter;
@@ -60,14 +58,11 @@ public class GameController {
 	private ServerAdapter serverAdapter;
 	private MessagePager messagePager;
 	private StatusDisplayer statusDisplayer;
-	private GameDisplay gameDisplay;
 
 	private String opponentName;
 	private ChooseBoardDialog chooseBoardDialog;
-	private GameDisplayAdapter gameDisplayAdapter;
 	private char playerColour;
 
-	private MapEditor mapEditor;
 
 	private DisplayFlags displayFlags;
 
@@ -158,13 +153,16 @@ public class GameController {
 
 			@Override
 			public void abortGameClicked() {
-				// TODO Auto-generated method stub
-
+				if (messageSender != null) {
+					boolean really = mainframe.yesNoQuestion(
+							"Spiel wirklich abbrechen?", "Spiel abbrechen");
+					if (really)
+						messageSender.quitGame();
+				}
 			}
 
 			@Override
 			public void exitClicked() {
-				// TODO Auto-generated method stub
 				boolean reallyExit = mainframe.yesNoQuestion("Kulami beenden?",
 						"Kulami");
 				if (reallyExit)
@@ -177,7 +175,6 @@ public class GameController {
 	 * 
 	 */
 	private void showMapEditor() {
-		// TODO Auto-generated method stub
 		new MapEditorController();
 	}
 
@@ -249,7 +246,9 @@ public class GameController {
 											"Fehler beim Verbinden");
 							serverProxy.disconnect();
 						} catch (IOException e) {
-							newGameDialog.displayWarning("Fehler beim Verbinden mit dem Server: " + e.getMessage(),
+							newGameDialog.displayWarning(
+									"Fehler beim Verbinden mit dem Server: "
+											+ e.getMessage(),
 									"Fehler beim Verbinden");
 							serverProxy.disconnect();
 						}
@@ -293,6 +292,7 @@ public class GameController {
 					@Override
 					public void cancelClicked() {
 						chooseBoardDialog.clearAndHide();
+						messageSender.quitGame();
 						serverProxy.disconnect();
 					}
 				});
@@ -383,7 +383,6 @@ public class GameController {
 			 */
 			@Override
 			public void farbe(char colour) {
-				// TODO Auto-generated method stub
 				statusDisplayer.setHeroColour(colour);
 				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
 				playerColour = colour;
@@ -401,7 +400,6 @@ public class GameController {
 			public void spielstart(char colour) {
 				messagePager.display("Spiel beginnt");
 				statusDisplayer.setCurrentPlayer(colour);
-				// TODO If this player begins, make move.
 				if (!playerHuman && colour == playerColour) {
 					makeMove();
 				}
@@ -417,8 +415,10 @@ public class GameController {
 			 */
 			@Override
 			public void ungueltig(String msg) {
-				messagePager.display("Server: illegal move (" + msg + ")");
-				// TODO Make move.
+				messagePager.display("Server: ungülitger Zug (" + msg + ")");
+				if (!playerHuman) {
+					makeMove();
+				}
 			}
 
 			/**
@@ -430,7 +430,6 @@ public class GameController {
 			@Override
 			public void gueltig(String boardCode) {
 				// TODO Verify the new board.
-				// TODO display that the opponent is now making a move
 				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b'
 						: 'r');
 			}
@@ -445,12 +444,14 @@ public class GameController {
 			public void zug(final String boardCode) {
 				try {
 					game.updateGame(boardCode);
+					statusDisplayer.setCurrentPlayer(playerColour);
+					if (!playerHuman)
+						makeMove();
 				} catch (IllegalBoardCode e) {
-					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
+					mainframe
+							.displayWarning("Ungültiges Spielfeld empfangen. Verbindung wird beendet.");
+					messageSender.quitGame();
 				}
-				statusDisplayer.setCurrentPlayer(playerColour);
-				if (!playerHuman)
-					makeMove();
 			}
 
 			/**
@@ -469,6 +470,8 @@ public class GameController {
 					newGame = mainframe.displayResults(pointsBlack, pointsRed);
 				if (newGame)
 					messageSender.newGame();
+				else
+					messageSender.quitGame();
 			}
 
 			/**
@@ -485,19 +488,21 @@ public class GameController {
 			@Override
 			public void unknownMessage(String msg) {
 				mainframe.displayWarning("Unbekannte Nachricht empfangen:\n"
-						+ msg);
+						+ msg + "\nVerbindung wird beendet.");
+				messageSender.quitGame();
 			}
 
 			@Override
 			public void connectionError() {
-				mainframe.displayWarning("Es ist ein Fehler bei der Verbindung aufgetreten. Das Spiel wird beendet.");
+				mainframe
+						.displayWarning("Es ist ein Fehler bei der Verbindung aufgetreten. Das Spiel wird beendet.");
 			}
 		});
 	}
 
 	private void startGameDisplay() {
 		logger.finer("Initializing game display for game: " + game);
-		gameDisplay = mainframe.initGameDisplay(game, new GameDisplayAdapter() {
+		mainframe.initGameDisplay(game, new GameDisplayAdapter() {
 
 			@Override
 			public void tileClicked(Pos pos) {
@@ -511,7 +516,6 @@ public class GameController {
 				}
 			}
 		});
-		// TODO make the game display show the empty board
 		game.pushMap();
 		mainframe.enableOptions(true);
 	}
