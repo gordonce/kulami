@@ -81,6 +81,7 @@ public class MapPainter {
 				boardPanel.add(tileComp);
 				tiles.add(tileComp);
 			}
+		boardPanel.revalidate();
 		boardPanel.repaint();
 	}
 
