@@ -34,4 +34,8 @@ public class MessageSender {
 	public void quitGame() {
 		server.sendMessage("spielaufgabe.");
 	}
+	
+	public void newGame() {
+		server.sendMessage("neuesspiel.");
+	}
 }

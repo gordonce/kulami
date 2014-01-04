@@ -449,7 +449,6 @@ public class GameController {
 					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
 				}
 				statusDisplayer.setCurrentPlayer(playerColour);
-				// TODO Make move
 				if (!playerHuman)
 					makeMove();
 			}
@@ -463,8 +462,13 @@ public class GameController {
 			 */
 			@Override
 			public void spielende(int pointsRed, int pointsBlack) {
-				// TODO Display points	
-				// TODO Prompt for rematch
+				boolean newGame;
+				if (playerColour == 'r')
+					newGame = mainframe.displayResults(pointsRed, pointsBlack);
+				else
+					newGame = mainframe.displayResults(pointsBlack, pointsRed);
+				if (newGame)
+					messageSender.newGame();
 			}
 
 			/**

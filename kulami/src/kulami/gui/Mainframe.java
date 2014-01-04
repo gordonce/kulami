@@ -43,9 +43,9 @@ import kulami.game.GameObservable;
 public class Mainframe extends JFrame {
 
 	public static final int FIELDSIZE = 60;
-	
+
 	private MainframeAdapter mainframeAdapter;
-	
+
 	// GUI elements
 	private JTextArea messageTextArea;
 	private JPanel board;
@@ -85,7 +85,7 @@ public class Mainframe extends JFrame {
 	public MessagePager getMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
 	}
-	
+
 	public StatusDisplayer getStatusDisplay() {
 		return new StatusDisplay(heroPanel, villainPanel);
 	}
@@ -94,28 +94,31 @@ public class Mainframe extends JFrame {
 	 * @param game
 	 * @return
 	 */
-	public GameDisplay initGameDisplay(GameObservable game, GameDisplayAdapter gameDisplayAdapter) {
+	public GameDisplay initGameDisplay(GameObservable game,
+			GameDisplayAdapter gameDisplayAdapter) {
 		return new GameDisplay(game, board, gameDisplayAdapter);
 	}
 
 	/**
 	 * Tell the Mainframe to display a warning dialogue.
 	 * 
-	 * @param message The message to be displayed.
+	 * @param message
+	 *            The message to be displayed.
 	 */
 	public void displayWarning(String message) {
 		JOptionPane.showMessageDialog(this, message, "Kulami",
 				JOptionPane.WARNING_MESSAGE);
 	}
-	
+
 	/**
 	 * @param string
 	 * @return
 	 */
 	public boolean yesNoQuestion(String message, String title) {
-		int ans = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+		int ans = JOptionPane.showConfirmDialog(this, message, title,
+				JOptionPane.YES_NO_OPTION);
 		return ans == JOptionPane.YES_OPTION;
-			
+
 	}
 
 	public void enableOptions(boolean enabled) {
@@ -149,8 +152,8 @@ public class Mainframe extends JFrame {
 		Image icon = toolkit.getImage(getClass().getResource(
 				"/images/kulami_icon.png"));
 		setIconImage(icon);
-		
-//		setResizable(false);
+
+		// setResizable(false);
 
 	}
 
@@ -164,16 +167,16 @@ public class Mainframe extends JFrame {
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.setPreferredSize(new Dimension(300, 600));
-		
+
 		JPanel statsPanel = new JPanel(new GridLayout(0, 1, 5, 5));
 		statsPanel.setPreferredSize(new Dimension(300, 400));
 
 		heroPanel = new JPanel();
 		villainPanel = new JPanel();
-		
+
 		optionsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
 		optionsPanel.setBorder(new TitledBorder("Anzeigeoptionen"));
-		
+
 		previousMovesCheckBox = new JCheckBox("letzte Züge");
 		previousMovesCheckBox.addItemListener(new ItemListener() {
 			@Override
@@ -235,7 +238,7 @@ public class Mainframe extends JFrame {
 		statsPanel.add(heroPanel);
 		statsPanel.add(villainPanel);
 		statsPanel.add(optionsPanel);
-		
+
 		leftPanel.add(statsPanel, BorderLayout.CENTER);
 		leftPanel.add(messagePanel, BorderLayout.SOUTH);
 		return leftPanel;
@@ -243,13 +246,14 @@ public class Mainframe extends JFrame {
 
 	private JMenuBar initMainMenu() {
 		JMenuBar mainMenu = new JMenuBar();
-		
+
 		JMenu gameMenu = new JMenu("Spiel");
 		gameMenu.setMnemonic(KeyEvent.VK_S);
 
 		JMenuItem startGame = new JMenuItem("Spiel starten");
 		startGame.setMnemonic(KeyEvent.VK_S);
-		startGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, Event.CTRL_MASK));
+		startGame.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				Event.CTRL_MASK));
 		startGame.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -267,7 +271,7 @@ public class Mainframe extends JFrame {
 			}
 		});
 		gameMenu.add(abortGame);
-		
+
 		JMenuItem exitGame = new JMenuItem("Beenden");
 		exitGame.setMnemonic(KeyEvent.VK_E);
 		exitGame.addActionListener(new ActionListener() {
@@ -277,7 +281,6 @@ public class Mainframe extends JFrame {
 			}
 		});
 		gameMenu.add(exitGame);
-		
 
 		JMenu boardMenu = new JMenu("Spielfeld");
 		boardMenu.setMnemonic(KeyEvent.VK_F);
@@ -317,6 +320,26 @@ public class Mainframe extends JFrame {
 		mainMenu.add(boardMenu);
 
 		return mainMenu;
+	}
+
+	/**
+	 * @param pointsRed
+	 * @param pointsBlack
+	 */
+	public boolean displayResults(int pointsHero, int pointsVillain) {
+		String message;
+		if (pointsHero > pointsVillain)
+			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten gewonnen.\nNoch ein Spiel?";
+		else if (pointsHero < pointsVillain)
+			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten verloren.\nNoch ein Spiel?";
+		else
+			message = "Das Spiel endet unentschieden mit %d zu %d PUnkten.\nNoch ein Spiel?";
+
+		int ans = JOptionPane.showConfirmDialog(this,
+				String.format(message, pointsHero, pointsVillain), "Spielende",
+				JOptionPane.YES_NO_OPTION);
+		return ans == JOptionPane.YES_OPTION;
+
 	}
 
 }
