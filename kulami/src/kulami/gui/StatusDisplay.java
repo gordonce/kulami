@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.border.TitledBorder;
 
 import kulami.game.GameObservable;
 
@@ -49,6 +50,8 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	}
 
 	private void initPanels() {
+		heroPanel.setBorder(new TitledBorder("Spielstatus"));
+		villainPanel.setBorder(new TitledBorder("Gegner"));
 		heroPanel.setLayout(new GridLayout(0, 1));
 		villainPanel.setLayout(new GridLayout(0, 1));
 		heroNameLabel = new JLabel("Local player");

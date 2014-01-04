@@ -485,6 +485,7 @@ public class GameController {
 		});
 		// TODO make the game display show the empty board
 		game.pushMap();
+		mainframe.enableOptions(true);
 	}
 
 	private Player createPlayer() {

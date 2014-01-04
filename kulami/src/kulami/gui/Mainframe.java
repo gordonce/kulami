@@ -26,6 +26,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
+import javax.swing.border.TitledBorder;
 
 import kulami.control.MainframeAdapter;
 import kulami.game.GameObservable;
@@ -54,6 +55,14 @@ public class Mainframe extends JFrame {
 	private JPanel heroPanel;
 
 	private JPanel villainPanel;
+
+	private JPanel optionsPanel;
+
+	private JCheckBox previousMovesCheckBox;
+
+	private JCheckBox possibleMovesCheckBox;
+
+	private JCheckBox boardPossessionCheckBox;
 
 	/**
 	 * Construct a new Mainframe with a MainframeAdapter provided by a
@@ -99,6 +108,13 @@ public class Mainframe extends JFrame {
 		JOptionPane.showMessageDialog(this, message, "Kulami",
 				JOptionPane.WARNING_MESSAGE);
 	}
+	
+	public void enableOptions(boolean enabled) {
+		optionsPanel.setEnabled(enabled);
+		previousMovesCheckBox.setEnabled(enabled);
+		possibleMovesCheckBox.setEnabled(enabled);
+		boardPossessionCheckBox.setEnabled(enabled);
+	}
 
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
@@ -106,6 +122,7 @@ public class Mainframe extends JFrame {
 		JMenuBar mainMenu = initMainMenu();
 
 		JPanel leftPanel = initLeftPanel();
+		enableOptions(false);
 
 		board = initGameBoard();
 
@@ -136,17 +153,19 @@ public class Mainframe extends JFrame {
 	}
 
 	private JPanel initLeftPanel() {
-		JPanel leftPanel = new JPanel();
-		leftPanel.setPreferredSize(new Dimension(200, 600));
-		leftPanel.setLayout(new GridLayout(0, 1, 5, 5));
+		JPanel leftPanel = new JPanel(new BorderLayout());
+		leftPanel.setPreferredSize(new Dimension(300, 600));
+		
+		JPanel statsPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+		statsPanel.setPreferredSize(new Dimension(300, 400));
 
 		heroPanel = new JPanel();
 		villainPanel = new JPanel();
 		
-		JPanel optionsPanel = new JPanel();
-		optionsPanel.setLayout(new GridLayout(3, 1, 5, 5));
-
-		JCheckBox previousMovesCheckBox = new JCheckBox("letzte Züge");
+		optionsPanel = new JPanel(new GridLayout(3, 1, 5, 5));
+		optionsPanel.setBorder(new TitledBorder("Anzeigeoptionen"));
+		
+		previousMovesCheckBox = new JCheckBox("letzte Züge");
 		previousMovesCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -157,7 +176,7 @@ public class Mainframe extends JFrame {
 			}
 		});
 
-		JCheckBox possibleMovesCheckBox = new JCheckBox("mögliche Züge");
+		possibleMovesCheckBox = new JCheckBox("mögliche Züge");
 		possibleMovesCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -168,7 +187,7 @@ public class Mainframe extends JFrame {
 			}
 		});
 
-		JCheckBox boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
+		boardPossessionCheckBox = new JCheckBox("Plattenbesitz");
 		boardPossessionCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
@@ -183,8 +202,8 @@ public class Mainframe extends JFrame {
 		optionsPanel.add(possibleMovesCheckBox);
 		optionsPanel.add(boardPossessionCheckBox);
 
-		JPanel messagePanel = new JPanel();
-		messagePanel.setLayout(new BorderLayout(5, 5));
+		JPanel messagePanel = new JPanel(new BorderLayout(5, 5));
+		messagePanel.setPreferredSize(new Dimension(300, 200));
 
 		messageTextArea = new JTextArea();
 		messageTextArea.setEditable(false);
@@ -204,10 +223,12 @@ public class Mainframe extends JFrame {
 		messagePanel.add(messageScrollPane, BorderLayout.CENTER);
 		messagePanel.add(chatTextField, BorderLayout.SOUTH);
 
-		leftPanel.add(heroPanel);
-		leftPanel.add(villainPanel);
-		leftPanel.add(optionsPanel);
-		leftPanel.add(messagePanel);
+		statsPanel.add(heroPanel);
+		statsPanel.add(villainPanel);
+		statsPanel.add(optionsPanel);
+		
+		leftPanel.add(statsPanel, BorderLayout.CENTER);
+		leftPanel.add(messagePanel, BorderLayout.SOUTH);
 		return leftPanel;
 	}
 
