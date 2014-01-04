@@ -93,7 +93,7 @@ public class GameController {
 
 			@Override
 			public void startGameClicked() {
-				showNewGameDialog();
+				showPlayerDialog();
 			}
 
 			@Override
@@ -118,11 +118,6 @@ public class GameController {
 			public void possibleMovesActivated() {
 				displayFlags.setPossibleMoves(true);
 				game.flagsChanged(displayFlags);
-			}
-
-			@Override
-			public void newPlayerClicked() {
-				showPlayerDialog();
 			}
 
 			@Override
@@ -165,6 +160,14 @@ public class GameController {
 				// TODO Auto-generated method stub
 
 			}
+
+			@Override
+			public void exitClicked() {
+				// TODO Auto-generated method stub
+				boolean reallyExit = mainframe.yesNoQuestion("Kulami beenden?", "Kulami");
+				if (reallyExit)
+					System.exit(0);
+			}
 		});
 	}
 
@@ -192,6 +195,8 @@ public class GameController {
 				playerDialog.clearAndHide();
 
 				statusDisplayer.setHeroName(playerName);
+				
+				showNewGameDialog();
 			}
 
 			@Override

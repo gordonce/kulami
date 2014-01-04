@@ -108,6 +108,16 @@ public class Mainframe extends JFrame {
 				JOptionPane.WARNING_MESSAGE);
 	}
 	
+	/**
+	 * @param string
+	 * @return
+	 */
+	public boolean yesNoQuestion(String message, String title) {
+		int ans = JOptionPane.showConfirmDialog(this, message, title, JOptionPane.YES_NO_OPTION);
+		return ans == JOptionPane.YES_OPTION;
+			
+	}
+
 	public void enableOptions(boolean enabled) {
 		optionsPanel.setEnabled(enabled);
 		previousMovesCheckBox.setEnabled(enabled);
@@ -233,22 +243,9 @@ public class Mainframe extends JFrame {
 
 	private JMenuBar initMainMenu() {
 		JMenuBar mainMenu = new JMenuBar();
-		JMenu playerMenu = new JMenu("Spieler");
-		playerMenu.setMnemonic(KeyEvent.VK_S);
-
-		JMenuItem addPlayer = new JMenuItem("Neuer Spieler");
-		addPlayer.setMnemonic(KeyEvent.VK_N);
-		addPlayer.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, Event.CTRL_MASK));
-		addPlayer.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				mainframeAdapter.newPlayerClicked();
-			}
-		});
-		playerMenu.add(addPlayer);
-
-		JMenu gameMenu = new JMenu("Server");
-		gameMenu.setMnemonic(KeyEvent.VK_V);
+		
+		JMenu gameMenu = new JMenu("Spiel");
+		gameMenu.setMnemonic(KeyEvent.VK_S);
 
 		JMenuItem startGame = new JMenuItem("Spiel starten");
 		startGame.setMnemonic(KeyEvent.VK_S);
@@ -270,6 +267,17 @@ public class Mainframe extends JFrame {
 			}
 		});
 		gameMenu.add(abortGame);
+		
+		JMenuItem exitGame = new JMenuItem("Beenden");
+		exitGame.setMnemonic(KeyEvent.VK_E);
+		exitGame.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				mainframeAdapter.exitClicked();
+			}
+		});
+		gameMenu.add(exitGame);
+		
 
 		JMenu boardMenu = new JMenu("Spielfeld");
 		boardMenu.setMnemonic(KeyEvent.VK_F);
@@ -305,7 +313,6 @@ public class Mainframe extends JFrame {
 		boardMenu.add(loadGameMap);
 
 		mainMenu = new JMenuBar();
-		mainMenu.add(playerMenu);
 		mainMenu.add(gameMenu);
 		mainMenu.add(boardMenu);
 

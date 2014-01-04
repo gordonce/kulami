@@ -9,8 +9,6 @@ package kulami.gui;
  */
 public interface MainframeAdapter {
 
-	public void newPlayerClicked();
-	
 	public void startGameClicked();
 	
 	public void abortGameClicked();
@@ -34,4 +32,6 @@ public interface MainframeAdapter {
 	public void boardPossessionDeactivated();
 	
 	public void messageEntered(String message);
+
+	public void exitClicked();
 }
