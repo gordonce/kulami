@@ -40,8 +40,6 @@ public class PlayerDialog extends JDialog {
 	private final static String compCommand = "comp";
 
 	private JSpinner levelSpinner;
-	private JPanel levelPanel;
-
 	private JLabel levelLabel;
 
 	public PlayerDialog(Frame mainframe,
