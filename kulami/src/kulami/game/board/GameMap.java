@@ -25,10 +25,10 @@ public class GameMap {
 
 	private Pos lastMove;
 	private Pos nextToLastMove;
-	
+
 	private int redMarbles;
 	private int blackMarbles;
-	
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
 
@@ -38,7 +38,6 @@ public class GameMap {
 		blackMarbles = 28;
 	}
 
-
 	/**
 	 * Construct an empty GameMap
 	 */
@@ -46,7 +45,6 @@ public class GameMap {
 		this();
 		this.board = board;
 	}
-	
 
 	/**
 	 * Construct a map given a 200-character representation of a map.
@@ -67,7 +65,7 @@ public class GameMap {
 		board = new Board();
 		BoardParser.getBoard(boardCode, board);
 	}
-	
+
 	/**
 	 * Set the owner of all fields to None and erase the history.
 	 */
@@ -179,7 +177,7 @@ public class GameMap {
 	 * @throws IllegalBoardCode
 	 */
 	public void updateGameMap(String boardCode) throws IllegalBoardCode {
-		BoardParser.getMarbles(boardCode,  this);
+		BoardParser.getMarbles(boardCode, this);
 		logger.fine("lastMove: " + lastMove);
 		logger.fine("nextToLastMove: " + nextToLastMove);
 	}
@@ -191,6 +189,31 @@ public class GameMap {
 	 * @return
 	 */
 	public int getPoints(Owner owner, int level) {
+		int points = panelPoints(owner);
+
+		switch (level) {
+		case 1:
+			points += areaPoints(owner);
+			break;
+		case 2:
+			points += chainPoints(owner);
+			break;
+		case 3:
+			points += areaPoints(owner) + chainPoints(owner);
+		default:
+			break;
+		}
+		return points;
+	}
+
+	/**
+	 * Calculate the number of points for owner based on panel possession.
+	 * 
+	 * @param owner
+	 *            The Owner
+	 * @return Number of points
+	 */
+	private int panelPoints(Owner owner) {
 		int points = 0;
 		Map<Character, Panel> panels = board.getPanels();
 		for (char name : panels.keySet()) {
@@ -205,23 +228,47 @@ public class GameMap {
 		}
 		return points;
 	}
-	
+
+	/**
+	 * Calculate bonus points for level 1 and 3 based on largest interconnecting
+	 * area.
+	 * 
+	 * @param owner
+	 *            The Owner
+	 * @return Number of points
+	 */
+	private int areaPoints(Owner owner) {
+		return marbles.getLargestArea(owner);
+
+	}
+
+	/**
+	 * Calculate bonus points for level 2 and 3 based on longest chain.
+	 * 
+	 * @param owner
+	 *            The Owner
+	 * @return Number of points
+	 */
+	private int chainPoints(Owner owner) {
+			return marbles.getLongestChain(owner);
+	}
+
 	public int getPoints(char playerColour, int level) {
 		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
 		return getPoints(owner, level);
 	}
-	
+
 	public int getMarblesLeft(Owner owner) {
 		if (owner == Owner.Black)
 			return blackMarbles;
 		else
 			return redMarbles;
 	}
-	
+
 	public Board getBoard() {
 		return board;
 	}
-	
+
 	public Marbles getMarbles() {
 		return marbles;
 	}
@@ -267,14 +314,12 @@ public class GameMap {
 			System.out.println(pos);
 	}
 
-
 	/**
 	 * @return
 	 */
 	public Marbles copyMarbles() {
 		return new Marbles(marbles);
 	}
-
 
 	/**
 	 * @return
@@ -289,7 +334,6 @@ public class GameMap {
 		return gameMap;
 	}
 
-
 	/**
 	 * @return
 	 */
@@ -297,14 +341,13 @@ public class GameMap {
 		return lastMove;
 	}
 
-
 	/**
 	 * @return
 	 */
 	public List<Owner> getPanelOwners() {
 		Panel[] fields = board.getFields();
 		List<Owner> owners = new ArrayList<>(100);
-		for (Panel field: fields)
+		for (Panel field : fields)
 			try {
 				if (field == null)
 					owners.add(Owner.None);
@@ -315,6 +358,6 @@ public class GameMap {
 				e.printStackTrace();
 			}
 		return owners;
-			
+
 	}
 }
