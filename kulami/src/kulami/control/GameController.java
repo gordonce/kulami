@@ -382,9 +382,10 @@ public class GameController {
 			 */
 			@Override
 			public void farbe(char colour) {
+				playerColour = colour;
 				statusDisplayer.setHeroColour(colour);
 				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-				playerColour = colour;
+				messagePager.display("Warte auf Spieler 2...");
 			}
 
 			/**
