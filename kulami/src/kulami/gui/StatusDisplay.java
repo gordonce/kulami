@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.Color;
@@ -14,6 +11,12 @@ import javax.swing.border.TitledBorder;
 import kulami.game.GameObservable;
 
 /**
+ * <code>StatusDisplay</code> displays data about the current game state in two
+ * <code>JPanel</code>s, one for the local player and one for the opponent.
+ * <p>
+ * The status display is updated whenever information changes or when the game
+ * state changes.
+ * 
  * @author gordon
  * 
  */
@@ -42,6 +45,16 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.StatusDisplay");
 
+	/**
+	 * Constructs a new <code>StatusDisplay</code> which displays local player
+	 * information in <code>heroPanel</code> and opponent information in
+	 * <code>villainPanel</code>.
+	 * 
+	 * @param heroPanel
+	 *            JPanel for local player information
+	 * @param villainPanel
+	 *            JPanel for opponent information
+	 */
 	public StatusDisplay(JPanel heroPanel, JPanel villainPanel) {
 		this.heroPanel = heroPanel;
 		this.villainPanel = villainPanel;
@@ -50,6 +63,9 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		initPanels();
 	}
 
+	/**
+	 * Initialize the panels
+	 */
 	private void initPanels() {
 		heroPanel.setBorder(new TitledBorder("Spielstatus"));
 		villainPanel.setBorder(new TitledBorder("Gegner"));
@@ -89,6 +105,7 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	 */
 	@Override
 	public void boardChanged(GameObservable game) {
+		// do nothing
 	}
 
 	/*
@@ -204,6 +221,9 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		updateVillainPanel();
 	}
 
+	/**
+	 * Update local player information.
+	 */
 	private void updateHeroPanel() {
 		if (currentPlayer == heroColour && currentPlayer != 0)
 			heroNameLabel.setText(String.format("<html><i>%s</i>", heroName));
@@ -220,6 +240,9 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		logger.fine("Updated hero stats");
 	}
 
+	/**
+	 * Update opponent information
+	 */
 	private void updateVillainPanel() {
 		if (currentPlayer == villainColour && currentPlayer != 0)
 			villainNameLabel.setText(String.format("<html><i>%s</i>",
@@ -246,7 +269,6 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	 */
 	@Override
 	public void flagsChanged(GameObservable game) {
-		// TODO Auto-generated method stub
-		// TODO display/don't display points
+		// do nothing
 	}
 }
