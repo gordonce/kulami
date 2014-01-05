@@ -18,6 +18,8 @@ import kulami.game.player.Player;
 import kulami.gui.GameObserver;
 
 /**
+ * The class <code>Game</code> represents the state of a Kulami game.
+ * 
  * @author gordon
  *
  */
