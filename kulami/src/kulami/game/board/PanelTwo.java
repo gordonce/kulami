@@ -1,9 +1,8 @@
-/**
- * 
- */
 package kulami.game.board;
 
 /**
+ * A <code>Panel</code> of size 2.
+ * 
  * @author gordon
  * 
  */

@@ -1,20 +1,18 @@
-/**
- * 
- */
 package kulami.game.board;
 
 /**
+ * A <code>Panel</code> of size 4.
+ * 
  * @author gordon
  * 
  */
 public class PanelFour extends Panel {
 
 	/**
-	 * @param name
+	 * {@inheritDoc}
 	 */
 	public PanelFour(char name) {
 		super(name);
-		// TODO Auto-generated constructor stub
 	}
 
 	/*
@@ -31,7 +29,9 @@ public class PanelFour extends Panel {
 				Pos.getPos(row + 1, col), Pos.getPos(row + 1, col + 1) };
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.game.board.Panel#getSize()
 	 */
 	@Override

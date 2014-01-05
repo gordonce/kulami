@@ -1,9 +1,8 @@
-/**
- * 
- */
 package kulami.game.board;
 
 /**
+ * A <code>Panel</code> of size 3.
+ * 
  * @author gordon
  * 
  */
@@ -35,7 +34,9 @@ public class PanelThree extends Panel {
 					Pos.getPos(row + 2, col) };
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.game.board.Panel#getSize()
 	 */
 	@Override
