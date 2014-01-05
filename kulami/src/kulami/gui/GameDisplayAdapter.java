@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import kulami.game.board.Pos;
