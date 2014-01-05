@@ -32,6 +32,12 @@ public class GameMap {
 	private static final Logger logger = Logger
 			.getLogger("kulami.game.board.GameMap");
 
+	/**
+	 * Private constructor that encapsulates general initialization tasks.
+	 * <p>
+	 * Creates a <code>Marbles</code> object and sets the marbles counter for
+	 * each player to 28.
+	 */
 	private GameMap() {
 		marbles = new Marbles();
 		redMarbles = 28;
@@ -39,7 +45,9 @@ public class GameMap {
 	}
 
 	/**
-	 * Construct an empty GameMap
+	 * Constructs an empty GameMap given a <code>Board</code>.
+	 * 
+	 * @param board
 	 */
 	public GameMap(Board board) {
 		this();
@@ -47,15 +55,9 @@ public class GameMap {
 	}
 
 	/**
-	 * Construct a map given a 200-character representation of a map.
+	 * Construct a <code>GameMap</code> given a 200-character board code.
 	 * 
-	 * A GameMap object represents a 10x10-map in which each field is encoded by
-	 * a pair of two characters.
-	 * 
-	 * The constructor initializes the Boards and creates a matrix of 10 by 10
-	 * Fields .
-	 * 
-	 * @param mapCode
+	 * @param BoardCode
 	 * @throws IllegalBoardCode
 	 */
 	public GameMap(String boardCode) throws IllegalBoardCode {
@@ -65,14 +67,33 @@ public class GameMap {
 	}
 
 	/**
-	 * Set the owner of all fields to None and erase the history.
+	 * Returns a copy of the <code>GameMap</code>.
+	 * <p>
+	 * The returned object can be used to manipulate the game without altering
+	 * the real game state.
+	 * 
+	 * @return the new <code>GameMap</code>
+	 */
+	public GameMap getCopy() {
+		GameMap gameMap = new GameMap(board);
+		gameMap.marbles = new Marbles(marbles);
+		gameMap.lastMove = lastMove;
+		gameMap.nextToLastMove = nextToLastMove;
+		gameMap.blackMarbles = blackMarbles;
+		gameMap.redMarbles = redMarbles;
+		return gameMap;
+	}
+
+	/**
+	 * Set the owner of all fields to None, erase the history and reset the
+	 * numbers of marbles.
 	 */
 	public void clearOwners() {
 		marbles.setAllNone();
 		lastMove = null;
 		nextToLastMove = null;
-		blackMarbles = 0;
-		redMarbles = 0;
+		blackMarbles = 28;
+		redMarbles = 28;
 	}
 
 	/**
@@ -93,6 +114,13 @@ public class GameMap {
 
 	}
 
+	/**
+	 * Returns <code>true</code> if it is legal to place a marble at position
+	 * <code>pos</code>.
+	 * 
+	 * @param pos
+	 * @return <code>true</code> if <code>pos</code> is legal
+	 */
 	private boolean isLegal(Pos pos) {
 		Panel thisPanel = board.getPanel(pos);
 		// Is there a panel on the field?
@@ -119,9 +147,11 @@ public class GameMap {
 	}
 
 	/**
-	 * Get a textual representation of the GameMap. The map code is a String of
-	 * 100 pairs of characters, the first of which indicates the Panel, and the
-	 * second of which indicates the Owner.
+	 * Get a textual representation of the <code>GameMap</code>.
+	 * <p>
+	 * The map code is a String of 100 pairs of characters, the first of which
+	 * indicates the <code>Panel</code>, and the second of which indicates the
+	 * <code>Owner</code>.
 	 * 
 	 * @return
 	 */
@@ -144,8 +174,10 @@ public class GameMap {
 	}
 
 	/**
-	 * Set the Owner of a Field in a particular position of the 10x10 game map
-	 * matrix. If the Owner changes, save the move in a history.
+	 * Set the <code>Owner</code> of a field.
+	 * <p>
+	 * If the Owner changes, save the move in a history and decrease the number
+	 * of available marbles.
 	 * 
 	 * @param row
 	 * @param col
@@ -166,11 +198,11 @@ public class GameMap {
 		}
 	}
 
-
 	/**
-	 * Given a map code, update the Owners of the Fields.
+	 * Given a board code, update the <code>Owners</code> of the fields.
 	 * 
-	 * @param mapCode
+	 * @param boardCode
+	 *            200-character board code
 	 * @throws IllegalBoardCode
 	 */
 	public void updateGameMap(String boardCode) throws IllegalBoardCode {
@@ -180,10 +212,13 @@ public class GameMap {
 	}
 
 	/**
-	 * Get the current points for Owner.
+	 * Get the current points for <code>owner</code>.
 	 * 
 	 * @param owner
-	 * @return
+	 *            the <code>Owner</code>
+	 * @param level
+	 *            0, 1, or 2
+	 * @return number of points
 	 */
 	public int getPoints(Owner owner, int level) {
 		int points = panelPoints(owner);
@@ -200,12 +235,17 @@ public class GameMap {
 		return points;
 	}
 
+	public int getPoints(char playerColour, int level) {
+		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
+		return getPoints(owner, level);
+	}
+
 	/**
 	 * Calculate the number of points for owner based on panel possession.
 	 * 
 	 * @param owner
-	 *            The Owner
-	 * @return Number of points
+	 *            the <code>Owner</code>
+	 * @return number of points
 	 */
 	private int panelPoints(Owner owner) {
 		int points = 0;
@@ -228,8 +268,8 @@ public class GameMap {
 	 * area.
 	 * 
 	 * @param owner
-	 *            The Owner
-	 * @return Number of points
+	 *            the <code>Owner</code>
+	 * @return number of points
 	 */
 	private int areaPoints(Owner owner) {
 		return marbles.getLargestArea(owner);
@@ -240,18 +280,20 @@ public class GameMap {
 	 * Calculate bonus points for level 2 based on longest chain.
 	 * 
 	 * @param owner
-	 *            The Owner
-	 * @return Number of points
+	 *            the <code>Owner</code>
+	 * @return number of points
 	 */
 	private int chainPoints(Owner owner) {
 		return marbles.getChainLength(owner);
 	}
 
-	public int getPoints(char playerColour, int level) {
-		Owner owner = (playerColour == 'b') ? Owner.Black : Owner.Red;
-		return getPoints(owner, level);
-	}
-
+	/**
+	 * Returns the number of remaining marbles for <code>owner</code>.
+	 * 
+	 * @param owner
+	 *            the <code>Owner</code>
+	 * @return number of marbles
+	 */
 	public int remainingMarbles(Owner owner) {
 		if (owner == Owner.Black)
 			return blackMarbles;
@@ -259,58 +301,41 @@ public class GameMap {
 			return redMarbles;
 	}
 
+	/**
+	 * Returns a reference to the <code>Board</code> object
+	 * 
+	 * @return the <code>Board</code>
+	 */
 	public Board getBoard() {
 		return board;
 	}
 
+	/**
+	 * Returns a reference to the <code>Marbles</code> object
+	 * 
+	 * @return the <code>Marbles</code>
+	 */
 	public Marbles getMarbles() {
 		return marbles;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
+	 * Returns the position of the last move.
 	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < 10; i++) {
-			sb.append(getMapCode().substring(i * 20, i * 20 + 20));
-			sb.append('\n');
-		}
-		return sb.toString();
-	}
-
-	/**
-	 * @return
-	 */
-	public Marbles copyMarbles() {
-		return new Marbles(marbles);
-	}
-
-	/**
-	 * @return
-	 */
-	public GameMap getCopy() {
-		GameMap gameMap = new GameMap(board);
-		gameMap.marbles = copyMarbles();
-		gameMap.lastMove = lastMove;
-		gameMap.nextToLastMove = nextToLastMove;
-		gameMap.blackMarbles = blackMarbles;
-		gameMap.redMarbles = redMarbles;
-		return gameMap;
-	}
-
-	/**
-	 * @return
+	 * @return position
 	 */
 	public Pos getLastMove() {
 		return lastMove;
 	}
 
 	/**
-	 * @return
+	 * Returns a <code>List</code> of length 100 that contains the
+	 * <code>Owner</code> of the <code>Panel</code>s on the corresponding
+	 * fields.
+	 * <p>
+	 * This list can be used to visualize panel possession.
+	 * 
+	 * @return list of panel owners
 	 */
 	public List<Owner> getPanelOwners() {
 		Panel[] fields = board.getFields();
@@ -329,41 +354,51 @@ public class GameMap {
 	}
 
 	/*
-		 * Test case: create game map and retrieve textual representation. Set two
-		 * new marbles. get legal fields
-		 * 
-		 * @param args
-		 */
-		public static void main(String[] args) throws IllegalBoardCode {
-//			String mapCode1 = "a0a0a0k0f0f0a0a0a0a0"
-//					+ "a0a0p0k0f0f0o0o0a0a0" + "a0a0p0k0b1b0b0g2g0a0"
-//					+ "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
-//					+ "h0h0i0i0l2d1d0d0m0a0" + "h0h0i0i0l2q2j0j1m0a0"
-//					+ "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
-//					+ "a0a0a0n1n1n1a0a0a0a0";
-			String mapCode2 = 	"a0a0a0f2f1o1o0a0a0a0" 
-					          + "a0b0b1f2f1l1l1l2a0a0"
-					          + "a0b0b1g1g1h2h2e1e2a0"
-					          + "k2b2b1g1g1h2h2e2e1a0"
-					          + "k0c0c1c1m2m1m2e2e0a0"
-					          + "k2c1c1c2d2d2d1p1a0a0"
-					          + "a0n1n2n2d2d2d1p0a0a0"
-					          + "a0q2q2i1i2j2j1r2r1a0"
-					          + "a0a0a0i1i0j0j2a0a0a0"
-					          + "a0a0a0a0a0a0a0a0a0a0";
-			GameMap gameMap = new GameMap(mapCode2);
-			gameMap.updateGameMap(mapCode2);
-				
-			System.out.println(gameMap);
-			System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 3));
-			System.out.printf("Schwarz: %d Punkte\n",
-					gameMap.getPoints(Owner.Black, 3));
-	//		gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
-	//		gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
-	//		System.out.println(gameMap);
-	//		ArrayList<Pos> legalFields = gameMap.getLegalFields();
-	//		System.out.println("legal fields:");
-	//		for (Pos pos : legalFields)
-	//			System.out.println(pos);
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < 10; i++) {
+			sb.append(getMapCode().substring(i * 20, i * 20 + 20));
+			sb.append('\n');
 		}
+		return sb.toString();
+	}
+
+	/*
+	 * Test case: create game map and retrieve textual representation. Set two
+	 * new marbles. get legal fields
+	 * 
+	 * @param args
+	 */
+	public static void main(String[] args) throws IllegalBoardCode {
+		// String mapCode1 = "a0a0a0k0f0f0a0a0a0a0"
+		// + "a0a0p0k0f0f0o0o0a0a0" + "a0a0p0k0b1b0b0g2g0a0"
+		// + "a0c0c0c0b0b0b0g0g0a0" + "a0c0c0c0l0d0d0d0a0a0"
+		// + "h0h0i0i0l2d1d0d0m0a0" + "h0h0i0i0l2q2j0j1m0a0"
+		// + "a0a0e0e0e1q0j0j0m2a0" + "a0a0e0e0e0r0r0a0a0a0"
+		// + "a0a0a0n1n1n1a0a0a0a0";
+		String mapCode2 = "a0a0a0f2f1o1o0a0a0a0" + "a0b0b1f2f1l1l1l2a0a0"
+				+ "a0b0b1g1g1h2h2e1e2a0" + "k2b2b1g1g1h2h2e2e1a0"
+				+ "k0c0c1c1m2m1m2e2e0a0" + "k2c1c1c2d2d2d1p1a0a0"
+				+ "a0n1n2n2d2d2d1p0a0a0" + "a0q2q2i1i2j2j1r2r1a0"
+				+ "a0a0a0i1i0j0j2a0a0a0" + "a0a0a0a0a0a0a0a0a0a0";
+		GameMap gameMap = new GameMap(mapCode2);
+		gameMap.updateGameMap(mapCode2);
+
+		System.out.println(gameMap);
+		System.out.printf("Rot: %d Punkte\n", gameMap.getPoints(Owner.Red, 3));
+		System.out.printf("Schwarz: %d Punkte\n",
+				gameMap.getPoints(Owner.Black, 3));
+		// gameMap.setOwner(Pos.getPos(1, 3), Owner.Black);
+		// gameMap.setOwner(Pos.getPos(5, 3), Owner.Red);
+		// System.out.println(gameMap);
+		// ArrayList<Pos> legalFields = gameMap.getLegalFields();
+		// System.out.println("legal fields:");
+		// for (Pos pos : legalFields)
+		// System.out.println(pos);
+	}
 }
