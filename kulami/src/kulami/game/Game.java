@@ -147,8 +147,10 @@ public class Game implements GameObservable {
 	 * Returns <code>true</code> if position <code>pos</code> is a legal
 	 * position for placing the next marble.
 	 * 
-	 * @param pos a position
-	 * @return <code>true</code> if position is legal, <code>false</code> otherwise
+	 * @param pos
+	 *            a position
+	 * @return <code>true</code> if position is legal, <code>false</code>
+	 *         otherwise
 	 */
 	public boolean isLegalMove(Pos pos) {
 		List<Pos> legalFields = gameMap.getLegalFields();
@@ -164,23 +166,91 @@ public class Game implements GameObservable {
 		return gameMap.getMapCode();
 	}
 
+	/**
+	 * Returns a reference to the <code>GameMap</code>.
+	 * 
+	 * @return the <code>GameMap</code>
+	 */
 	public GameMap getGameMap() {
 		return gameMap;
 	}
 
+	/**
+	 * Returns a reference to the <code>Player</code>.
+	 * 
+	 * @return the <code>Player</code>
+	 */
 	public Player getPlayer() {
 		return player;
 	}
 
+	/**
+	 * Returns the game level.
+	 * 
+	 * @return the game level (0, 1, or 2)
+	 */
 	public int getLevel() {
 		return gameLevel;
 	}
 
+	/**
+	 * Returns the number of marbles remaining for player with colour
+	 * <code>playerColour</code>.
+	 * 
+	 * @param playerColour
+	 *            'r' or 'b'
+	 * @return number of remaining marbles
+	 */
+	public int remainingMarbles(char playerColour) {
+		if (playerColour == 'r')
+			return gameMap.remainingMarbles(Owner.Red);
+		else
+			return gameMap.remainingMarbles(Owner.Black);
+	}
+
+	/**
+	 * Tells the <code>Player</code> to choose a move.
+	 * <p>
+	 * This method should only be called for <code>CompPlayer</code>s.
+	 * 
+	 * @param adapter
+	 *            <code>CompPlayerAdapter</code> to be called when move was
+	 *            chosen
+	 */
+	public void makeMove(CompPlayerAdapter adapter) {
+		Pos pos = player.makeMove(this);
+		placeMarble(pos);
+		adapter.madeMove(pos);
+	}
+
+	/**
+	 * Informs the registered <code>GameObserver</code>s that the
+	 * <code>DisplayFlags</code> have changed.
+	 * 
+	 * @param displayFlags
+	 */
+	public void flagsChanged(DisplayFlags displayFlags) {
+		this.displayFlags = displayFlags;
+		for (GameObserver observer : gameObservers)
+			observer.flagsChanged(this);
+	
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see kulami.game.GameObservable#getBoard()
+	 */
 	@Override
 	public Board getBoard() {
 		return gameMap.getBoard();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see kulami.game.GameObservable#getMarbles()
+	 */
 	@Override
 	public Marbles getMarbles() {
 		return gameMap.getMarbles();
@@ -226,30 +296,6 @@ public class Game implements GameObservable {
 		gameObservers.remove(observer);
 	}
 
-	private void informObservers() {
-		for (GameObserver observer : gameObservers)
-			observer.gameChanged(this);
-	}
-
-	/**
-	 * 
-	 */
-	public void makeMove(CompPlayerAdapter adapter) {
-		Pos pos = player.makeMove(this);
-		placeMarble(pos);
-		adapter.madeMove(pos);
-	}
-
-	/**
-	 * @param displayFlags
-	 */
-	public void flagsChanged(DisplayFlags displayFlags) {
-		this.displayFlags = displayFlags;
-		for (GameObserver observer : gameObservers)
-			observer.flagsChanged(this);
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -271,16 +317,17 @@ public class Game implements GameObservable {
 	}
 
 	/**
-	 * @param playerColour
-	 * @return
+	 * Inform registered <code>GameObserver</code>s of changes in the game
+	 * (usually because a marble has been placed).
 	 */
-	public int remainingMarbles(char playerColour) {
-		if (playerColour == 'r')
-			return gameMap.remainingMarbles(Owner.Red);
-		else
-			return gameMap.remainingMarbles(Owner.Black);
+	private void informObservers() {
+		for (GameObserver observer : gameObservers)
+			observer.gameChanged(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "Game with map: \n" + gameMap;
