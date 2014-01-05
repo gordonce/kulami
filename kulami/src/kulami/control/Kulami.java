@@ -19,7 +19,7 @@ public class Kulami {
 		try {
 			LogManager.getLogManager().readConfiguration();
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		logger = Logger.getLogger("kulami.control.Kulami");
 	}
