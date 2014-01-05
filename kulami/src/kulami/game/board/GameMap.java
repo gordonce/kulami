@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import kulami.game.board.Panel.PanelNotPlacedException;
-import kulami.game.board.Panel.PanelOutOfBoundsException;
-
 /**
  * GameMap represents a board of 17 panels together with its current
  * configuration of marbles.
@@ -252,13 +249,8 @@ public class GameMap {
 		Map<Character, Panel> panels = board.getPanels();
 		for (char name : panels.keySet()) {
 			Panel panel = panels.get(name);
-			try {
-				if (panel.getOwner(marbles) == owner)
-					points += panel.getSize();
-			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
-				logger.warning("could not get points for panel " + name);
-				e.printStackTrace();
-			}
+			if (panel.getOwner(marbles) == owner)
+				points += panel.getSize();
 		}
 		return points;
 	}
@@ -341,14 +333,10 @@ public class GameMap {
 		Panel[] fields = board.getFields();
 		List<Owner> owners = new ArrayList<>(100);
 		for (Panel field : fields)
-			try {
-				if (field == null)
-					owners.add(Owner.None);
-				else
-					owners.add(field.getOwner(marbles));
-			} catch (PanelNotPlacedException | PanelOutOfBoundsException e) {
-				e.printStackTrace();
-			}
+			if (field == null)
+				owners.add(Owner.None);
+			else
+				owners.add(field.getOwner(marbles));
 		return owners;
 
 	}
