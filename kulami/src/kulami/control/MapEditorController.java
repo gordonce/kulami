@@ -96,6 +96,7 @@ public class MapEditorController implements MapEditorAdapter {
 			return;
 		try {
 			board.putPanel(size, pos, orientation);
+			mapEditor.decreaseRemaining(size);
 			mapEditor.drawBoard(board);
 		} catch (PanelOutOfBoundsException | PanelNotPlacedException
 				| FieldsNotEmptyException | TooManyPanelsException e) {

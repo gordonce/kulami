@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
@@ -47,6 +49,8 @@ public class MapEditor extends JFrame {
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.MapEditor");
+	private Map<Integer, JRadioButton> sizeSelectionMap;
+	private Map<Integer, Integer> sizeRemainingMap;
 
 	/**
 	 * Construct a new <code>MapEditor</code> and display it.
@@ -100,6 +104,22 @@ public class MapEditor extends JFrame {
 	 */
 	public void clearAndHide() {
 		setVisible(false);
+	}
+
+	/**
+	 * Decrease the number of remaining panels of size <code>size</code>.
+	 * 
+	 * @param size
+	 *            2, 3, 4 or 6
+	 */
+	public void decreaseRemaining(int size) {
+		int remaining = sizeRemainingMap.get(size);
+		remaining--;
+		sizeRemainingMap.put(size, remaining);
+		JRadioButton button = sizeSelectionMap.get(size);
+		button.setText(String.format("%d Felder (%d)", size, remaining));
+		if (remaining == 0)
+			button.setEnabled(false);
 	}
 
 	/**
@@ -182,24 +202,35 @@ public class MapEditor extends JFrame {
 		sizeSelectionPanel.setBorder(new TitledBorder("Holzplattengröße"));
 		sizeSelectionPanel.setPreferredSize(new Dimension(150,
 				Mainframe.FIELDSIZE * 4));
-		// panelSelectionPanel.add(new JLabel("<html><b>Holzplattengröße</b>"));
+		sizeSelectionMap = new HashMap<>();
 		final ButtonGroup sizeSelectionGroup = new ButtonGroup();
-		JRadioButton sixButton = new JRadioButton("6 Felder", true);
+		JRadioButton sixButton = new JRadioButton("6 Felder (4)", true);
 		sixButton.setActionCommand("6");
 		sizeSelectionGroup.add(sixButton);
 		sizeSelectionPanel.add(sixButton);
-		JRadioButton fourButton = new JRadioButton("4 Felder", false);
+		sizeSelectionMap.put(6, sixButton);
+		JRadioButton fourButton = new JRadioButton("4 Felder (5)", false);
 		fourButton.setActionCommand("4");
 		sizeSelectionGroup.add(fourButton);
 		sizeSelectionPanel.add(fourButton);
-		JRadioButton threeButton = new JRadioButton("3 Felder", false);
+		sizeSelectionMap.put(4, fourButton);
+		JRadioButton threeButton = new JRadioButton("3 Felder (4)", false);
 		threeButton.setActionCommand("3");
 		sizeSelectionGroup.add(threeButton);
 		sizeSelectionPanel.add(threeButton);
-		JRadioButton twoButton = new JRadioButton("2 Felder", false);
+		sizeSelectionMap.put(3, threeButton);
+		JRadioButton twoButton = new JRadioButton("2 Felder (4)", false);
 		twoButton.setActionCommand("2");
 		sizeSelectionGroup.add(twoButton);
 		sizeSelectionPanel.add(twoButton);
+		sizeSelectionMap.put(2, twoButton);
+		
+		sizeRemainingMap = new HashMap<>();
+		sizeRemainingMap.put(6, 4);
+		sizeRemainingMap.put(4, 5);
+		sizeRemainingMap.put(3, 4);
+		sizeRemainingMap.put(2, 4);
+		
 
 		JPanel orientationPanel = new JPanel(new GridLayout(2, 1));
 		orientationPanel.setBorder(new TitledBorder("Ausrichtung"));
