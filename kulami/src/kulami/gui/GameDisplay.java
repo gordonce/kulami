@@ -25,7 +25,8 @@ public class GameDisplay implements GameObserver {
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.GameDisplay");
 
-	public GameDisplay(GameObservable game, JPanel board, GameDisplayAdapter gameDisplayAdapter) {
+	public GameDisplay(GameObservable game, JPanel board,
+			GameDisplayAdapter gameDisplayAdapter) {
 		this.gameDisplayAdapter = gameDisplayAdapter;
 		mapPainter = new MapPainter(board);
 		game.registerObserver(this);
@@ -57,13 +58,15 @@ public class GameDisplay implements GameObserver {
 	 */
 	@Override
 	public void boardChanged(GameObservable game) {
-		Board board= game.getBoard();
+		Board board = game.getBoard();
 		logger.finer("Drawing map: " + board);
 		mapPainter.drawBoard(board, game.getDisplayFlags());
 		initTileListeners();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.GameObserver#flagsChanged(kulami.control.DisplayFlags)
 	 */
 	@Override
@@ -90,11 +93,10 @@ public class GameDisplay implements GameObserver {
 				else
 					return;
 				gameDisplayAdapter.tileClicked(tile.getPos());
-				
+
 			}
 
 		});
 	}
-
 
 }
