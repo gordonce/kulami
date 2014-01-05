@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.BorderLayout;
@@ -19,6 +16,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 /**
+ * A dialog that prompts the user to enter a host name and a port number.
+ * <p>
+ * User input is delegated to a <code>NewGameDialogAdapter</code>.
+ * 
  * @author gordon
  * 
  */
@@ -30,7 +31,12 @@ public class NewGameDialog extends JDialog {
 	private JDialog loadingDialog;
 
 	/**
+	 * Constructs a new <code>NewGameDialog</code>.
+	 * 
+	 * @param mainframe
+	 *            the parent frame
 	 * @param newGameDialogAdapter
+	 *            the adapter
 	 */
 	public NewGameDialog(Frame mainframe,
 			NewGameDialogAdapter newGameDialogAdapter) {
@@ -48,10 +54,16 @@ public class NewGameDialog extends JDialog {
 		setLocationRelativeTo(mainframe);
 	}
 
+	/**
+	 * @return the host name
+	 */
 	public String getHost() {
 		return hostField.getText();
 	}
 
+	/**
+	 * @return the port number or 0 if no number was entered
+	 */
 	public int getPort() {
 		String text = portField.getText();
 		if (Pattern.matches("\\d+", text))
@@ -61,7 +73,7 @@ public class NewGameDialog extends JDialog {
 	}
 
 	/**
-	 * 
+	 * Clear the dialog and close it.
 	 */
 	public void clearAndHide() {
 		if (loadingDialog != null)
@@ -71,11 +83,24 @@ public class NewGameDialog extends JDialog {
 		setVisible(false);
 	}
 
+	/**
+	 * Display a warning message.
+	 * 
+	 * @param message
+	 *            the message
+	 * @param title
+	 *            the title
+	 */
 	public void displayWarning(String message, String title) {
 		JOptionPane.showMessageDialog(this, message, title,
 				JOptionPane.WARNING_MESSAGE);
 	}
 
+	/**
+	 * Initialize the buttons.
+	 * 
+	 * @return
+	 */
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
@@ -115,6 +140,11 @@ public class NewGameDialog extends JDialog {
 		return buttonPanel;
 	}
 
+	/**
+	 * Initialize the input elements.
+	 * 
+	 * @return
+	 */
 	private Component initGUI() {
 		JPanel mainPanel = new JPanel();
 
