@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.game.board;
 
 import java.util.ArrayList;
@@ -9,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Marbles represents the positions of all marbles on a board. Marbles can be
- * placed or removed.
+ * A <code>Marbles</code> represents the positions of all marbles on a
+ * <code>Board</code>. Marbles can be placed or removed.
  * 
  * @author gordon
  * 
@@ -20,8 +17,8 @@ public class Marbles {
 	private Owner[][] marbles;
 
 	/**
-	 * Construct a new Marbles object with 100 slots for marbles. All positions
-	 * are initialized to None.
+	 * Construct a new <code>Marbles</code> object with 100 slots for marbles.
+	 * All positions are initialized to <code>Owner.None</code>.
 	 */
 	public Marbles() {
 		marbles = new Owner[10][10];
@@ -29,7 +26,10 @@ public class Marbles {
 	}
 
 	/**
-	 * @param marbles
+	 * Constructs a copy of an existing <code>Marbles</code> object.
+	 * 
+	 * @param marblesObj
+	 *            an existing <code>Marbles</code> object
 	 */
 	public Marbles(Marbles marblesObj) {
 		marbles = new Owner[10][10];
@@ -39,21 +39,25 @@ public class Marbles {
 	}
 
 	/**
-	 * Get the owner of position pos.
+	 * Get the owner of position <code>pos</code>.
 	 * 
 	 * @param pos
-	 *            A position
-	 * @return The Owner
+	 *            a position
+	 * @return the <code>Owner</code>
 	 */
 	public Owner getMarble(Pos pos) {
 		return marbles[pos.getRow()][pos.getCol()];
 	}
 
 	/**
-	 * Set the Owner of position pos to owner.
+	 * Set the owner of position <code>pos</code> to <code>owner</code>.
 	 * 
 	 * @param pos
+	 *            a position
 	 * @param owner
+	 *            the <code>Owner</code>
+	 * @return <code>true</code> if the owner changed, <code>false</code>
+	 *         otherwise
 	 */
 	public boolean setMarble(Pos pos, Owner owner) {
 		if (marbles[pos.getRow()][pos.getCol()] != owner) {
@@ -65,7 +69,7 @@ public class Marbles {
 	}
 
 	/**
-	 * Set all positions to Owner None.
+	 * Set all positions to <code>Owner.None</code>.
 	 */
 	public void setAllNone() {
 		for (int row = 0; row < 10; row++)
@@ -77,11 +81,11 @@ public class Marbles {
 	 * Calculate the largest interconnecting area of a single colour.
 	 * 
 	 * @param owner
-	 *            The Owner
-	 * @return Number of marbles in area
+	 *            the <code>Owner</code>
+	 * @return number of marbles in area
 	 */
 	public int getLargestArea(Owner owner) {
-		List<Pos> positions = getMarbles(owner);
+		List<Pos> positions = marblesForOwner(owner);
 		int[] id = getAreaIDs(positions);
 		Map<Integer, Integer> areas = areaSizes(id);
 		System.out.println("areas: " + areas);
@@ -94,7 +98,15 @@ public class Marbles {
 		return maxsize;
 	}
 
-	private List<Pos> getMarbles(Owner owner) {
+	/**
+	 * Returns a <code>List</code> of positions of marbles belonging to
+	 * <code>owner</code>.
+	 * 
+	 * @param owner
+	 *            the <code>Owner</code>
+	 * @return list of positions
+	 */
+	private List<Pos> marblesForOwner(Owner owner) {
 		List<Pos> positions = new ArrayList<>();
 		for (int row = 0; row < 10; row++)
 			for (int col = 0; col < 10; col++)
@@ -126,6 +138,14 @@ public class Marbles {
 		return id;
 	}
 
+	/**
+	 * Set all slots that have the same <code>id</code> as <code>p</code> to the
+	 * id of <code>q</code>.
+	 * 
+	 * @param p
+	 * @param q
+	 * @param id
+	 */
 	private void union(int p, int q, int[] id) {
 		int pID = id[p];
 		int qID = id[q];
@@ -136,6 +156,17 @@ public class Marbles {
 					id[i] = qID;
 	}
 
+	/**
+	 * Returns true if <code>pos1</code> and <code>pos2</code> are neighbouring
+	 * positions.
+	 * 
+	 * @param pos1
+	 *            first position
+	 * @param pos2
+	 *            second position
+	 * @return <code>true</code> if the positions are adjacent,
+	 *         <code>false</code> otherwise
+	 */
 	private boolean neighbouring(Pos pos1, Pos pos2) {
 		int row1 = pos1.getRow();
 		int row2 = pos2.getRow();
@@ -149,6 +180,13 @@ public class Marbles {
 			return false;
 	}
 
+	/**
+	 * Returns a <code>Map</code> that contains the sizes of areas as values.
+	 * 
+	 * @param id
+	 *            array of area ids created by the union-find algorithm
+	 * @return
+	 */
 	private Map<Integer, Integer> areaSizes(int[] id) {
 		Map<Integer, Integer> areas = new HashMap<>();
 		for (int i : id)
@@ -163,8 +201,8 @@ public class Marbles {
 	 * Calculate the length of the chains with 5 or more marbles.
 	 * 
 	 * @param owner
-	 *            The Owner
-	 * @return Number of marbles in long chains (>= 5) or zero
+	 *            the <code>Owner</code>
+	 * @return number of marbles in long chains (>= 5) or zero
 	 */
 	public int getChainLength(Owner owner) {
 		int bonus = 0;
@@ -230,6 +268,16 @@ public class Marbles {
 		return bonus;
 	}
 
+	/**
+	 * Returns the bonus points for a list of <code>positions</code> for level
+	 * 2.
+	 * 
+	 * @param positions
+	 *            list of positions
+	 * @param owner
+	 *            the <code>Owner</code>
+	 * @return length of longest chain (>= 5) or zero
+	 */
 	private int chainBonus(List<Pos> positions, Owner owner) {
 		int maxChain = 0;
 		int chain = 0;
