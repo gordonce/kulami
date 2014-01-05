@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.BorderLayout;
@@ -36,6 +33,10 @@ import kulami.game.board.Board;
 import kulami.game.board.Orientation;
 
 /**
+ * The <code>MapEditor</code> is a frame in which a new board can be created.
+ * <p>
+ * User actions are delegated to a <code>MapEditorAdapter</code>.
+ * 
  * @author gordon
  * 
  */
@@ -43,23 +44,36 @@ public class MapEditor extends JFrame {
 
 	private MapEditorAdapter mapEditorAdapter;
 	private MapPainter mapPainter;
-	
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.MapEditor");
 
+	/**
+	 * Construct a new <code>MapEditor</code> and display it.
+	 * 
+	 * @param mapEditorAdapter
+	 */
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
 		this.mapEditorAdapter = mapEditorAdapter;
 		initGUI();
 		setVisible(true);
 	}
 
+	/**
+	 * Draw a <code>Board</code>.
+	 * 
+	 * @param board
+	 */
 	public void drawBoard(Board board) {
 		mapPainter.drawBoard(board, new DisplayFlags());
 		initTileListeners();
 	}
 
 	/**
+	 * Save the <code>Board</code> into a file.
+	 * 
 	 * @param board
+	 *            the <code>Board</code> to be saved
 	 */
 	public void saveMap(Board board) {
 		String mapCode = board.getBoardCode();
@@ -69,7 +83,9 @@ public class MapEditor extends JFrame {
 			File file = chooser.getSelectedFile();
 			try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
 				writer.println(mapCode);
-				logger.info(String.format("Board\n%s \n in Datei %s geschrieben.", board.toString(), file.toString()));
+				logger.info(String.format(
+						"Board\n%s \n in Datei %s geschrieben.",
+						board.toString(), file.toString()));
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, String.format(
 						"Fehler beim Schreiben in Datei %s : %s",
@@ -80,12 +96,15 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * MapEditor schließen.
+	 * close MapEditor
 	 */
 	public void clearAndHide() {
 		setVisible(false);
 	}
 
+	/**
+	 * Initialize the central GUI elements
+	 */
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
@@ -109,6 +128,11 @@ public class MapEditor extends JFrame {
 
 	}
 
+	/**
+	 * Initialize the main menu
+	 * 
+	 * @return
+	 */
 	private JMenuBar initMenu() {
 		JMenuBar menu = new JMenuBar();
 
@@ -143,6 +167,12 @@ public class MapEditor extends JFrame {
 		return menu;
 	}
 
+	/**
+	 * Initialize the left panel with elements to choose a panel size and
+	 * orientation.
+	 * 
+	 * @return
+	 */
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel();
 		leftPanel
@@ -207,6 +237,11 @@ public class MapEditor extends JFrame {
 		return leftPanel;
 	}
 
+	/**
+	 * Initialize the panel where the board is displayed.
+	 * 
+	 * @return
+	 */
 	private JPanel initBoard() {
 		JPanel board = new JPanel();
 		board.setLayout(new GridLayout(10, 10, 0, 0));
@@ -215,6 +250,9 @@ public class MapEditor extends JFrame {
 		return board;
 	}
 
+	/**
+	 * Initialize listeners for each <code>TileComponent</code>
+	 */
 	private void initTileListeners() {
 		mapPainter.registerTileListeners(new MouseAdapter() {
 
@@ -236,8 +274,12 @@ public class MapEditor extends JFrame {
 				mapEditorAdapter.tileClicked(tile.getPos());
 			}
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.MouseAdapter#mouseEntered(java.awt.event.MouseEvent)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.MouseAdapter#mouseEntered(java.awt.event.MouseEvent
+			 * )
 			 */
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -250,8 +292,12 @@ public class MapEditor extends JFrame {
 				mapEditorAdapter.tileEntered(tile.getPos());
 			}
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent
+			 * )
 			 */
 			@Override
 			public void mouseExited(MouseEvent e) {
