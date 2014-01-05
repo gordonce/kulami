@@ -89,17 +89,6 @@ public class MapEditorController implements MapEditorAdapter {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see kulami.gui.MapEditorAdapter#placePanel(kulami.game.Pos)
-	 */
-	@Override
-	public void placePanel(Pos pos) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see kulami.gui.MapEditorAdapter#tileClicked(kulami.game.Pos)
 	 */
 	@Override
