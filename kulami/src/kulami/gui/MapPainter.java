@@ -25,6 +25,9 @@ import kulami.game.board.Panel.PanelOutOfBoundsException;
 import kulami.game.board.Pos;
 
 /**
+ * The <code>MapPainter</code> is responsible for drawing a <code>GameMap</code>
+ * into a <code>JPanel</code>.
+ * 
  * @author gordon
  * 
  */
@@ -57,17 +60,23 @@ public class MapPainter {
 			.getLogger("kulami.gui.MapPainter");
 
 	/**
+	 * Constructs a new <code>MapPainter</code>
+	 * 
 	 * @param boardPanel
+	 *            the <code>JPanel</code> to paint the board in
 	 */
 	public MapPainter(JPanel boardPanel) {
 		this.boardPanel = boardPanel;
 		loadImages();
-
-		// board.repaint();
 	}
 
 	/**
-	 * @param gameMap
+	 * Draws the board and gives each tile a reference to
+	 * <code>displayFlags</code>.
+	 * 
+	 * @param board
+	 *            the <code>Board</code> to draw
+	 * @param displayFlags
 	 */
 	public void drawBoard(Board board, DisplayFlags displayFlags) {
 		boardPanel.removeAll();
@@ -86,7 +95,10 @@ public class MapPainter {
 	}
 
 	/**
+	 * Draws marbles on top of the board
+	 * 
 	 * @param marbles
+	 *            a reference to a <code>Marbles</code> object
 	 */
 	public void drawMarbles(Marbles marbles) {
 		for (int i = 0; i < 100; i++) {
@@ -95,7 +107,13 @@ public class MapPainter {
 		}
 		boardPanel.repaint();
 	}
-	
+
+	/**
+	 * Remember the last move for the last moves display option
+	 * 
+	 * @param pos
+	 *            position of the last move
+	 */
 	public void setLastMove(Pos pos) {
 		// Reset next to last tile
 		if (nextToLastMoveTile != null) {
@@ -112,30 +130,68 @@ public class MapPainter {
 		lastMoveTile.setLastMove(true);
 		logger.fine("lastMoveTile set to: " + lastMoveTile);
 	}
-	
+
+	/**
+	 * Sets possible moves for the possible moves display option
+	 * 
+	 * @param positions
+	 *            positions of possible moves
+	 */
 	public void setPossibleMoves(List<Pos> positions) {
 		clearPossibleMoves();
-		for (Pos pos: positions)
+		for (Pos pos : positions)
 			tiles.get(pos.getIdx()).setPossibleMove(true);
 	}
 
+	/**
+	 * Clears all possible moves
+	 */
 	public void clearPossibleMoves() {
-		for (TileComponent tile: tiles)
+		for (TileComponent tile : tiles)
 			tile.setPossibleMove(false);
 	}
-	
+
+	/**
+	 * Sets the panel owner for each tile for the panel possession display
+	 * option
+	 * 
+	 * @param owners
+	 *            the panel owners
+	 */
 	public void setPanelOwners(List<Owner> owners) {
 		for (int i = 0; i < 100; i++) {
 			Owner owner = owners.get(i);
 			tiles.get(i).setPanelOwner(owner);
 		}
-			
+
 	}
+
+	/**
+	 * Register a <code>MouseListener</code> for each <code>TileComponent</code>
+	 * .
+	 * 
+	 * @param tileListener
+	 */
 	public void registerTileListeners(MouseListener tileListener) {
 		for (TileComponent tile : tiles)
 			tile.addMouseListener(tileListener);
 	}
 
+	/**
+	 * When display option flags changed, repaint
+	 */
+	public void flagsChanged() {
+		boardPanel.repaint();
+	}
+
+	/**
+	 * Convert a <code>Board</code> to a list of 100 <code>Image</code>s that
+	 * can be used to display the board.
+	 * 
+	 * @param board
+	 *            the board
+	 * @return list of images
+	 */
 	private List<Image> mapToImageList(Board board) {
 		Image[] imageArray = new Image[100];
 		Arrays.fill(imageArray, emptyTile);
@@ -195,6 +251,9 @@ public class MapPainter {
 		return Arrays.asList(imageArray);
 	}
 
+	/**
+	 * Load the tile images from image files.
+	 */
 	private void loadImages() {
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		String path = "/images/";
@@ -228,13 +287,6 @@ public class MapPainter {
 				.getResource(path + "middle_v.png"));
 		middleH = toolkit.getImage(getClass()
 				.getResource(path + "middle_h.png"));
-	}
-
-	/**
-	 * 
-	 */
-	public void flagsChanged() {
-		boardPanel.repaint();
 	}
 
 }
