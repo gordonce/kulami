@@ -54,7 +54,7 @@ public class MapEditor extends JFrame {
 	}
 
 	public void drawBoard(Board board) {
-		mapPainter.drawBoard(board, new DisplayFlags(false, false, false));
+		mapPainter.drawBoard(board, new DisplayFlags());
 		initTileListeners();
 	}
 
