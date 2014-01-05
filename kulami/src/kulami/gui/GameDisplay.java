@@ -16,6 +16,9 @@ import kulami.game.board.Marbles;
 /**
  * This class is notified when the game state changes and displays the game
  * using a <code>MapPainter</code>.
+ * <p>
+ * A <code>GameDisplay</code> sends user input events to a
+ * <code>GameDisplayAdapter</code>.
  * 
  * @author gordon
  * 
