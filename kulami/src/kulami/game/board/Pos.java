@@ -50,7 +50,7 @@ public class Pos {
 	 * 
 	 * @param index
 	 *            0...99
-	 * @return
+	 * @return the positions
 	 */
 	public static Pos getPos(int index) {
 		assert index >= 0 && index < 100;

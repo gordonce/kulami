@@ -467,7 +467,7 @@ public class GameController {
 
 	/**
 	 * Tells the mainframe to initialize the
-	 * <code>GameDisplay> with the current game.
+	 * <code>GameDisplay</code> with the current game.
 	 * <p>
 	 * An anonymous inner class that implements the <code>GameDisplayAdapter</code>
 	 * interface handles user clicks on the board display.

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import kulami.game.GameObservable;
+import kulami.game.GameObserver;
 
 /**
  * <code>StatusDisplay</code> displays data about the current game state in two

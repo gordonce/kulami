@@ -12,7 +12,6 @@ import kulami.game.board.Marbles;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 import kulami.game.player.Player;
-import kulami.gui.GameObserver;
 
 /**
  * The class <code>Game</code> represents the current state of a Kulami game.

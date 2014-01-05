@@ -18,8 +18,10 @@ public abstract class Player {
 	}
 
 	/**
+	 * Constructor that can be called by overriding classes.
+	 * 
+	 * @param name
 	 * @param colour
-	 * @param marbles
 	 */
 	public Player(String name, char colour) {
 		this.name = name;

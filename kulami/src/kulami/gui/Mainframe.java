@@ -67,7 +67,7 @@ public class Mainframe extends JFrame {
 	 * Constructs a new Mainframe with a MainframeAdapter provided by a
 	 * controller and initialize all GUI elements.
 	 * 
-	 * @param gameController
+	 * @param mainframeAdapter the adapter
 	 */
 	public Mainframe(MainframeAdapter mainframeAdapter) {
 		this.mainframeAdapter = mainframeAdapter;
@@ -95,7 +95,7 @@ public class Mainframe extends JFrame {
 	 * The <code>StatusDisplayer</code> is created by the <code>Mainframe</code>
 	 * , but it is the controller who calls messages to the displayer.
 	 * 
-	 * @return
+	 * @return the StatusDisplayer
 	 */
 	public StatusDisplayer getStatusDisplay() {
 		return new StatusDisplay(heroPanel, villainPanel);
@@ -220,7 +220,7 @@ public class Mainframe extends JFrame {
 	/**
 	 * Initialize a large panel for displaying the game.
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initGameBoard() {
 		JPanel boardPanel = new JPanel();
@@ -233,7 +233,7 @@ public class Mainframe extends JFrame {
 	 * Initialize a narrow panel for displaying the game status and text
 	 * messages.
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel(new BorderLayout());
@@ -318,7 +318,7 @@ public class Mainframe extends JFrame {
 	/**
 	 * Initialize the main menu.
 	 * 
-	 * @return
+	 * @return the menu bar
 	 */
 	private JMenuBar initMainMenu() {
 		JMenuBar mainMenu = new JMenuBar();

@@ -17,9 +17,9 @@ public interface KulamiStrategy {
 	/**
 	 * Choose a position for the next move.
 	 * 
-	 * @param a
+	 * @param game
 	 *            reference to the <code>Game</code>
-	 * @return the choson position
+	 * @return the chosen position
 	 */
 	public Pos choosePos(Game game);
 }

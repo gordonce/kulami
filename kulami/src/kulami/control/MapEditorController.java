@@ -39,8 +39,6 @@ public class MapEditorController implements MapEditorAdapter {
 
 	/**
 	 * The constructor creates a new <code>MapEditor</code> and displays it.
-	 * 
-	 * @param gameController
 	 */
 	public MapEditorController() {
 		mapEditor = new MapEditor(this);

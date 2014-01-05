@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import kulami.game.GameObservable;
+import kulami.game.GameObserver;
 import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 

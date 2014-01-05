@@ -69,5 +69,5 @@ public interface StatusDisplayer {
 	 * @param display
 	 *            the points?
 	 */
-	public void displayPoints(boolean b);
+	public void displayPoints(boolean display);
 }

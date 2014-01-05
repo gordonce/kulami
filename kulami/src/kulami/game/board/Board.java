@@ -146,9 +146,7 @@ public class Board {
 	}
 
 	/**
-	 * Returns a <code>Map</code> of <code>Panel</code>s.
-	 * 
-	 * @return
+	 * @return a <code>Map</code> of <code>Panel</code>s
 	 */
 	public Map<Character, Panel> getPanels() {
 		return panels;
@@ -159,7 +157,7 @@ public class Board {
 	 * <code>Panel</code> or to <code>null</code> if no panel is at the
 	 * corresponding position.
 	 * 
-	 * @return
+	 * @return array of panels
 	 */
 	public Panel[] getFields() {
 		return fields;

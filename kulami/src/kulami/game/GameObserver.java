@@ -1,6 +1,5 @@
-package kulami.gui;
+package kulami.game;
 
-import kulami.game.GameObservable;
 
 /**
  * Classes that want to be notified of game state changes have to implement this

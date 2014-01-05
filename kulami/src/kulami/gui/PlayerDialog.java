@@ -115,7 +115,7 @@ public class PlayerDialog extends JDialog {
 	/**
 	 * Initialize the OK and cancel buttons
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -146,7 +146,7 @@ public class PlayerDialog extends JDialog {
 	/**
 	 * Initialize the user input components
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initGUI() {
 		int width = 250;

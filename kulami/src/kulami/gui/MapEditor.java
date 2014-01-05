@@ -131,7 +131,7 @@ public class MapEditor extends JFrame {
 	/**
 	 * Initialize the main menu
 	 * 
-	 * @return
+	 * @return the menu bar
 	 */
 	private JMenuBar initMenu() {
 		JMenuBar menu = new JMenuBar();
@@ -171,7 +171,7 @@ public class MapEditor extends JFrame {
 	 * Initialize the left panel with elements to choose a panel size and
 	 * orientation.
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel();
@@ -240,7 +240,7 @@ public class MapEditor extends JFrame {
 	/**
 	 * Initialize the panel where the board is displayed.
 	 * 
-	 * @return
+	 * @return the JPanel
 	 */
 	private JPanel initBoard() {
 		JPanel board = new JPanel();

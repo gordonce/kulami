@@ -8,8 +8,9 @@ package kulami.game.board;
  */
 public class PanelFour extends Panel {
 
+
 	/**
-	 * {@inheritDoc}
+	 * @param name
 	 */
 	public PanelFour(char name) {
 		super(name);

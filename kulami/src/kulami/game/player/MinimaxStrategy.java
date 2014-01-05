@@ -68,7 +68,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 *            0..10
 	 * @param gameMap
 	 *            the GameMap
-	 * @return
+	 * @return value
 	 */
 	private int max(int player, int depth, GameMap gameMap) {
 		if (depth == 0 || !hasMarbles(player, gameMap)) {
@@ -99,7 +99,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 *            0..10
 	 * @param gameMap
 	 *            the GameMap
-	 * @return
+	 * @return value
 	 */
 	private int min(int player, int depth, GameMap gameMap) {
 		if (depth == 0 || !hasMarbles(player, gameMap)) {
@@ -156,7 +156,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	 * 
 	 * @param player
 	 * @param gameMap
-	 * @return
+	 * @return list of positions
 	 */
 	private List<Pos> generatePossibleMoves(int player, GameMap gameMap) {
 		return gameMap.getLegalFields();

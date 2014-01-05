@@ -7,7 +7,6 @@ import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
-import kulami.gui.GameObserver;
 
 /**
  * The <code>GameObservable</code> interface defines the methods that the
@@ -35,28 +34,28 @@ public interface GameObservable {
 	/**
 	 * Returns a reference to the <code>Board</code>.
 	 * 
-	 * @return
+	 * @return the board
 	 */
 	public Board getBoard();
 
 	/**
 	 * Returns a reference to the <code>Marbles</code> object.
 	 * 
-	 * @return
+	 * @return the marbles
 	 */
 	public Marbles getMarbles();
 
 	/**
 	 * Returns the position of the last move.
 	 * 
-	 * @return
+	 * @return the position
 	 */
 	public Pos getLastMove();
 
 	/**
 	 * Returns a list of all currently legal moves.
 	 * 
-	 * @return
+	 * @return the list of positions
 	 */
 	public List<Pos> getLegalMoves();
 
@@ -74,7 +73,7 @@ public interface GameObservable {
 	/**
 	 * Returns a reference to the <code>DisplayFlags</code> object.
 	 * 
-	 * @return
+	 * @return reference to DisplayFlags object
 	 */
 	public DisplayFlags getDisplayFlags();
 

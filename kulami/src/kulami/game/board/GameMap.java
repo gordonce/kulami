@@ -54,7 +54,8 @@ public class GameMap {
 	/**
 	 * Construct a <code>GameMap</code> given a 200-character board code.
 	 * 
-	 * @param BoardCode
+	 * @param boardCode
+	 *            the board code
 	 * @throws IllegalBoardCode
 	 */
 	public GameMap(String boardCode) throws IllegalBoardCode {
@@ -150,7 +151,7 @@ public class GameMap {
 	 * indicates the <code>Panel</code>, and the second of which indicates the
 	 * <code>Owner</code>.
 	 * 
-	 * @return
+	 * @return the 200-character board code
 	 */
 	public String getMapCode() {
 		StringBuilder mapCode = new StringBuilder();
@@ -176,9 +177,10 @@ public class GameMap {
 	 * If the Owner changes, save the move in a history and decrease the number
 	 * of available marbles.
 	 * 
-	 * @param row
-	 * @param col
+	 * @param pos
+	 *            the position of the field
 	 * @param owner
+	 *            the new owner
 	 */
 	public void setOwner(Pos pos, Owner owner) {
 		boolean changed = marbles.setMarble(pos, owner);

@@ -185,7 +185,7 @@ public class Marbles {
 	 * 
 	 * @param id
 	 *            array of area ids created by the union-find algorithm
-	 * @return
+	 * @return a Map of area sizes as values
 	 */
 	private Map<Integer, Integer> areaSizes(int[] id) {
 		Map<Integer, Integer> areas = new HashMap<>();

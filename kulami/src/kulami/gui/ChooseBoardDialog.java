@@ -119,7 +119,7 @@ public class ChooseBoardDialog extends JDialog {
 	/**
 	 * Initialize the OK- and cancel-buttons
 	 * 
-	 * @return
+	 * @return component containing the buttons
 	 */
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -150,7 +150,7 @@ public class ChooseBoardDialog extends JDialog {
 	/**
 	 * Initialize the components for choosing a file and a level.
 	 * 
-	 * @return
+	 * @return component containting the elements
 	 */
 	private Component initGUI() {
 		JPanel mainPanel = new JPanel();

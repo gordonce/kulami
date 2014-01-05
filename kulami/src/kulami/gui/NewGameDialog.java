@@ -99,7 +99,7 @@ public class NewGameDialog extends JDialog {
 	/**
 	 * Initialize the buttons.
 	 * 
-	 * @return
+	 * @return the component containing the buttons
 	 */
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -143,7 +143,7 @@ public class NewGameDialog extends JDialog {
 	/**
 	 * Initialize the input elements.
 	 * 
-	 * @return
+	 * @return the component containing the elements
 	 */
 	private Component initGUI() {
 		JPanel mainPanel = new JPanel();
