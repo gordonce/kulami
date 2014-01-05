@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.game.player;
 
 import java.util.ArrayList;

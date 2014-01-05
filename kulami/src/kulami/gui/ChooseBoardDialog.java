@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.BorderLayout;
@@ -28,6 +25,12 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
+ * This dialog prompts the user for a file containing a board code and a game
+ * level (0, 1, or 2).
+ * <p>
+ * A <code>ChooseBoardDialog</code> object delegates user input to a
+ * <code>ChooseBoardDialogAdapter</code> object.
+ * 
  * @author gordon
  * 
  */
@@ -39,6 +42,13 @@ public class ChooseBoardDialog extends JDialog {
 	private ButtonGroup levelGroup;
 	private JTextField fileLabel;
 
+	/**
+	 * Constructs a new <code>ChooseDialog</code>.
+	 * 
+	 * @param mainframe
+	 *            the parent frame
+	 * @param chooseBoardDialogAdapter
+	 */
 	public ChooseBoardDialog(Frame mainframe,
 			ChooseBoardDialogAdapter chooseBoardDialogAdapter) {
 		super(mainframe, true);
@@ -55,8 +65,10 @@ public class ChooseBoardDialog extends JDialog {
 		setLocationRelativeTo(mainframe);
 	}
 
+	/**
+	 * Hide the dialog.
+	 */
 	public void clearAndHide() {
-		// TODO clear inputs
 		setVisible(false);
 	}
 
@@ -95,13 +107,20 @@ public class ChooseBoardDialog extends JDialog {
 		return Integer.parseInt(levelGroup.getSelection().getActionCommand());
 	}
 
+	/**
+	 * Display an error message.
+	 */
 	public void invalidBoardCode() {
 		JOptionPane.showMessageDialog(this,
 				"Die gewählte Datei enthält kein gültiges Kulami-Spielfeld",
 				"Fehler", JOptionPane.ERROR_MESSAGE);
 	}
 
-
+	/**
+	 * Initialize the OK- and cancel-buttons
+	 * 
+	 * @return
+	 */
 	private Component initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
@@ -113,7 +132,7 @@ public class ChooseBoardDialog extends JDialog {
 				chooseBoardDialogAdapter.okClicked();
 			}
 		});
-		
+
 		JButton cancelButton = new JButton("Abbrechen");
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
@@ -128,6 +147,11 @@ public class ChooseBoardDialog extends JDialog {
 		return buttonPanel;
 	}
 
+	/**
+	 * Initialize the components for choosing a file and a level.
+	 * 
+	 * @return
+	 */
 	private Component initGUI() {
 		JPanel mainPanel = new JPanel();
 		int width = 400;
@@ -136,11 +160,11 @@ public class ChooseBoardDialog extends JDialog {
 		JPanel boardPanel = new JPanel();
 		boardPanel.setPreferredSize(new Dimension(width, 58));
 		boardPanel.setBorder(new TitledBorder("Spielfeld"));
-		
+
 		fileLabel = new JTextField(20);
 		fileLabel.setEditable(false);
 		boardPanel.add(fileLabel);
-		
+
 		JButton fileButton = new JButton("Datei auswählen");
 		fileButton.addActionListener(new ActionListener() {
 			@Override
@@ -155,7 +179,7 @@ public class ChooseBoardDialog extends JDialog {
 		JPanel levelPanel = new JPanel();
 		levelPanel.setPreferredSize(new Dimension(width, 58));
 		levelPanel.setBorder(new TitledBorder("Level für die Punktezählung"));
-		
+
 		JRadioButton level0Button = new JRadioButton("0");
 		level0Button.setActionCommand("0");
 		level0Button.setSelected(true);
@@ -168,16 +192,19 @@ public class ChooseBoardDialog extends JDialog {
 		levelGroup.add(level0Button);
 		levelGroup.add(level1Button);
 		levelGroup.add(level2Button);
-		
+
 		levelPanel.add(level0Button);
 		levelPanel.add(level1Button);
 		levelPanel.add(level2Button);
-		
+
 		mainPanel.add(levelPanel);
-		
+
 		return mainPanel;
 	}
 
+	/**
+	 * Show a <code>JFileChooser</code> for choosing a board code file.
+	 */
 	private void showFileChooser() {
 		JFileChooser chooser = new JFileChooser();
 		int result = chooser.showOpenDialog(this);
@@ -191,8 +218,9 @@ public class ChooseBoardDialog extends JDialog {
 					+ e.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		new ChooseBoardDialog(new javax.swing.JFrame(), null).setVisible(true);;
+		new ChooseBoardDialog(new javax.swing.JFrame(), null).setVisible(true);
+		;
 	}
 }
