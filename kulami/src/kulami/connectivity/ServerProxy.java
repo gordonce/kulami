@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.connectivity;
 
 import java.io.BufferedReader;
@@ -17,10 +14,12 @@ import java.util.Queue;
 import java.util.logging.Logger;
 
 /**
- * ServerProxy establishes a connection to a Kulami server and receives server
- * messages and sends messages to the server. It follows the Observable-Observer
- * pattern. Observers must implement the MessageObserver interface and register
- * with the addObserver(MessageObserver) method.
+ * A <code>ServerProxy</code> establishes a connection to a Kulami server and
+ * receives server messages and sends messages to the server.
+ * <p>
+ * It implements the observable part of the observable/observer pattern.
+ * Observers must implement the <code>MessageObserver</code> interface and
+ * register with the <code>{@link #addObserver(MessageObserver)}</code> method.
  * 
  * @author gordon
  * 
@@ -29,20 +28,26 @@ public class ServerProxy {
 
 	private String host;
 	private int port;
-	private List<MessageObserver> observers;
+
+	private Socket kulamiSocket;
+
 	private boolean listening;
 	private Queue<String> sendBuffer;
-	private Socket kulamiSocket;
+
+	private List<MessageObserver> observers;
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.control.ServerProxy");
 
 	/**
-	 * Create a ServerProxy object that can be used to connect to a Kulami
-	 * server and distribute server messages. The argument ConnectionData must
-	 * contain the address of a running Kulami server.
+	 * Constructs a <code>ServerProxy</code> object that can be used to connect
+	 * to a Kulami server.
 	 * 
-	 * @param serverConnectionData
+	 * @param host
+	 *            the host name (e.g. <code>localhost</code> or
+	 *            <code>127.0.0.1</code>
+	 * @param port
+	 *            the port number
 	 */
 	public ServerProxy(String host, int port) {
 		this.host = host;
@@ -53,9 +58,12 @@ public class ServerProxy {
 	}
 
 	/**
-	 * Establish connection with the server given in the constructor and start a
-	 * new thread that runs an infinite loop that listens for Kulami server
-	 * messages and distributes them to all registered MessageObservers.
+	 * Establishes a socket connection with the server given in the constructor.
+	 * <p>
+	 * Start a new thread that runs an infinite loop that listens for Kulami
+	 * server messages and distributes them to all registered
+	 * <code>MessageObserver</code>s and another thread that sends messages to
+	 * the server.
 	 * 
 	 * @throws IOException
 	 * @throws UnknownHostException
@@ -109,6 +117,11 @@ public class ServerProxy {
 		}
 	}
 
+	/**
+	 * Listens to incoming server messages.
+	 * <p>
+	 * This method should run in a separate thread.
+	 */
 	private void listen() {
 		try (BufferedReader socketReader = new BufferedReader(
 				new InputStreamReader(kulamiSocket.getInputStream()))) {
@@ -128,6 +141,11 @@ public class ServerProxy {
 		}
 	}
 
+	/**
+	 * Sends messages that are added to the message queue.
+	 * <p>
+	 * This method should run in a separate thread.
+	 */
 	private void send() {
 		try (BufferedWriter socketWriter = new BufferedWriter(
 				new OutputStreamWriter(kulamiSocket.getOutputStream()))) {
@@ -140,7 +158,7 @@ public class ServerProxy {
 					logger.fine(String.format("Sent message: %s", outMessage));
 					outMessage = null;
 				}
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			}
 			kulamiSocket.close();
 		} catch (IOException | InterruptedException e) {
@@ -150,7 +168,8 @@ public class ServerProxy {
 	}
 
 	/**
-	 * Register a MessageObserver that wants to be sent Kulami server messages.
+	 * Register a <code>MessageObserver</code> that wants to be sent Kulami
+	 * server messages.
 	 * 
 	 * @param observer
 	 */
@@ -159,7 +178,7 @@ public class ServerProxy {
 	}
 
 	/**
-	 * Remove a MessageObserver from the list of observers.
+	 * Remove a <code>MessageObserver</code> from the list of observers.
 	 * 
 	 * @param observer
 	 */
@@ -167,11 +186,21 @@ public class ServerProxy {
 		observers.remove(observer);
 	}
 
+	/**
+	 * Send a message received from the server to all registered
+	 * <code>MessageObserver</code>s.
+	 * 
+	 * @param message
+	 */
 	private void informObservers(String message) {
 		for (MessageObserver observer : observers)
 			observer.inform(message);
 	}
 
+	/**
+	 * Notify all registered <code>MessageObserver</code> that a connection
+	 * error occurred.
+	 */
 	private void connectionError() {
 		for (MessageObserver observer : observers)
 			observer.connectionError();

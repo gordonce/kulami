@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.connectivity;
 
 import java.util.ArrayList;
