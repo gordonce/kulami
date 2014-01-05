@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.game.board;
 
 import java.util.ArrayList;
@@ -41,16 +38,16 @@ public class Board {
 		HiCodes.put(2, 'r');
 	}
 
-	// private Map<Integer, Character> panelCodes;
 	private Map<Character, Boolean> codeTaken;
 	private Map<Character, Panel> panels;
 	private Panel[] fields = new Panel[100];
 
 	/**
-	 * 
+	 * Constructs a new <code>Board</code> with 17 <code>Panel</code>s.
+	 * <p>
+	 * Initially no panel is placed on the board.
 	 */
 	public Board() {
-		// panelCodes = new HashMap<>(4);
 		codeTaken = new HashMap<>(17);
 		panels = new HashMap<>(17);
 		for (int size : Sizes) {
@@ -63,14 +60,19 @@ public class Board {
 	}
 
 	/**
-	 * Place a panel on the board with its size, upper left corner, and
+	 * Places a <code>Panel</code> on the <code>Board</code>.
+	 * <p>
+	 * The calling method has to specify its size, upper left corner, and
 	 * orientation specified. The method returns the assigned code if
 	 * successful.
 	 * 
 	 * @param size
+	 *            2, 3, 4, or 6
 	 * @param corner
+	 *            position of the upper left corner
 	 * @param orientation
-	 * @return
+	 *            vertical or horizontal
+	 * @return 'b'...'r'
 	 * @throws PanelOutOfBoundsException
 	 * @throws PanelNotPlacedException
 	 * @throws FieldsNotEmptyException
@@ -85,41 +87,42 @@ public class Board {
 		return code;
 	}
 
-	private char getAvailableCode(int size) throws TooManyPanelsException {
-		for (char code = LoCodes.get(size); code <= HiCodes.get(size); code++) {
-			if (!codeTaken.get(code))
-				return code;
-		}
-		throw new TooManyPanelsException();
-	}
-
 	/**
-	 * Place panel on board given a code, the upper left corner, and
+	 * Place panel on board given a code, the upper left corner, and an
 	 * orientation.
 	 * 
 	 * @param code
 	 * @param corner
 	 * @param orientation
-	 * @throws PanelOutOfBoundsException 
-	 * @throws FieldsNotEmptyException 
+	 * @throws PanelOutOfBoundsException
+	 * @throws FieldsNotEmptyException
 	 */
-	public void putPanel(char code, Pos corner, Orientation orientation) throws PanelOutOfBoundsException, FieldsNotEmptyException {
+	public void putPanel(char code, Pos corner, Orientation orientation)
+			throws PanelOutOfBoundsException, FieldsNotEmptyException {
 		assert panels.containsKey(code);
 		Panel panel = panels.get(code);
 		Pos[] positions = panel.getPositions(corner, orientation);
-		
+
 		for (Pos pos : positions)
 			if (fields[pos.getIdx()] != null)
 				throw new FieldsNotEmptyException();
-		
+
 		panel.placePanel(corner, orientation);
-		
+
 		for (Pos pos : positions)
 			fields[pos.getIdx()] = panel;
-		
+
 		codeTaken.put(code, true);
 	}
 
+	/**
+	 * Remove a <code>Panel</code> from the <code>Board</code>.
+	 * 
+	 * @param code
+	 *            'b'...'r'
+	 * @throws PanelNotPlacedException
+	 * @throws PanelOutOfBoundsException
+	 */
 	public void removePanel(char code) throws PanelNotPlacedException,
 			PanelOutOfBoundsException {
 		assert code >= LoCodes.get(6) && code <= HiCodes.get(2);
@@ -132,7 +135,7 @@ public class Board {
 	}
 
 	/**
-	 * Get the panel at a particular position.
+	 * Returns the <code>Panel</code> at a particular position.
 	 * 
 	 * @param pos
 	 *            a position
@@ -143,18 +146,31 @@ public class Board {
 	}
 
 	/**
-	 * Get an iterator over all panels on the board.
+	 * Returns a <code>Map</code> of <code>Panel</code>s.
 	 * 
-	 * @return an iterator
+	 * @return
 	 */
 	public Map<Character, Panel> getPanels() {
 		return panels;
 	}
-	
+
+	/**
+	 * Returns a reference to the array of 100 fields which each point to a
+	 * <code>Panel</code> or to <code>null</code> if no panel is at the
+	 * corresponding position.
+	 * 
+	 * @return
+	 */
 	public Panel[] getFields() {
 		return fields;
 	}
-	
+
+	/**
+	 * Returns a 200-character representation of the current <code>Board</code>
+	 * with owners set to 0.
+	 * 
+	 * @return board code
+	 */
 	public String getBoardCode() {
 		StringBuilder boardCode = new StringBuilder();
 		for (int i = 0; i < fields.length; i++) {
@@ -167,6 +183,13 @@ public class Board {
 		return boardCode.toString();
 	}
 
+	/**
+	 * Returns the size of a panel with the code <code>code</code>.
+	 * 
+	 * @param code
+	 *            'b'...'r'
+	 * @return size 2, 3, 4, or 6
+	 */
 	public static int getSize(char code) {
 		for (int size : Sizes) {
 			if (code >= LoCodes.get(size) && code <= HiCodes.get(size))
@@ -175,6 +198,31 @@ public class Board {
 		return 0;
 	}
 
+	/**
+	 * Returns the lowest available code for a panel of size <code>size</code>.
+	 * <p>
+	 * Throws a <code>TooManyPanelsException</code> if no code is available.
+	 * 
+	 * @param size
+	 *            2, 3, 4, or 6
+	 * @return 'b'...'r'
+	 * @throws TooManyPanelsException
+	 */
+	private char getAvailableCode(int size) throws TooManyPanelsException {
+		for (char code = LoCodes.get(size); code <= HiCodes.get(size); code++) {
+			if (!codeTaken.get(code))
+				return code;
+		}
+		throw new TooManyPanelsException();
+	}
+
+	/**
+	 * This exception indicates that the panel can not be placed because the
+	 * fields are not empty.
+	 * 
+	 * @author gordon
+	 * 
+	 */
 	public class FieldsNotEmptyException extends Exception {
 	}
 }

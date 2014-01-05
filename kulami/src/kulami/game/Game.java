@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.game;
 
 import java.util.ArrayList;
