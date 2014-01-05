@@ -31,11 +31,14 @@ import javax.swing.border.TitledBorder;
 import kulami.game.GameObservable;
 
 /**
- * The Mainframe is the central GUI element. It depends on a GameController to
- * take care of all functionality. The Mainframe does not have a direct
- * reference to the controller, but forwards all user actions to a
- * MainframeAdapter. Displaying the current game is delegated to a GameDisplay
- * and displaying messages is delegated to a MessageDisplay.
+ * The <code>Mainframe</code> is the central GUI element.
+ * <p>
+ * It depends on a GameController to take care of all functionality. The
+ * Mainframe does not have a direct reference to the controller, but forwards
+ * all user actions to a <code>MainframeAdapter</code>.
+ * <p>
+ * Displaying the current game is delegated to a <code>GameDisplay</code> and
+ * displaying messages is delegated to a <code>MessageDisplay</code>.
  * 
  * @author gordon
  * 
@@ -52,19 +55,16 @@ public class Mainframe extends JFrame {
 	private JTextField chatTextField;
 
 	private JPanel heroPanel;
-
 	private JPanel villainPanel;
 
 	private JPanel optionsPanel;
 
 	private JCheckBox previousMovesCheckBox;
-
 	private JCheckBox possibleMovesCheckBox;
-
 	private JCheckBox boardPossessionCheckBox;
 
 	/**
-	 * Construct a new Mainframe with a MainframeAdapter provided by a
+	 * Constructs a new Mainframe with a MainframeAdapter provided by a
 	 * controller and initialize all GUI elements.
 	 * 
 	 * @param gameController
@@ -75,24 +75,43 @@ public class Mainframe extends JFrame {
 	}
 
 	/**
-	 * Return a MessagePager that can be used to display messages to the user.
-	 * The MessagePager is created by the Mainframe, because only the Mainframe
-	 * knows where it wants messages to be displayed. The controller takes care
-	 * of sending messages to the pager.
+	 * Returns a <code>MessagePager</code> that can be used to display messages
+	 * to the user.
+	 * <p>
+	 * The <code>MessagePager</code> is created by the Mainframe because only
+	 * the Mainframe knows where it wants messages to be displayed. The
+	 * controller takes care of sending messages to the pager.
 	 * 
-	 * @return A MessagePager that can be used to display messages.
+	 * @return A <code>MessagePager</code> that can be used to display messages.
 	 */
 	public MessagePager getMessageDisplay() {
 		return new MessageDisplay(messageTextArea);
 	}
 
+	/**
+	 * Returns a <code>StatusDisplayer</code> that displays the status of the
+	 * current game.
+	 * <p>
+	 * The <code>StatusDisplayer</code> is created by the <code>Mainframe</code>
+	 * , but it is the controller who calls messages to the displayer.
+	 * 
+	 * @return
+	 */
 	public StatusDisplayer getStatusDisplay() {
 		return new StatusDisplay(heroPanel, villainPanel);
 	}
 
 	/**
+	 * Initializes a new <code>GameDisplay</code> and returns it.
+	 * <p>
+	 * This method can not be called before a <code>Game</code> object has been
+	 * created by the controller.
+	 * 
 	 * @param game
-	 * @return
+	 *            the game
+	 * @param gameDisplayAdapter
+	 *            an adapter for the <code>GameDisplay</code>
+	 * @return a new <code>GameDisplay</code>
 	 */
 	public GameDisplay initGameDisplay(GameObservable game,
 			GameDisplayAdapter gameDisplayAdapter) {
@@ -111,8 +130,15 @@ public class Mainframe extends JFrame {
 	}
 
 	/**
-	 * @param string
-	 * @return
+	 * Tell the Mainframe to display a confirmation dialogue with a yes and and
+	 * a no button.
+	 * 
+	 * @param message
+	 *            The message to be displayed.
+	 * @param title
+	 *            the title
+	 * @return <code>true</code> if the user clicked yes, <code>false</code> if
+	 *         the user clicked no
 	 */
 	public boolean yesNoQuestion(String message, String title) {
 		int ans = JOptionPane.showConfirmDialog(this, message, title,
@@ -121,6 +147,11 @@ public class Mainframe extends JFrame {
 
 	}
 
+	/**
+	 * Enable or disable the game options.
+	 * 
+	 * @param enabled
+	 */
 	public void enableOptions(boolean enabled) {
 		optionsPanel.setEnabled(enabled);
 		previousMovesCheckBox.setEnabled(enabled);
@@ -128,6 +159,35 @@ public class Mainframe extends JFrame {
 		boardPossessionCheckBox.setEnabled(enabled);
 	}
 
+	/**
+	 * Displays a message with the results of the game and ask the user whether
+	 * he/she wants to have a rematch.
+	 * 
+	 * @param pointsHero
+	 *            local player's points
+	 * @param pointsVillain
+	 *            opponent's points
+	 * @return <code>true</code> if user wants rematch, <code>false</code> otherwise
+	 */
+	public boolean displayResults(int pointsHero, int pointsVillain) {
+		String message;
+		if (pointsHero > pointsVillain)
+			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten gewonnen.\nNoch ein Spiel?";
+		else if (pointsHero < pointsVillain)
+			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten verloren.\nNoch ein Spiel?";
+		else
+			message = "Das Spiel endet unentschieden mit %d zu %d PUnkten.\nNoch ein Spiel?";
+
+		int ans = JOptionPane.showConfirmDialog(this,
+				String.format(message, pointsHero, pointsVillain), "Spielende",
+				JOptionPane.YES_NO_OPTION);
+		return ans == JOptionPane.YES_OPTION;
+
+	}
+
+	/**
+	 * Initialize the central GUI elements
+	 */
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
@@ -153,10 +213,15 @@ public class Mainframe extends JFrame {
 				"/images/kulami_icon.png"));
 		setIconImage(icon);
 
-		// setResizable(false);
+		setResizable(false);
 
 	}
 
+	/**
+	 * Initialize a large panel for displaying the game.
+	 * 
+	 * @return
+	 */
 	private JPanel initGameBoard() {
 		JPanel boardPanel = new JPanel();
 		boardPanel.setLayout(new GridLayout(10, 10, 0, 0));
@@ -164,6 +229,12 @@ public class Mainframe extends JFrame {
 		return boardPanel;
 	}
 
+	/**
+	 * Initialize a narrow panel for displaying the game status and text
+	 * messages.
+	 * 
+	 * @return
+	 */
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.setPreferredSize(new Dimension(300, 600));
@@ -244,6 +315,11 @@ public class Mainframe extends JFrame {
 		return leftPanel;
 	}
 
+	/**
+	 * Initialize the main menu.
+	 * 
+	 * @return
+	 */
 	private JMenuBar initMainMenu() {
 		JMenuBar mainMenu = new JMenuBar();
 
@@ -320,26 +396,6 @@ public class Mainframe extends JFrame {
 		mainMenu.add(boardMenu);
 
 		return mainMenu;
-	}
-
-	/**
-	 * @param pointsRed
-	 * @param pointsBlack
-	 */
-	public boolean displayResults(int pointsHero, int pointsVillain) {
-		String message;
-		if (pointsHero > pointsVillain)
-			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten gewonnen.\nNoch ein Spiel?";
-		else if (pointsHero < pointsVillain)
-			message = "Das Spiel ist zu Ende. Sie haben mit %d zu %d Punkten verloren.\nNoch ein Spiel?";
-		else
-			message = "Das Spiel endet unentschieden mit %d zu %d PUnkten.\nNoch ein Spiel?";
-
-		int ans = JOptionPane.showConfirmDialog(this,
-				String.format(message, pointsHero, pointsVillain), "Spielende",
-				JOptionPane.YES_NO_OPTION);
-		return ans == JOptionPane.YES_OPTION;
-
 	}
 
 }
