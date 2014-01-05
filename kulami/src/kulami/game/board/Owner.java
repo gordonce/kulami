@@ -1,9 +1,8 @@
-/**
- * 
- */
 package kulami.game.board;
 
 /**
+ * The owner of a field on the board.
+ * 
  * @author gordon
  * 
  */
@@ -16,6 +15,11 @@ public enum Owner {
 		this.idx = idx;
 	}
 	
+	/**
+	 * Returns the index corresponding to the owner.
+	 * 
+	 * @return 0 for None, 1 for Black, 2 for Red.
+	 */
 	public int getIdx() {
 		return idx;
 	}
