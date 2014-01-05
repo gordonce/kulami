@@ -26,6 +26,11 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.border.TitledBorder;
 
 /**
+ * A dialog prompting the user for a player name, a player type, and, in case of
+ * a computer player, a difficulty level.
+ * <p>
+ * User input is delegated to a <code>PlayerDialogAdapter</code> object.
+ * 
  * @author gordon
  * 
  */
@@ -42,8 +47,15 @@ public class PlayerDialog extends JDialog {
 	private JSpinner levelSpinner;
 	private JLabel levelLabel;
 
-	public PlayerDialog(Frame mainframe,
-			PlayerDialogAdapter playerDialogAdapter) {
+	/**
+	 * Constructs a new <code>PlayerDialog</code>.
+	 * 
+	 * @param mainframe
+	 *            the parent frame
+	 * @param playerDialogAdapter
+	 *            the adapter
+	 */
+	public PlayerDialog(Frame mainframe, PlayerDialogAdapter playerDialogAdapter) {
 		super(mainframe, true);
 		this.playerDialogAdapter = playerDialogAdapter;
 
@@ -53,7 +65,7 @@ public class PlayerDialog extends JDialog {
 
 		add(initGUI(), BorderLayout.CENTER);
 		add(initButtons(), BorderLayout.SOUTH);
-		
+
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentShown(ComponentEvent e) {
@@ -65,26 +77,49 @@ public class PlayerDialog extends JDialog {
 		setLocationRelativeTo(mainframe);
 	}
 
-	public String getName() {
+	/**
+	 * Returns the player name that the user entered.
+	 * 
+	 * @return player name
+	 */
+	public String getPlayerName() {
 		return nameField.getText();
 	}
-	
+
+	/**
+	 * @return <code>true</code> if the user selected human, <code>false</code>
+	 *         if the user selected computer
+	 */
 	public boolean getHuman() {
-		return typeButtonGroup.getSelection().getActionCommand().equals(humanCommand);
+		return typeButtonGroup.getSelection().getActionCommand()
+				.equals(humanCommand);
 	}
-	
+
+	/**
+	 * Returns the selected computer difficulty level.
+	 * 
+	 * @return 1..10
+	 */
 	public int getCompLevel() {
 		return levelModel.getNumber().intValue();
 	}
-	
+
+	/**
+	 * Clear and close the dialog
+	 */
 	public void clearAndHide() {
 		nameField.setText(null);
 		setVisible(false);
 	}
-	
+
+	/**
+	 * Initialize the OK and cancel buttons
+	 * 
+	 * @return
+	 */
 	private JPanel initButtons() {
 		JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		
+
 		JButton okButton = new JButton("OK");
 		getRootPane().setDefaultButton(okButton);
 		okButton.addActionListener(new ActionListener() {
@@ -93,7 +128,7 @@ public class PlayerDialog extends JDialog {
 				playerDialogAdapter.okPressed();
 			}
 		});
-		
+
 		JButton cancelButton = new JButton("Abbrechen");
 		cancelButton.addActionListener(new ActionListener() {
 			@Override
@@ -101,37 +136,42 @@ public class PlayerDialog extends JDialog {
 				playerDialogAdapter.cancelPressed();
 			}
 		});
-		
+
 		buttonPanel.add(okButton);
 		buttonPanel.add(cancelButton);
-		
+
 		return buttonPanel;
 	}
 
+	/**
+	 * Initialize the user input components
+	 * 
+	 * @return
+	 */
 	private JPanel initGUI() {
 		int width = 250;
-		
+
 		JPanel mainPanel = new JPanel();
 		mainPanel.setPreferredSize(new Dimension(width, 190));
-		
+
 		JPanel namePanel = new JPanel();
 		namePanel.setPreferredSize(new Dimension(width, 57));
 		namePanel.setBorder(new TitledBorder("Name"));
 		nameField = new JTextField(20);
 		namePanel.add(nameField);
-		
+
 		JPanel typePanel = new JPanel();
 		typePanel.setPreferredSize(new Dimension(width, 78));
 		typePanel.setBorder(new TitledBorder("Modus"));
-		
+
 		typeButtonGroup = new ButtonGroup();
-		
+
 		JRadioButton humanButton = new JRadioButton("Mensch");
 		humanButton.setActionCommand(humanCommand);
 		typeButtonGroup.add(humanButton);
 		typePanel.add(humanButton);
 		humanButton.setSelected(true);
-		
+
 		JRadioButton compButton = new JRadioButton("Computer");
 		compButton.setActionCommand(compCommand);
 		compButton.addItemListener(new ItemListener() {
@@ -140,8 +180,7 @@ public class PlayerDialog extends JDialog {
 				int event = e.getStateChange();
 				if (event == ItemEvent.SELECTED) {
 					enableLevelSelection(true);
-				}
-				else if (event == ItemEvent.DESELECTED) {
+				} else if (event == ItemEvent.DESELECTED) {
 					enableLevelSelection(false);
 				}
 			}
@@ -149,28 +188,32 @@ public class PlayerDialog extends JDialog {
 		typeButtonGroup.add(compButton);
 		typePanel.add(compButton);
 
-
 		levelModel = new SpinnerNumberModel(1, 1, 10, 1);
 		levelSpinner = new JSpinner(levelModel);
 		levelLabel = new JLabel("Spielstärke: ");
 		typePanel.add(levelLabel);
 		typePanel.add(levelSpinner);
-		
+
 		mainPanel.add(namePanel);
 		mainPanel.add(typePanel);
-		
+
 		enableLevelSelection(false);
-		
+
 		return mainPanel;
 	}
 
-	private void enableLevelSelection(boolean b) {
-		levelLabel.setEnabled(b);
-		levelSpinner.setEnabled(b);
+	/**
+	 * Enable or disable difficulty level selection
+	 * 
+	 * @param enabled
+	 */
+	private void enableLevelSelection(boolean enabled) {
+		levelLabel.setEnabled(enabled);
+		levelSpinner.setEnabled(enabled);
 	}
-	
+
 	public static void main(String[] args) {
 		new PlayerDialog(new javax.swing.JFrame(), null).setVisible(true);
 	}
-	
+
 }

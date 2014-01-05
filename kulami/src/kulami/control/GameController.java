@@ -206,7 +206,7 @@ public class GameController {
 
 			@Override
 			public void okPressed() {
-				playerName = playerDialog.getName();
+				playerName = playerDialog.getPlayerName();
 				playerHuman = playerDialog.getHuman();
 				compPlayerLevel = playerDialog.getCompLevel();
 
