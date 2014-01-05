@@ -14,6 +14,9 @@ import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 
 /**
+ * This class is notified when the game state changes and displays the game
+ * using a <code>MapPainter</code>.
+ * 
  * @author gordon
  * 
  */
@@ -25,16 +28,20 @@ public class GameDisplay implements GameObserver {
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.GameDisplay");
 
+	/**
+	 * Constructs a new <code>GameDisplay</code>, creates a
+	 * <code>MapPainter</code>, and registers with a <code>GameObservable</code>
+	 * .
+	 * 
+	 * @param game
+	 * @param board
+	 * @param gameDisplayAdapter
+	 */
 	public GameDisplay(GameObservable game, JPanel board,
 			GameDisplayAdapter gameDisplayAdapter) {
 		this.gameDisplayAdapter = gameDisplayAdapter;
 		mapPainter = new MapPainter(board);
 		game.registerObserver(this);
-	}
-
-	// TODO Test:
-	public GameDisplay(JPanel board) {
-		mapPainter = new MapPainter(board);
 	}
 
 	/*
@@ -74,6 +81,9 @@ public class GameDisplay implements GameObserver {
 		mapPainter.flagsChanged();
 	}
 
+	/**
+	 * Register listeners for all 100 <code>TileComponent</code>s.
+	 */
 	private void initTileListeners() {
 		mapPainter.registerTileListeners(new MouseAdapter() {
 
