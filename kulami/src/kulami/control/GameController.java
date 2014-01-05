@@ -137,6 +137,7 @@ public class GameController {
 
 			@Override
 			public void messageEntered(String message) {
+				messagePager.display(String.format("%s: %s", playerName, message));
 				messageSender.sendMessage(message);
 			}
 

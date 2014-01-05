@@ -6,9 +6,12 @@ package kulami.gui;
 import javax.swing.JTextArea;
 
 /**
- * MessageDisplay handles displaying of messages in a text panel shown to the
- * user. This can be used for program messages, server messages, and chat
- * messages. The panel should also display the user's own messages.
+ * <code>MessageDisplay</code>handles displaying of messages in a text panel
+ * shown to the user.
+ * <p>
+ * The <code>MessageDisplay</code> can be used for program messages, server
+ * messages, and chat messages. The panel should also display the user's own
+ * messages.
  * 
  * @author gordon
  * 
@@ -18,15 +21,18 @@ public class MessageDisplay implements MessagePager {
 	private JTextArea textPager;
 
 	/**
-	 * The constructor takes a ServerProxy object and a text panel.
+	 * Constructs a <code>MessageDisplay</code> that displays messages in
+	 * <code>textPager</code>.
 	 * 
-	 * @param textPager
+	 * @param textPager the <code>JTextArea</code> where messages are displayed
 	 */
 	public MessageDisplay(JTextArea textPager) {
 		this.textPager = textPager;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.MessagePager#display(java.lang.String)
 	 */
 	public void display(String message) {
