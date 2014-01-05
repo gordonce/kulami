@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.control;
 
 import java.util.logging.Logger;
@@ -16,8 +13,12 @@ import kulami.gui.MapEditor;
 import kulami.gui.MapEditorAdapter;
 
 /**
- * A MapEditor frame needs a MapEditorController object to handle user input
- * events. User input events are defined in MapEditorAdapter.
+ * This class is a controller for the <code>MapEditor</code> class.
+ * <p>
+ * A <code>MapEditor</code> uses a <code>MapEditorController</code> object to
+ * handle user input events. User input events are encapsulated by the
+ * <code>MapEditorAdapter</code> interface, which <code>MapEditor</code>
+ * implements.
  * 
  * @author gordon
  * 
@@ -37,7 +38,7 @@ public class MapEditorController implements MapEditorAdapter {
 			.getLogger("kulami.control.MapEditorController");
 
 	/**
-	 * The constructor creates a new MapEditor and displays it.  
+	 * The constructor creates a new <code>MapEditor</code> and displays it.
 	 * 
 	 * @param gameController
 	 */
@@ -82,7 +83,6 @@ public class MapEditorController implements MapEditorAdapter {
 	 */
 	@Override
 	public void closeMapEditor() {
-		// TODO Auto-generated method stub
 		mapEditor.clearAndHide();
 	}
 
@@ -97,7 +97,9 @@ public class MapEditorController implements MapEditorAdapter {
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.MapEditorAdapter#tileClicked(kulami.game.Pos)
 	 */
 	@Override
@@ -114,7 +116,9 @@ public class MapEditorController implements MapEditorAdapter {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.MapEditorAdapter#tileEntered(kulami.game.Pos)
 	 */
 	@Override
@@ -123,15 +127,14 @@ public class MapEditorController implements MapEditorAdapter {
 		// Show preview
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.MapEditorAdapter#tileExited(kulami.game.Pos)
 	 */
 	@Override
 	public void tileExited(Pos pos) {
 		// TODO hide preview
 	}
-	
-
-
 
 }
