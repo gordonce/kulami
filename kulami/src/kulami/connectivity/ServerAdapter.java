@@ -9,8 +9,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * The ServerAdapter knows the Kulami client/server protocol and delegates to
- * the appropriate methods.
+ * The <code>ServerAdapter</code> decomposes Kulami client/server protocol
+ * messages and delegates to the corresponding methods of an
+ * <code>InProtocolObserver</code>.
+ * <p>
+ * <code>ServerAdapter</code> receives messages from a <code>ServerProxy</code>.
  * 
  * @author gordon
  * 
@@ -21,9 +24,9 @@ public class ServerAdapter implements MessageObserver {
 	private List<InProtocolObserver> observers;
 
 	/**
-	 * The ServerAdapter constructor
+	 * Constructs a <code>ServerAdapter</code> and initializes regular
+	 * expression patterns.
 	 * 
-	 * @param gameController
 	 */
 	public ServerAdapter() {
 		patterns = initPatterns();
@@ -31,7 +34,8 @@ public class ServerAdapter implements MessageObserver {
 	}
 
 	/**
-	 * Register an InProtocolObserver to handle incoming server messages.
+	 * Register an <code>InProtocolObserver</code> to handle incoming server
+	 * messages.
 	 * 
 	 * @param observer
 	 */
@@ -116,6 +120,23 @@ public class ServerAdapter implements MessageObserver {
 				observer.unknownMessage(message);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see kulami.connectivity.MessageObserver#connectionError()
+	 */
+	@Override
+	public void connectionError() {
+		for (InProtocolObserver observer : observers)
+			observer.connectionError();
+	}
+
+	/**
+	 * Initializes a <code>List</code> of <code>Pattern</code>s to identify and
+	 * decompose server messages.
+	 * 
+	 * @return patterns
+	 */
 	private List<Pattern> initPatterns() {
 		List<Pattern> patterns = new ArrayList<>();
 		patterns.add(Pattern.compile("(?i)Kulami\\?"));
@@ -134,20 +155,22 @@ public class ServerAdapter implements MessageObserver {
 		return patterns;
 	}
 
+	/**
+	 * Given a server message creates a <code>List</code> of
+	 * <code>Matcher</code>s from the list <code>patterns</code>.
+	 * <p>
+	 * The <code>patterns</code> list has to be initialized before calling this
+	 * message.
+	 * 
+	 * @param message
+	 *            the server message
+	 * @return list of matchers
+	 */
 	private List<Matcher> initMatchers(String message) {
 		List<Matcher> matchers = new ArrayList<>();
 		for (Pattern pattern : patterns)
 			matchers.add(pattern.matcher(message));
 		return matchers;
-	}
-
-	/* (non-Javadoc)
-	 * @see kulami.connectivity.MessageObserver#connectionError()
-	 */
-	@Override
-	public void connectionError() {
-		for (InProtocolObserver observer: observers)
-			observer.connectionError();
 	}
 
 }
