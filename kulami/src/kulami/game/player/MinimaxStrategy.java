@@ -11,6 +11,9 @@ import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 
 /**
+ * This class implements the minimax strategy for choosing a position for the
+ * next move.
+ * 
  * @author gordon
  * 
  */
@@ -28,8 +31,13 @@ public class MinimaxStrategy implements KulamiStrategy {
 	private int level;
 	private Pos savedMove;
 	private Game game;
-//	private char thisColour;
 
+	/**
+	 * The strategy is parametrized with a level.
+	 * 
+	 * @param level
+	 *            1..10
+	 */
 	public MinimaxStrategy(int level) {
 		this.level = level;
 	}
@@ -43,16 +51,23 @@ public class MinimaxStrategy implements KulamiStrategy {
 	@Override
 	public Pos choosePos(Game game) {
 		this.game = game;
-//		thisColour = game.getPlayer().getCoulour();
+		// thisColour = game.getPlayer().getCoulour();
 		savedMove = null;
 		max(1, level, game.getGameMap().getCopy());
 		return savedMove;
 	}
 
 	/**
+	 * Choose the move that maximizes the value of the current player.
+	 * <p>
+	 * As a side effect sets the <code>savedMoved</code> in its first call.
+	 * 
 	 * @param player
+	 *            1 or -1
 	 * @param depth
+	 *            0..10
 	 * @param gameMap
+	 *            the GameMap
 	 * @return
 	 */
 	private int max(int player, int depth, GameMap gameMap) {
@@ -64,7 +79,8 @@ public class MinimaxStrategy implements KulamiStrategy {
 		for (Pos move : possibleMoves) {
 			GameMap nextGameMap = performMove(player, move, gameMap);
 			int value = min(-player, depth - 1, nextGameMap);
-			System.out.println(String.format("Pos: %s Value: %d ", move, value));
+			System.out
+					.println(String.format("Pos: %s Value: %d ", move, value));
 			if (value > maxVal) {
 				maxVal = value;
 				if (depth == level)
@@ -75,9 +91,14 @@ public class MinimaxStrategy implements KulamiStrategy {
 	}
 
 	/**
+	 * Choose the move that minimizes the value of the current player.
+	 * 
 	 * @param player
+	 *            1 or -1
 	 * @param depth
+	 *            0..10
 	 * @param gameMap
+	 *            the GameMap
 	 * @return
 	 */
 	private int min(int player, int depth, GameMap gameMap) {
@@ -97,7 +118,7 @@ public class MinimaxStrategy implements KulamiStrategy {
 	}
 
 	/**
-	 * Copy the GameMap an perform the move.
+	 * Copy the GameMap and perform the move.
 	 * 
 	 * @param move
 	 *            position where to place the marble
@@ -114,8 +135,12 @@ public class MinimaxStrategy implements KulamiStrategy {
 	}
 
 	/**
+	 * Returns the <code>Owner</code> corresponding to the minimax algorithms
+	 * player encoding.
+	 * 
 	 * @param player
-	 * @return
+	 *            1 or -1
+	 * @return the Owner
 	 */
 	private Owner getOwner(int player) {
 		if (player == 1)
@@ -127,6 +152,8 @@ public class MinimaxStrategy implements KulamiStrategy {
 	}
 
 	/**
+	 * Returns a list of legal moves.
+	 * 
 	 * @param player
 	 * @param gameMap
 	 * @return
@@ -136,16 +163,24 @@ public class MinimaxStrategy implements KulamiStrategy {
 	}
 
 	/**
+	 * Evaluates the benefit for a player when performing a move by counting
+	 * his/her points.
+	 * 
+	 * @param player
+	 *            1 or -1
 	 * @param gameMap
-	 * @return
+	 * @return number of points
 	 */
 	private int evaluate(int player, GameMap gameMap) {
 		return gameMap.getPoints(getOwner(1), game.getLevel());
 	}
 
 	/**
+	 * Check whether player has any marbles left.
+	 * 
 	 * @param player
-	 * @return
+	 *            1 or -1
+	 * @return <code>true</code> if player has moves left
 	 */
 	private boolean hasMarbles(int player, GameMap gameMap) {
 		return gameMap.remainingMarbles(getOwner(player)) > 0;
