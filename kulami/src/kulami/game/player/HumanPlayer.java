@@ -7,20 +7,27 @@ import kulami.game.Game;
 import kulami.game.board.Pos;
 
 /**
+ * A <code>HumanPlayer</code> makes his/her own moves.
+ * 
  * @author gordon
  * 
  */
 public class HumanPlayer extends Player {
 
 	/**
-	 * @param playerName
-	 * @param owner
+	 * Constructs a new <code>HumanPlayer</code>.
+	 * 
+	 * @param name
+	 * @param colour
+	 *            'r' or 'b'
 	 */
 	public HumanPlayer(String name, char colour) {
 		super(name, colour);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.game.player.Player#makeMove(kulami.game.board.GameMap)
 	 */
 	@Override
