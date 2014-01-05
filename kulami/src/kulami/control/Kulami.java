@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.control;
 
 import java.util.logging.LogManager;
@@ -28,7 +25,8 @@ public class Kulami {
 	}
 
 	/**
-	 * Start the Kulami client application.
+	 * Start the Kulami client application by constructing a
+	 * <code>GameController</code>.
 	 * 
 	 * @param args
 	 */
