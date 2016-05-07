@@ -1,8 +1,7 @@
-/**
- * 
- */
 package kulami.control;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
 import kulami.connectivity.InProtocolObserver;
@@ -18,10 +17,9 @@ import kulami.game.player.HumanPlayer;
 import kulami.game.player.Player;
 import kulami.gui.ChooseBoardDialog;
 import kulami.gui.ChooseBoardDialogAdapter;
-import kulami.gui.GameDisplay;
 import kulami.gui.GameDisplayAdapter;
 import kulami.gui.Mainframe;
-import kulami.gui.MapEditor;
+import kulami.gui.MainframeAdapter;
 import kulami.gui.MessagePager;
 import kulami.gui.NewGameDialog;
 import kulami.gui.NewGameDialogAdapter;
@@ -30,69 +28,82 @@ import kulami.gui.PlayerDialogAdapter;
 import kulami.gui.StatusDisplayer;
 
 /**
- * The GameController is the layer between the GUI and the game logic. The GUI
- * delegates all user input to the controller and lets the controller decide
- * what to do. The controller also receives Kulami server messages. The
+ * The <code>GameController</code> is the layer between the GUI and the game
+ * state.
+ * <p>
+ * The GUI delegates all user input to the controller and lets the controller
+ * decide what to do. The controller also receives Kulami server messages. The
  * controller decides which actions to take and manipulates the game model.
+ * <p>
+ * The GameController's only public element is its constructor. Messages are
+ * received in anonymous classes that implement adapter interfaces.
  * 
  * @author gordon
  * 
  */
 public class GameController {
 
+	// GUI elements
 	private Mainframe mainframe;
 
 	private PlayerDialog playerDialog;
-
 	private NewGameDialog newGameDialog;
+	private ChooseBoardDialog chooseBoardDialog;
 
-	private ServerProxy serverProxy;
-	private MessageSender messageSender;
-
-	private Game game;
-
-	private String playerName;
-	private boolean playerHuman;
-	private int compPlayerLevel;
-	private ServerAdapter serverAdapter;
 	private MessagePager messagePager;
 	private StatusDisplayer statusDisplayer;
-	private GameDisplay gameDisplay;
-
-	private String opponentName;
-	private ChooseBoardDialog chooseBoardDialog;
-	private GameDisplayAdapter gameDisplayAdapter;
-	private char playerColour;
-
-	private MapEditor mapEditor;
 
 	private DisplayFlags displayFlags;
+
+	// Connectivity elements
+	private ServerProxy serverProxy;
+	private ServerAdapter serverAdapter;
+	private MessageSender messageSender;
+
+	// Game elements
+	private Game game;
+	private String playerName;
+	private boolean playerHuman;
+	private char playerColour;
+	private int compPlayerLevel;
+	private String opponentName;
+
+	private boolean gameRunning;
 
 	private static final Logger logger = Logger
 			.getLogger("kulami.control.GameController");
 
 	/**
-	 * The GameController constructor creates a Mainframe and displays it. It
-	 * also requests a MessagePager from the Mainframe so that messages can be
-	 * displayed at any time.
+	 * Constructs a <code>GameController</code>, initializes a
+	 * <code>Mainframe</code> object and displays it.
+	 * <p>
+	 * The constructor also requests a <code>MessagePager</code> and a
+	 * <code>StatusDisplayer</code> from the <code>Mainframe</code> to display
+	 * information to the user
 	 */
 	public GameController() {
 		initMainframe();
+
 		displayFlags = new DisplayFlags(false, false, false);
+		gameRunning = false;
+
 		messagePager = mainframe.getMessageDisplay();
 		statusDisplayer = mainframe.getStatusDisplay();
 		mainframe.setVisible(true);
 	}
 
 	/**
-	 * @return
+	 * Initializes the <code>Mainframe</code>.
+	 * <p>
+	 * An anonymous inner class that implements the interface
+	 * <code>MainframeAdapter</code> handles user input at the mainframe.
 	 */
 	private void initMainframe() {
 		mainframe = new Mainframe(new MainframeAdapter() {
 
 			@Override
 			public void startGameClicked() {
-				showNewGameDialog();
+				showPlayerDialog();
 			}
 
 			@Override
@@ -120,19 +131,14 @@ public class GameController {
 			}
 
 			@Override
-			public void newPlayerClicked() {
-				showPlayerDialog();
-			}
-
-			@Override
 			public void newGameMapClicked() {
 				showMapEditor();
 			}
 
 			@Override
 			public void messageEntered(String message) {
-				// TODO Auto-generated method stub
-
+				messagePager.display(String.format("%s: %s", playerName, message));
+				messageSender.sendMessage(message);
 			}
 
 			@Override
@@ -161,36 +167,54 @@ public class GameController {
 
 			@Override
 			public void abortGameClicked() {
-				// TODO Auto-generated method stub
+				if (messageSender != null) {
+					boolean really = mainframe.yesNoQuestion(
+							"Spiel wirklich abbrechen?", "Spiel abbrechen");
+					if (really)
+						messageSender.quitGame();
+				}
+			}
 
+			@Override
+			public void exitClicked() {
+				boolean reallyExit = mainframe.yesNoQuestion("Kulami beenden?",
+						"Kulami");
+				if (reallyExit)
+					System.exit(0);
 			}
 		});
 	}
 
 	/**
-	 * 
+	 * Shows the <code>MapEditor</code> by creating a new
+	 * <code>MapEditorController</code>.
 	 */
 	private void showMapEditor() {
-		// TODO Auto-generated method stub
 		new MapEditorController();
 	}
 
 	/**
-	 * Display the New Player dialog which prompts the user to enter a user name
-	 * and decide whether to play in human or in computer mode.
+	 * Displays the <code>PlayerDialog</code> which prompts the user to enter a
+	 * user name and decide whether to play in human or in computer mode.
+	 * <p>
+	 * An anonymous inner class that implements the
+	 * <code>PlayerDialogAdapter</code> interface handles user input from the
+	 * <code>PlayerDialog</code>.
 	 */
 	private void showPlayerDialog() {
 		playerDialog = new PlayerDialog(mainframe, new PlayerDialogAdapter() {
 
 			@Override
 			public void okPressed() {
-				playerName = playerDialog.getName();
+				playerName = playerDialog.getPlayerName();
 				playerHuman = playerDialog.getHuman();
 				compPlayerLevel = playerDialog.getCompLevel();
 
 				playerDialog.clearAndHide();
 
 				statusDisplayer.setHeroName(playerName);
+
+				showNewGameDialog();
 			}
 
 			@Override
@@ -208,17 +232,19 @@ public class GameController {
 	}
 
 	/**
-	 * Display the New Game dialog which prompts the user for a Kulami server
-	 * connection.
+	 * Displays the <code>NewGameDialog</code> which prompts the user for a
+	 * Kulami server connection.
+	 * <p>
+	 * An anonymous inner class that implements the
+	 * <code>NewGameDialogAdapter</code> interface handles user input from the
+	 * dialog.
+	 * <p>
+	 * The <code>PlayerDialog</code> should have been displayed before.
 	 */
 	private void showNewGameDialog() {
 		newGameDialog = new NewGameDialog(mainframe,
 				new NewGameDialogAdapter() {
 
-					/**
-					 * Get Kulami server connection data from the New Game
-					 * dialog and try to connect to the server.
-					 */
 					@Override
 					public void connectClicked() {
 						String hostName = newGameDialog.getHost();
@@ -231,11 +257,22 @@ public class GameController {
 
 						serverProxy.addObserver(serverAdapter);
 
-						serverProxy.connectAndListen();
-
-						messageSender = new MessageSender(serverProxy);
-
-						// TODO display error message if connection fails
+						try {
+							serverProxy.connectAndListen();
+							messageSender = new MessageSender(serverProxy);
+						} catch (UnknownHostException e) {
+							newGameDialog
+									.displayWarning(
+											"Unbekannter Server. Bitte Verbindungsdaten überprüfen.",
+											"Fehler beim Verbinden");
+							serverProxy.disconnect();
+						} catch (IOException e) {
+							newGameDialog.displayWarning(
+									"Fehler beim Verbinden mit dem Server: "
+											+ e.getMessage(),
+									"Fehler beim Verbinden");
+							serverProxy.disconnect();
+						}
 					}
 
 					@Override
@@ -246,6 +283,17 @@ public class GameController {
 		newGameDialog.setVisible(true);
 	}
 
+	/**
+	 * Displays the <code>ChooseBoardDialog</code> which prompts the user to
+	 * choose a board from a file and a level for counting of points.
+	 * <p>
+	 * An anonymous inner class that implements the
+	 * <code>ChoosBoardDialogAdapter</code> interface handles user input from
+	 * the dialog.
+	 * <p>
+	 * This method should be called when the user connected to the server first
+	 * and the server requested game parameters.
+	 */
 	private void showChooseBoardDialog() {
 		chooseBoardDialog = new ChooseBoardDialog(mainframe,
 				new ChooseBoardDialogAdapter() {
@@ -261,7 +309,8 @@ public class GameController {
 						chooseBoardDialog.clearAndHide();
 
 						try {
-							game = new Game(boardCode, createPlayer(), level, displayFlags);
+							game = new Game(boardCode, createPlayer(), level,
+									displayFlags);
 							messageSender.sendParameters(game.getBoardCode(),
 									level);
 							startGameDisplay();
@@ -275,185 +324,127 @@ public class GameController {
 					@Override
 					public void cancelClicked() {
 						chooseBoardDialog.clearAndHide();
+						messageSender.quitGame();
 						serverProxy.disconnect();
 					}
 				});
 		chooseBoardDialog.setVisible(true);
 	}
 
+	/**
+	 * Registers an anonymous inner class that implements the
+	 * <code>InProtocolObserver</code> interface with the
+	 * <code>ServerAdapter</code>.
+	 * <p>
+	 * The anonymous inner class handles all incoming server messages and
+	 * initiates appropriate action.
+	 */
 	private void registerInProtocolObserver() {
 		serverAdapter.registerObserver(new InProtocolObserver() {
 
-			/**
-			 * Server sent "Kulami?" Connection was successfully established.
-			 * Continue protocol by sending the user name.
-			 */
 			@Override
 			public void kulamiQ() {
 				newGameDialog.clearAndHide();
 				messageSender.newClient(playerName);
 			}
 
-			/**
-			 * Server sent a message. The message is displayed to the user.
-			 */
 			@Override
 			public void message(String msg) {
 				messagePager.display("Server: " + msg);
 			}
 
-			/**
-			 * Server asked for game parameters. (We are player 1.)
-			 */
 			@Override
 			public void spielparameterQ() {
 				showChooseBoardDialog();
 			}
 
-			/**
-			 * Server sent the game parameters. (We are player 2.) Create a
-			 * GameMap, a Player, and a Game and start displaying the game.
-			 * 
-			 * @param opponentName
-			 *            The name of the opponent.
-			 * @param colour
-			 *            The player's colour ('b' for black or 'r' for red).
-			 * @param level
-			 *            The game level (1, 2, or 3)
-			 * @param mapCode
-			 *            The 200-character map code.
-			 * 
-			 */
 			@Override
 			public void spielparameter(String boardCode, int level,
 					char colour, String opponentName) {
 				playerColour = colour;
 				try {
-					game = new Game(boardCode, createPlayer(), level, displayFlags);
+					game = new Game(boardCode, createPlayer(), level,
+							displayFlags);
 					GameController.this.opponentName = opponentName;
-					statusDisplayer.setVillainName(opponentName);
-					statusDisplayer.setHeroColour(colour);
-					statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
+
 					startGameDisplay();
+					initStatusDisplay();
 				} catch (IllegalBoardCode e) {
 					mainframe.displayWarning("Ungültiges Spielfeld erhalten.");
 				}
 			}
 
-			/**
-			 * Server sent name of player 2. (We are player 1). Set the display
-			 * accordingly.
-			 * 
-			 * @param name
-			 *            The name of the opponent.
-			 * 
-			 */
 			@Override
 			public void name(String opponentName) {
 				GameController.this.opponentName = opponentName;
 				statusDisplayer.setVillainName(opponentName);
 			}
 
-			/**
-			 * Server sent colour. (We are player 1.) The Player object and the
-			 * Game object can now be created and the display adjusted.
-			 * 
-			 * @param colour
-			 *            'b' for black or 'r' for red.
-			 * 
-			 */
 			@Override
 			public void farbe(char colour) {
-				// TODO Auto-generated method stub
+				playerColour = colour;
 				statusDisplayer.setHeroColour(colour);
 				statusDisplayer.setVillainColour(colour == 'b' ? 'r' : 'b');
-				playerColour = colour;
+				messagePager.display("Warte auf Spieler 2...");
 			}
 
-			/**
-			 * Server sent signal to start the game. The argument is the colour
-			 * of the player who begins.
-			 * 
-			 * @param startingPlayer
-			 *            'b' for black or 'r' for red.
-			 * 
-			 */
 			@Override
 			public void spielstart(char colour) {
+				initStatusDisplay();
 				messagePager.display("Spiel beginnt");
+				gameRunning = true;
 				statusDisplayer.setCurrentPlayer(colour);
-				// TODO If this player begins, make move.
 				if (!playerHuman && colour == playerColour) {
 					makeMove();
 				}
 			}
 
-			/**
-			 * Server complained about an illegal move. The String indicates the
-			 * reason.
-			 * 
-			 * @param msg
-			 *            Reason for illegal move.
-			 * 
-			 */
 			@Override
 			public void ungueltig(String msg) {
-				messagePager.display("Server: illegal move (" + msg + ")");
-				// TODO Make move.
+				messagePager.display("Server: ungülitger Zug (" + msg + ")");
+				if (!playerHuman) {
+					makeMove();
+				}
 			}
 
-			/**
-			 * Server sent new board in response to a legal move.
-			 * 
-			 * @param mapCode
-			 * 
-			 */
 			@Override
 			public void gueltig(String boardCode) {
 				// TODO Verify the new board.
-				// TODO display that the opponent is now making a move
 				statusDisplayer.setCurrentPlayer(playerColour == 'r' ? 'b'
 						: 'r');
+				updateStatusDisplay();
+
 			}
 
-			/**
-			 * Server sent opponent's move.
-			 * 
-			 * @param mapCode
-			 * 
-			 */
 			@Override
 			public void zug(final String boardCode) {
 				try {
 					game.updateGame(boardCode);
+					statusDisplayer.setCurrentPlayer(playerColour);
+					updateStatusDisplay();
+					if (!playerHuman)
+						makeMove();
 				} catch (IllegalBoardCode e) {
-					mainframe.displayWarning("Ungültiges Spielfeld empfangen.");
+					mainframe
+							.displayWarning("Ungültiges Spielfeld empfangen. Verbindung wird beendet.");
+					messageSender.quitGame();
 				}
-				statusDisplayer.setCurrentPlayer(playerColour);
-				// TODO Make move
-				if (!playerHuman)
-					makeMove();
 			}
 
-			/**
-			 * Server signaled that the game is over and sends the final points.
-			 * 
-			 * @param pointsBlack
-			 * @param pointsRed
-			 * 
-			 */
 			@Override
 			public void spielende(int pointsRed, int pointsBlack) {
-				// TODO Display points
-				// TODO Prompt for rematch
+				gameRunning = false;
+				boolean newGame;
+				if (playerColour == 'r')
+					newGame = mainframe.displayResults(pointsRed, pointsBlack);
+				else
+					newGame = mainframe.displayResults(pointsBlack, pointsRed);
+				if (newGame)
+					messageSender.newGame();
+				else
+					messageSender.quitGame();
 			}
 
-			/**
-			 * Opponent sent a message via the server.
-			 * 
-			 * @param msg
-			 * 
-			 */
 			@Override
 			public void playerMessage(String msg) {
 				messagePager.display(opponentName + ": " + msg);
@@ -462,42 +453,100 @@ public class GameController {
 			@Override
 			public void unknownMessage(String msg) {
 				mainframe.displayWarning("Unbekannte Nachricht empfangen:\n"
-						+ msg);
+						+ msg + "\nVerbindung wird beendet.");
+				messageSender.quitGame();
+			}
+
+			@Override
+			public void connectionError() {
+				mainframe
+						.displayWarning("Es ist ein Fehler bei der Verbindung aufgetreten. Das Spiel wird beendet.");
 			}
 		});
 	}
 
+	/**
+	 * Tells the mainframe to initialize the
+	 * <code>GameDisplay</code> with the current game.
+	 * <p>
+	 * An anonymous inner class that implements the <code>GameDisplayAdapter</code>
+	 * interface handles user clicks on the board display.
+	 * <p>
+	 * Before calling this method, a <code>Game</code> object has to be assigned
+	 * to the game field.
+	 */
 	private void startGameDisplay() {
-		logger.finer("Initializing game display for game: " + game);
-		gameDisplay = mainframe.initGameDisplay(game, new GameDisplayAdapter() {
+		mainframe.initGameDisplay(game, new GameDisplayAdapter() {
 
 			@Override
 			public void tileClicked(Pos pos) {
-				logger.finer("User clicked on tile at pos " + pos);
-				if (game.isLegalMove(pos)) {
-					logger.fine("field is legal");
-					game.placeMarble(pos);
-					messageSender.makeMove(pos.getCol(), pos.getRow());
-				} else {
-					logger.fine("field is illegal");
+				if (gameRunning) {
+					logger.finer("User clicked on tile at pos " + pos);
+					if (game.isLegalMove(pos)) {
+						logger.fine("field is legal");
+						game.placeMarble(pos);
+						messageSender.makeMove(pos.getCol(), pos.getRow());
+					} else {
+						logger.fine("field is illegal");
+					}
 				}
 			}
 		});
-		// TODO make the game display show the empty board
 		game.pushMap();
 		mainframe.enableOptions(true);
 	}
 
+	/**
+	 * Sets the status display to its initial values.
+	 */
+	private void initStatusDisplay() {
+		statusDisplayer.setVillainName(opponentName);
+		statusDisplayer.setHeroColour(playerColour);
+		statusDisplayer.setVillainColour(playerColour == 'b' ? 'r' : 'b');
+		statusDisplayer.setHeroMarbles(28);
+		statusDisplayer.setVillainMarbles(28);
+		statusDisplayer.setHeroPoints(0);
+		statusDisplayer.setVillainPoints(0);
+	}
+
+	/**
+	 * Updates the number of remaining marbles and current points in the status
+	 * display.
+	 */
+	private void updateStatusDisplay() {
+		char villainColour = playerColour == 'r' ? 'b' : 'r';
+		statusDisplayer.setHeroMarbles(game.remainingMarbles(playerColour));
+		statusDisplayer.setVillainMarbles(game.remainingMarbles(villainColour));
+		statusDisplayer.setHeroPoints(game.getPoints(playerColour));
+		statusDisplayer.setVillainPoints(game.getPoints(villainColour));
+	}
+
+	/**
+	 * Creates a new <code>Player</code> object.
+	 * <p>
+	 * The fields <code>playerHuman</code>, <code>playerName</code>,
+	 * <code>playerColour</code>, and <code>compPlayerLevel</code> have to be
+	 * initialized before calling this method.
+	 * 
+	 * @return a <code>HumanPlayer</code> or a <code>CompPlayer</code>
+	 */
 	private Player createPlayer() {
 		if (playerHuman)
 			return new HumanPlayer(playerName, playerColour);
 		else
 			return new CompPlayer(playerName, playerColour, compPlayerLevel);
 	}
-	
+
+	/**
+	 * Tell a <code>CompPlayer</code> to make a move.
+	 * <p>
+	 * An anonymous inner class that implements the
+	 * <code>CompPlayerAdapter</code> interface is used to receive the chosen
+	 * move.
+	 */
 	private void makeMove() {
 		game.makeMove(new CompPlayerAdapter() {
-			
+
 			@Override
 			public void madeMove(Pos pos) {
 				messageSender.makeMove(pos.getCol(), pos.getRow());

@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.Color;
@@ -12,8 +9,15 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 import kulami.game.GameObservable;
+import kulami.game.GameObserver;
 
 /**
+ * <code>StatusDisplay</code> displays data about the current game state in two
+ * <code>JPanel</code>s, one for the local player and one for the opponent.
+ * <p>
+ * The status display is updated whenever information changes or when the game
+ * state changes.
+ * 
  * @author gordon
  * 
  */
@@ -38,35 +42,49 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	private JLabel villainMarblesLabel;
 	private JLabel heroPointsLabel;
 	private JLabel villainPointsLabel;
-	
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.StatusDisplay");
 
+	/**
+	 * Constructs a new <code>StatusDisplay</code> which displays local player
+	 * information in <code>heroPanel</code> and opponent information in
+	 * <code>villainPanel</code>.
+	 * 
+	 * @param heroPanel
+	 *            JPanel for local player information
+	 * @param villainPanel
+	 *            JPanel for opponent information
+	 */
 	public StatusDisplay(JPanel heroPanel, JPanel villainPanel) {
 		this.heroPanel = heroPanel;
 		this.villainPanel = villainPanel;
+		pointsVisible = true;
 
 		initPanels();
 	}
 
+	/**
+	 * Initialize the panels
+	 */
 	private void initPanels() {
 		heroPanel.setBorder(new TitledBorder("Spielstatus"));
 		villainPanel.setBorder(new TitledBorder("Gegner"));
 		heroPanel.setLayout(new GridLayout(0, 1));
 		villainPanel.setLayout(new GridLayout(0, 1));
-		heroNameLabel = new JLabel("Local player");
+		heroNameLabel = new JLabel();
 		heroPanel.add(heroNameLabel);
-		villainNameLabel = new JLabel("Opponent");
+		villainNameLabel = new JLabel();
 		villainPanel.add(villainNameLabel);
 
-		heroMarblesLabel = new JLabel("0 marbles");
+		heroMarblesLabel = new JLabel();
 		heroPanel.add(heroMarblesLabel);
-		villainMarblesLabel = new JLabel("0 marbles");
+		villainMarblesLabel = new JLabel();
 		villainPanel.add(villainMarblesLabel);
 
-		heroPointsLabel = new JLabel("0 points");
+		heroPointsLabel = new JLabel();
 		heroPanel.add(heroPointsLabel);
-		villainPointsLabel = new JLabel("0 points");
+		villainPointsLabel = new JLabel();
 		villainPanel.add(villainPointsLabel);
 	}
 
@@ -88,6 +106,7 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 	 */
 	@Override
 	public void boardChanged(GameObservable game) {
+		// do nothing
 	}
 
 	/*
@@ -203,6 +222,9 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		updateVillainPanel();
 	}
 
+	/**
+	 * Update local player information.
+	 */
 	private void updateHeroPanel() {
 		if (currentPlayer == heroColour && currentPlayer != 0)
 			heroNameLabel.setText(String.format("<html><i>%s</i>", heroName));
@@ -212,16 +234,20 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 			heroNameLabel.setForeground(Color.RED);
 		else
 			heroNameLabel.setForeground(Color.BLACK);
-		heroMarblesLabel.setText(String.format("%d marbles", heroMarbles));
+		heroMarblesLabel.setText(String.format("%d Murmeln", heroMarbles));
 		if (pointsVisible)
-			heroPointsLabel.setText(String.format("%d points", heroPoints));
+			heroPointsLabel.setText(String.format("%d Punkte", heroPoints));
 		heroPanel.repaint();
 		logger.fine("Updated hero stats");
 	}
 
+	/**
+	 * Update opponent information
+	 */
 	private void updateVillainPanel() {
 		if (currentPlayer == villainColour && currentPlayer != 0)
-			villainNameLabel.setText(String.format("<html><i>%s</i>", villainName));
+			villainNameLabel.setText(String.format("<html><i>%s</i>",
+					villainName));
 		else
 			villainNameLabel.setText(villainName);
 		if (villainColour == 'r')
@@ -229,20 +255,21 @@ public class StatusDisplay implements StatusDisplayer, GameObserver {
 		else
 			villainNameLabel.setForeground(Color.BLACK);
 		villainMarblesLabel
-				.setText(String.format("%d marbles", villainMarbles));
+				.setText(String.format("%d Murmeln", villainMarbles));
 		if (pointsVisible)
 			villainPointsLabel.setText(String
-					.format("%d points", villainPoints));
+					.format("%d Punkte", villainPoints));
 		villainPanel.repaint();
 		logger.fine("Updated hero stats");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.GameObserver#flagsChanged(kulami.game.GameObservable)
 	 */
 	@Override
 	public void flagsChanged(GameObservable game) {
-		// TODO Auto-generated method stub
-		// TODO display/don't display points
+		// do nothing
 	}
 }

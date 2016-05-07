@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.BorderLayout;
@@ -16,6 +13,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.swing.ButtonGroup;
@@ -36,6 +35,10 @@ import kulami.game.board.Board;
 import kulami.game.board.Orientation;
 
 /**
+ * The <code>MapEditor</code> is a frame in which a new board can be created.
+ * <p>
+ * User actions are delegated to a <code>MapEditorAdapter</code>.
+ * 
  * @author gordon
  * 
  */
@@ -43,23 +46,38 @@ public class MapEditor extends JFrame {
 
 	private MapEditorAdapter mapEditorAdapter;
 	private MapPainter mapPainter;
-	
+
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.MapEditor");
+	private Map<Integer, JRadioButton> sizeSelectionMap;
+	private Map<Integer, Integer> sizeRemainingMap;
 
+	/**
+	 * Construct a new <code>MapEditor</code> and display it.
+	 * 
+	 * @param mapEditorAdapter
+	 */
 	public MapEditor(MapEditorAdapter mapEditorAdapter) {
 		this.mapEditorAdapter = mapEditorAdapter;
 		initGUI();
 		setVisible(true);
 	}
 
+	/**
+	 * Draw a <code>Board</code>.
+	 * 
+	 * @param board
+	 */
 	public void drawBoard(Board board) {
-		mapPainter.drawBoard(board, new DisplayFlags(false, false, false));
+		mapPainter.drawBoard(board, new DisplayFlags());
 		initTileListeners();
 	}
 
 	/**
+	 * Save the <code>Board</code> into a file.
+	 * 
 	 * @param board
+	 *            the <code>Board</code> to be saved
 	 */
 	public void saveMap(Board board) {
 		String mapCode = board.getBoardCode();
@@ -69,7 +87,9 @@ public class MapEditor extends JFrame {
 			File file = chooser.getSelectedFile();
 			try (PrintWriter writer = new PrintWriter(new FileWriter(file))) {
 				writer.println(mapCode);
-				logger.info(String.format("Board\n%s \n in Datei %s geschrieben.", board.toString(), file.toString()));
+				logger.info(String.format(
+						"Board\n%s \n in Datei %s geschrieben.",
+						board.toString(), file.toString()));
 			} catch (IOException e) {
 				JOptionPane.showMessageDialog(this, String.format(
 						"Fehler beim Schreiben in Datei %s : %s",
@@ -80,12 +100,31 @@ public class MapEditor extends JFrame {
 	}
 
 	/**
-	 * MapEditor schließen.
+	 * close MapEditor
 	 */
 	public void clearAndHide() {
 		setVisible(false);
 	}
 
+	/**
+	 * Decrease the number of remaining panels of size <code>size</code>.
+	 * 
+	 * @param size
+	 *            2, 3, 4 or 6
+	 */
+	public void decreaseRemaining(int size) {
+		int remaining = sizeRemainingMap.get(size);
+		remaining--;
+		sizeRemainingMap.put(size, remaining);
+		JRadioButton button = sizeSelectionMap.get(size);
+		button.setText(String.format("%d Felder (%d)", size, remaining));
+		if (remaining == 0)
+			button.setEnabled(false);
+	}
+
+	/**
+	 * Initialize the central GUI elements
+	 */
 	private void initGUI() {
 		setLayout(new BorderLayout(5, 10));
 
@@ -109,6 +148,11 @@ public class MapEditor extends JFrame {
 
 	}
 
+	/**
+	 * Initialize the main menu
+	 * 
+	 * @return the menu bar
+	 */
 	private JMenuBar initMenu() {
 		JMenuBar menu = new JMenuBar();
 
@@ -143,6 +187,12 @@ public class MapEditor extends JFrame {
 		return menu;
 	}
 
+	/**
+	 * Initialize the left panel with elements to choose a panel size and
+	 * orientation.
+	 * 
+	 * @return the JPanel
+	 */
 	private JPanel initLeftPanel() {
 		JPanel leftPanel = new JPanel();
 		leftPanel
@@ -152,24 +202,35 @@ public class MapEditor extends JFrame {
 		sizeSelectionPanel.setBorder(new TitledBorder("Holzplattengröße"));
 		sizeSelectionPanel.setPreferredSize(new Dimension(150,
 				Mainframe.FIELDSIZE * 4));
-		// panelSelectionPanel.add(new JLabel("<html><b>Holzplattengröße</b>"));
+		sizeSelectionMap = new HashMap<>();
 		final ButtonGroup sizeSelectionGroup = new ButtonGroup();
-		JRadioButton sixButton = new JRadioButton("6 Felder", true);
+		JRadioButton sixButton = new JRadioButton("6 Felder (4)", true);
 		sixButton.setActionCommand("6");
 		sizeSelectionGroup.add(sixButton);
 		sizeSelectionPanel.add(sixButton);
-		JRadioButton fourButton = new JRadioButton("4 Felder", false);
+		sizeSelectionMap.put(6, sixButton);
+		JRadioButton fourButton = new JRadioButton("4 Felder (5)", false);
 		fourButton.setActionCommand("4");
 		sizeSelectionGroup.add(fourButton);
 		sizeSelectionPanel.add(fourButton);
-		JRadioButton threeButton = new JRadioButton("3 Felder", false);
+		sizeSelectionMap.put(4, fourButton);
+		JRadioButton threeButton = new JRadioButton("3 Felder (4)", false);
 		threeButton.setActionCommand("3");
 		sizeSelectionGroup.add(threeButton);
 		sizeSelectionPanel.add(threeButton);
-		JRadioButton twoButton = new JRadioButton("2 Felder", false);
+		sizeSelectionMap.put(3, threeButton);
+		JRadioButton twoButton = new JRadioButton("2 Felder (4)", false);
 		twoButton.setActionCommand("2");
 		sizeSelectionGroup.add(twoButton);
 		sizeSelectionPanel.add(twoButton);
+		sizeSelectionMap.put(2, twoButton);
+		
+		sizeRemainingMap = new HashMap<>();
+		sizeRemainingMap.put(6, 4);
+		sizeRemainingMap.put(4, 5);
+		sizeRemainingMap.put(3, 4);
+		sizeRemainingMap.put(2, 4);
+		
 
 		JPanel orientationPanel = new JPanel(new GridLayout(2, 1));
 		orientationPanel.setBorder(new TitledBorder("Ausrichtung"));
@@ -207,6 +268,11 @@ public class MapEditor extends JFrame {
 		return leftPanel;
 	}
 
+	/**
+	 * Initialize the panel where the board is displayed.
+	 * 
+	 * @return the JPanel
+	 */
 	private JPanel initBoard() {
 		JPanel board = new JPanel();
 		board.setLayout(new GridLayout(10, 10, 0, 0));
@@ -215,6 +281,9 @@ public class MapEditor extends JFrame {
 		return board;
 	}
 
+	/**
+	 * Initialize listeners for each <code>TileComponent</code>
+	 */
 	private void initTileListeners() {
 		mapPainter.registerTileListeners(new MouseAdapter() {
 
@@ -236,8 +305,12 @@ public class MapEditor extends JFrame {
 				mapEditorAdapter.tileClicked(tile.getPos());
 			}
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.MouseAdapter#mouseEntered(java.awt.event.MouseEvent)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.MouseAdapter#mouseEntered(java.awt.event.MouseEvent
+			 * )
 			 */
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -250,8 +323,12 @@ public class MapEditor extends JFrame {
 				mapEditorAdapter.tileEntered(tile.getPos());
 			}
 
-			/* (non-Javadoc)
-			 * @see java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent)
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see
+			 * java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent
+			 * )
 			 */
 			@Override
 			public void mouseExited(MouseEvent e) {

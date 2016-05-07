@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 /**
@@ -15,6 +12,7 @@ public interface MessagePager {
 	 * Display a text message
 	 * 
 	 * @param message
+	 *            the message
 	 */
 	public void display(String message);
 }

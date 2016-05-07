@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.event.MouseAdapter;
@@ -10,10 +7,17 @@ import java.util.logging.Logger;
 import javax.swing.JPanel;
 
 import kulami.game.GameObservable;
+import kulami.game.GameObserver;
 import kulami.game.board.Board;
 import kulami.game.board.Marbles;
 
 /**
+ * This class is notified when the game state changes and displays the game
+ * using a <code>MapPainter</code>.
+ * <p>
+ * A <code>GameDisplay</code> sends user input events to a
+ * <code>GameDisplayAdapter</code>.
+ * 
  * @author gordon
  * 
  */
@@ -25,15 +29,20 @@ public class GameDisplay implements GameObserver {
 	private static final Logger logger = Logger
 			.getLogger("kulami.gui.GameDisplay");
 
-	public GameDisplay(GameObservable game, JPanel board, GameDisplayAdapter gameDisplayAdapter) {
+	/**
+	 * Constructs a new <code>GameDisplay</code>, creates a
+	 * <code>MapPainter</code>, and registers with a <code>GameObservable</code>
+	 * .
+	 * 
+	 * @param game
+	 * @param board
+	 * @param gameDisplayAdapter
+	 */
+	public GameDisplay(GameObservable game, JPanel board,
+			GameDisplayAdapter gameDisplayAdapter) {
 		this.gameDisplayAdapter = gameDisplayAdapter;
 		mapPainter = new MapPainter(board);
 		game.registerObserver(this);
-	}
-
-	// TODO Test:
-	public GameDisplay(JPanel board) {
-		mapPainter = new MapPainter(board);
 	}
 
 	/*
@@ -57,13 +66,15 @@ public class GameDisplay implements GameObserver {
 	 */
 	@Override
 	public void boardChanged(GameObservable game) {
-		Board board= game.getBoard();
+		Board board = game.getBoard();
 		logger.finer("Drawing map: " + board);
 		mapPainter.drawBoard(board, game.getDisplayFlags());
 		initTileListeners();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see kulami.gui.GameObserver#flagsChanged(kulami.control.DisplayFlags)
 	 */
 	@Override
@@ -71,6 +82,9 @@ public class GameDisplay implements GameObserver {
 		mapPainter.flagsChanged();
 	}
 
+	/**
+	 * Register listeners for all 100 <code>TileComponent</code>s.
+	 */
 	private void initTileListeners() {
 		mapPainter.registerTileListeners(new MouseAdapter() {
 
@@ -90,11 +104,10 @@ public class GameDisplay implements GameObserver {
 				else
 					return;
 				gameDisplayAdapter.tileClicked(tile.getPos());
-				
+
 			}
 
 		});
 	}
-
 
 }

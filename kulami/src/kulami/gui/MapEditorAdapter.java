@@ -7,32 +7,52 @@ import kulami.game.board.Orientation;
 import kulami.game.board.Pos;
 
 /**
+ * Adapter interface for user input from the <code>MapEditor</code>
+ * 
  * @author gordon
- *
+ * 
  */
 public interface MapEditorAdapter {
 
-	public void newPanelSelected(int size, Orientation orientation);
-	
-	public void saveMap();
-	
-	public void closeMapEditor();
-	
-	public void placePanel(Pos pos);
-
 	/**
-	 * @param pos
+	 * User selected new panel.
+	 * 
+	 * @param size
+	 *            selected size
+	 * @param orientation
+	 *            selected <code>Orientation</code>
 	 */
-	public void tileClicked(Pos pos);
+	public void newPanelSelected(int size, Orientation orientation);
 
 	/**
-	 * @param pos
+	 * User clicked save
+	 */
+	public void saveMap();
+
+	/**
+	 * User clicked close
+	 */
+	public void closeMapEditor();
+
+	/**
+	 * User clicked tile at position <code>pos</code>
+	 * 
+	 * @param pos the position
+	 */
+	public void tileClicked(Pos pos); 
+	
+	/**
+	 * User entered tile at position <code>pos</code>
+	 * 
+	 * @param pos the position
 	 */
 	public void tileEntered(Pos pos);
 
 	/**
-	 * @param pos
+	 * User exited tile at position <code>pos</code>
+	 * 
+	 * @param pos the position
 	 */
 	public void tileExited(Pos pos);
-	
+
 }

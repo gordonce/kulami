@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.control;
 
 import java.util.logging.LogManager;
@@ -22,13 +19,14 @@ public class Kulami {
 		try {
 			LogManager.getLogManager().readConfiguration();
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 		}
 		logger = Logger.getLogger("kulami.control.Kulami");
 	}
 
 	/**
-	 * Start the Kulami client application.
+	 * Start the Kulami client application by constructing a
+	 * <code>GameController</code>.
 	 * 
 	 * @param args
 	 */

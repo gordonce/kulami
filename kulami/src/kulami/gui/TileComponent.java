@@ -1,6 +1,3 @@
-/**
- * 
- */
 package kulami.gui;
 
 import java.awt.AlphaComposite;
@@ -14,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Rectangle2D;
-import java.util.logging.Logger;
 
 import javax.swing.JComponent;
 
@@ -22,6 +18,13 @@ import kulami.control.DisplayFlags;
 import kulami.game.board.Owner;
 import kulami.game.board.Pos;
 
+/**
+ * A <code>TileComponent</code> is a <code>JComponent</code> that displays one
+ * of 100 fields of a Kulami board.
+ * 
+ * @author gordon
+ * 
+ */
 class TileComponent extends JComponent implements MouseListener {
 	private Image tileImage;
 	private int marble;
@@ -29,10 +32,9 @@ class TileComponent extends JComponent implements MouseListener {
 	private boolean lastMove;
 	private boolean nextToLastMove;
 	private DisplayFlags displayFlags;
-	
-	
-	private static final Logger logger = Logger
-			.getLogger("kulami.gui.MapPainter");
+
+	// private static final Logger logger = Logger
+	// .getLogger("kulami.gui.MapPainter");
 
 	private Pos pos;
 	private boolean possibleMove;
@@ -45,6 +47,17 @@ class TileComponent extends JComponent implements MouseListener {
 	static final int BLACK = 1;
 	static final int RED = 2;
 
+	/**
+	 * Constructs a new <code>TileComponent</code> and initializes a
+	 * <code>MouseListener</code>
+	 * 
+	 * @param tileImage
+	 *            the <code>Image</code> to be displayed
+	 * @param pos
+	 *            the tile's position
+	 * @param displayFlags
+	 *            a reference to a <code>DisplayFlags</code> object
+	 */
 	public TileComponent(Image tileImage, Pos pos, DisplayFlags displayFlags) {
 		this.tileImage = tileImage;
 		this.pos = pos;
@@ -58,29 +71,52 @@ class TileComponent extends JComponent implements MouseListener {
 		addMouseListener(this);
 	}
 
+	/**
+	 * Draw a marble on this tile.
+	 * 
+	 * @param marble
+	 *            {@value #BLACK}, {@value #RED}, or {@value #NONE}
+	 */
 	public void setMarble(int marble) {
 		this.marble = marble;
 	}
 
+	/**
+	 * @param lastMove
+	 *            set to true if this tile displays the last move
+	 */
 	public void setLastMove(boolean lastMove) {
 		this.lastMove = lastMove;
 	}
-	
-	public void setPanelOwner(Owner owner) {
-		this.panelOwner = owner;
-	}
 
+	/**
+	 * @param nextToLastMove
+	 *            set to true if this tile displays the next to last move
+	 */
 	public void setNextToLastMove(boolean nextToLastMove) {
 		this.nextToLastMove = nextToLastMove;
 	}
 
 	/**
-	 * @param b
+	 * Set the owner of the panel that this tile belongs to.
+	 * 
+	 * @param owner
+	 */
+	public void setPanelOwner(Owner owner) {
+		this.panelOwner = owner;
+	}
+
+	/**
+	 * @param possibleMove
+	 *            set to true if this tile displays a legal move
 	 */
 	public void setPossibleMove(boolean possibleMove) {
 		this.possibleMove = possibleMove;
 	}
-	
+
+	/**
+	 * @return this tile's position
+	 */
 	public Pos getPos() {
 		return pos;
 	}
@@ -128,7 +164,7 @@ class TileComponent extends JComponent implements MouseListener {
 				g2.setColor(Color.GREEN);
 				g2.setStroke(new BasicStroke(3));
 				g2.draw(new Rectangle2D.Float(6, 6, 48, 48));
-			}			
+			}
 		}
 		if (displayFlags.isPanelPossession()) {
 			if (panelOwner == Owner.Black) {

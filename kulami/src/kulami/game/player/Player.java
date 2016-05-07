@@ -1,13 +1,11 @@
-/**
- * 
- */
 package kulami.game.player;
 
 import kulami.game.Game;
 import kulami.game.board.Pos;
 
-
 /**
+ * This class represents the local player in a Kulami game.
+ * 
  * @author gordon
  * 
  */
@@ -15,44 +13,47 @@ public abstract class Player {
 
 	private String name;
 	private char colour;
-	private int marbles;
 
 	public Player() {
-		marbles = 20;
 	}
 
 	/**
+	 * Constructor that can be called by overriding classes.
+	 * 
+	 * @param name
 	 * @param colour
-	 * @param marbles
 	 */
 	public Player(String name, char colour) {
 		this.name = name;
 		this.colour = colour;
-		marbles = 20;
 	}
 
+	/**
+	 * @return the name
+	 */
 	public String getName() {
 		return name;
 	}
-	
+
+	/**
+	 * @return the colour ('r' or 'b')
+	 */
 	public char getCoulour() {
 		return colour;
 	}
 
-	public int getMarbles() {
-		return marbles;
-	}
+	/**
+	 * Choose position for the next move.
+	 * 
+	 * @param game
+	 *            a reference to the <code>Game</code>
+	 * @return position
+	 */
+	abstract public Pos makeMove(Game game);
 
 	@Override
 	public String toString() {
-		return String.format("%s (%d marbles)", name, marbles);
+		return String.format("%s (%s)", name, colour);
 	}
-
-	/**
-	 * @return
-	 */
-	abstract public Pos makeMove(Game game);
-	
-	
 
 }
